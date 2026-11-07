@@ -17,8 +17,8 @@ public class AppDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer(
-                @"Server=(localdb)\MSSQLLocalDB;Database=QuanLyThuVienDb;Trusted_Connection=True;TrustServerCertificate=True;");
+            var dbPath = Path.Combine(AppContext.BaseDirectory, "QuanLyThuVien.db");
+            optionsBuilder.UseSqlite($"Data Source={dbPath}");
         }
     }
 
