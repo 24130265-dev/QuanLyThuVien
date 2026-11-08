@@ -1,17 +1,37 @@
-namespace QuanLyThuVien
+using Microsoft.EntityFrameworkCore;
+using QuanLyThuVien.Data;
+
+namespace QuanLyThuVien;
+
+static class Program
 {
-    internal static class Program
+    [STAThread]
+    static void Main()
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        ApplicationConfiguration.Initialize();
+
+        // Báo Lỗi
+        Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+        Application.ThreadException += (s, e) =>
+            MessageBox.Show($"Lỗi giao diện: {e.Exception.Message}", "Cảnh báo",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+        AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            MessageBox.Show($"Lỗi hệ thống: {(e.ExceptionObject as Exception)?.Message}", "Lỗi nghiêm trọng",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        // Tự động tạo CSDL và nạp dữ liệu mẫu nếu chưa có
+        try
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new Forms.FrmTraSach());
+            using var db = new AppDbContext();
+            db.Database.EnsureCreated();
         }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Không thể khởi tạo CSDL:\n{ex.Message}", "Lỗi CSDL",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+
+        Application.Run(new Form1());
     }
 }
