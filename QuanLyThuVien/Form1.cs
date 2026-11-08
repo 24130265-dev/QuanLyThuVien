@@ -4,11 +4,19 @@ namespace QuanLyThuVien
     {
         public Form1()
         {
-            InitializeComponent();
+            InitializeComponent()
+            this.Text = "QUẢN LÝ THƯ VIỆN";
+            this.Size = new Size(1000, 600);
+            this.StartPosition = FormStartPosition.CenterScreen;
+
+            TaoDaoDien();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void TaoDaoDien()
         {
+            Label title = new Label();
+            title.Text ="Phan Mem Quan Ly Thu Vien";
+            title.Font =  new Font("Arial", 22, FontStyle.Bold);
 
         }
 
