@@ -32,6 +32,6 @@ static class Program
             return;
         }
 
-        Application.Run(new Form1());
+        Application.Run(new Forms.FrmTraSach());
     }
 }
