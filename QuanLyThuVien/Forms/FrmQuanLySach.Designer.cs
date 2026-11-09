@@ -1,6 +1,6 @@
-namespace QuanLyThuVien
+﻿namespace QuanLyThuVien.Forms
 {
-    partial class Form1
+    partial class FrmQuanLySach
     {
         /// <summary>
         /// Required designer variable.
@@ -28,11 +28,16 @@ namespace QuanLyThuVien
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 600);
-            this.Text = "Quản Lý Thư Viện";
-            this.Name = "Form1";
+            SuspendLayout();
+            // 
+            // FrmQuanLySach
+            // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 450);
+            Name = "FrmQuanLySach";
+            Text = "Quản lý Sách";
+            ResumeLayout(false);
         }
 
         #endregion
