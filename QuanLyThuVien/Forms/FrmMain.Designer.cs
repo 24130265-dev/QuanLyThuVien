@@ -40,13 +40,14 @@
             lblDongHo = new ToolStripStatusLabel();
             timerDongHo = new System.Windows.Forms.Timer(components);
             pnlContent = new Panel();
+            mnuThoat = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { mnuQuanLySach, mnuDocGia, mnuMuonSach, mnuTraSach, mnuBaoCao });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { mnuQuanLySach, mnuDocGia, mnuMuonSach, mnuTraSach, mnuBaoCao, mnuThoat });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(800, 24);
@@ -95,7 +96,7 @@
             // lblKetNoi
             // 
             lblKetNoi.Name = "lblKetNoi";
-            lblKetNoi.Size = new Size(636, 17);
+            lblKetNoi.Size = new Size(750, 17);
             lblKetNoi.Spring = true;
             lblKetNoi.Text = "Đang kiểm tra...";
             lblKetNoi.TextAlign = ContentAlignment.MiddleLeft;
@@ -103,8 +104,9 @@
             // lblDongHo
             // 
             lblDongHo.Name = "lblDongHo";
-            lblDongHo.Size = new Size(118, 17);
-            lblDongHo.Text = "toolStripStatusLabel2";
+            lblDongHo.Size = new Size(35, 17);
+            lblDongHo.Text = "timer";
+            lblDongHo.Click += lblDongHo_Click;
             // 
             // timerDongHo
             // 
@@ -117,6 +119,13 @@
             pnlContent.Name = "pnlContent";
             pnlContent.Size = new Size(800, 404);
             pnlContent.TabIndex = 2;
+            // 
+            // mnuThoat
+            // 
+            mnuThoat.Name = "mnuThoat";
+            mnuThoat.Size = new Size(50, 20);
+            mnuThoat.Text = "Thoát";
+            mnuThoat.Click += mnuThoat_Click;
             // 
             // FrmMain
             // 
@@ -153,5 +162,6 @@
         private ToolStripStatusLabel lblDongHo;
         private System.Windows.Forms.Timer timerDongHo;
         private Panel pnlContent;
+        private ToolStripMenuItem mnuThoat;
     }
 }

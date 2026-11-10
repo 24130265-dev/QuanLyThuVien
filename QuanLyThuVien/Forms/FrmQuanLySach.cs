@@ -16,5 +16,10 @@ namespace QuanLyThuVien.Forms
         {
             InitializeComponent();
         }
+
+        private void btnLuu_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show($"Bạn vừa nhập: {txtMaDauSach.Text}");
+        }
     }
 }

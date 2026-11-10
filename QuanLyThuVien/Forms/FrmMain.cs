@@ -34,6 +34,8 @@ public partial class FrmMain : Form
 
     private void FrmMain_FormClosing(object? sender, FormClosingEventArgs e)
     {
+        if (e.CloseReason != CloseReason.UserClosing) return;
+
         var kq = MessageBox.Show("Bạn có chắc muốn thoát chương trình?", "Xác nhận",
             MessageBoxButtons.YesNo, MessageBoxIcon.Question);
         if (kq == DialogResult.No)
@@ -78,5 +80,15 @@ public partial class FrmMain : Form
     {
         MessageBox.Show($"Màn hình \"{ten}\" sẽ được nối sau khi ghép code của nhóm.",
             "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+    }
+
+    private void lblDongHo_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void mnuThoat_Click(object sender, EventArgs e)
+    {
+        Close();
     }
 }
