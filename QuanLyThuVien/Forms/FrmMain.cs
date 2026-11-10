@@ -5,36 +5,11 @@ namespace QuanLyThuVien.Forms;
 
 public partial class FrmMain : Form
 {
-    private readonly MenuStrip _menu = new();
-    private readonly StatusStrip _status = new();
-    private readonly ToolStripStatusLabel lblKetNoi = new() { Spring = true, TextAlign = ContentAlignment.MiddleLeft };
-    private readonly ToolStripStatusLabel lblDongHo = new();
-    private readonly Panel pnlContent = new() { Dock = DockStyle.Fill };
-    private readonly System.Windows.Forms.Timer timerDongHo = new() { Interval = 1000 };
-
-    private readonly ToolStripMenuItem mnuQuanLySach = new("Quản lý Sách");
-    private readonly ToolStripMenuItem mnuDocGia = new("Quản lý Độc giả");
-    private readonly ToolStripMenuItem mnuMuonSach = new("Mượn sách");
-    private readonly ToolStripMenuItem mnuTraSach = new("Trả sách && Phạt");
-    private readonly ToolStripMenuItem mnuBaoCao = new("Báo cáo thống kê");
-
     private Form? _formHienTai;
 
     public FrmMain()
     {
         InitializeComponent();
-
-        Text = "Quản lý Thư viện";
-        StartPosition = FormStartPosition.CenterScreen;
-        WindowState = FormWindowState.Maximized;
-
-        // Thứ tự Add quan trọng: panel (Fill) trước, rồi status, rồi menu
-        _menu.Items.AddRange(new ToolStripItem[] { mnuQuanLySach, mnuDocGia, mnuMuonSach, mnuTraSach, mnuBaoCao });
-        _status.Items.AddRange(new ToolStripItem[] { lblKetNoi, lblDongHo });
-        Controls.Add(pnlContent);
-        Controls.Add(_status);
-        Controls.Add(_menu);
-        MainMenuStrip = _menu;
 
         Load += FrmMain_Load;
         FormClosing += FrmMain_FormClosing;
