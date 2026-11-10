@@ -4,7 +4,8 @@ namespace QuanLyThuVien
     {
         public Form1()
         {
-            InitializeComponent()
+            InitializeComponent();
+
             this.Text = "QUẢN LÝ THƯ VIỆN";
             this.Size = new Size(1000, 600);
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -17,16 +18,8 @@ namespace QuanLyThuVien
             Label title = new Label();
             title.Text ="Phan Mem Quan Ly Thu Vien";
             title.Font =  new Font("Arial", 22, FontStyle.Bold);
-
-        }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            Label label = new Label();
-            title.Text = "Phan Mem Quan Ly Thu Vien";
-            title.Font = new Font("Arial", 22, FontStyle.Bold);
-            title.Location = new Point(10, 10);
-            title.Size = new Size(500, 50);
+            title.Location = new Point(250, 30);
+            title.Size = new Size(550, 50);
             Controls.Add(title);
 
             Button btnSach = TaoButton("Quan Ly Sach", 100, 150);
@@ -48,5 +41,26 @@ namespace QuanLyThuVien
             };
         }
 
+
+        private Button TaoButton(string text, int x, int y)
+        {
+            Button btn = new Button();
+            btn.Text = text;
+            btn.Location = new Point(x, y);
+            btn.Size = new Size(200, 80);
+            btn.Font = new Font("Arial", 12, FontStyle.Bold);
+            return btn;
+        }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            // Code to execute when the form loads
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            // Code to execute when the checkbox state changes
+        }
+
+        
     }
 }
