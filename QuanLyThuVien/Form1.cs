@@ -1,5 +1,8 @@
+using System.Diagnostics;
+
 namespace QuanLyThuVien
 {
+    [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
     public partial class Form1 : Form
     {
         public Form1()
@@ -30,16 +33,29 @@ namespace QuanLyThuVien
             Controls.Add(btnDocGia);
             Controls.Add(btnMuonTra);
            
-           btnSach.Click += (s, e) => {
-                MessageBox.Show("Quan ly sach");
+           btnSach.Click += (s, e) => 
+           {
+            MessageBox.Show(
+              "Chuc nang quan ly sach duoc chon",
+              "Thong bao",
+              MessageBoxButtons.OK,
+              MessageBoxIcon.Information);
             };
-            btnDocGia.Click += (s, e) => {
-                MessageBox.Show("Quan ly doc gia");
+            btnSach.Click += (s, e) => 
+           {
+            MessageBox.Show(
+              "Chuc nang quan doc gia duoc chon",
+              "Thong bao",
+              MessageBoxButtons.OK,
+              MessageBoxIcon.Information);
             };
-            btnMuonTra.Click += (s, e) => {
-                MessageBox.Show("Quan ly muon tra");
-            };
-        }
+            btnSach.Click += (s, e) =>
+            {
+                using(FormMuonTra form = new FormMuonTra())
+                {
+                    FormMuonTra.ShowDialog();
+                }
+            }
 
 
         private Button TaoButton(string text, int x, int y)
@@ -61,6 +77,10 @@ namespace QuanLyThuVien
             // Code to execute when the checkbox state changes
         }
 
-        
+        private string GetDebuggerDisplay()
+        {
+            return ToString();
+        }
+    }
     }
 }
