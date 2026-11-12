@@ -17,9 +17,29 @@ namespace QuanLyThuVien.Forms
             InitializeComponent();
         }
 
-        private void btnLuu_Click(object sender, EventArgs e)
+        private void panel1_Paint(object sender, PaintEventArgs e)
         {
-            MessageBox.Show($"Bạn vừa nhập: {txtMaDauSach.Text}");
+
+        }
+
+        private void pnlNutTheLoai_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnXoaTheLoai_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void grpDauSach_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }
