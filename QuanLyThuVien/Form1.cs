@@ -67,20 +67,9 @@ namespace QuanLyThuVien
             btn.Font = new Font("Arial", 12, FontStyle.Bold);
             return btn;
         }
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            // Code to execute when the form loads
-        }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            // Code to execute when the checkbox state changes
-        }
-
-        private string GetDebuggerDisplay()
-        {
-            return ToString();
-        }
+        private void Form1_Load(object sender, EventArgs e) { }
+        private void checkBox1_CheckedChanged(object sender, EventArgs e) { }
+        private string GetDebuggerDisplay() => ToString();
     }
     }
 }
