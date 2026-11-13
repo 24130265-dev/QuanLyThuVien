@@ -41,6 +41,7 @@ namespace QuanLyThuVien
               MessageBoxButtons.OK,
               MessageBoxIcon.Information);
             };
+
             btnSach.Click += (s, e) => 
            {
             MessageBox.Show(
@@ -49,13 +50,15 @@ namespace QuanLyThuVien
               MessageBoxButtons.OK,
               MessageBoxIcon.Information);
             };
+
             btnSach.Click += (s, e) =>
             {
                 using(FormMuonTra form = new FormMuonTra())
                 {
                     FormMuonTra.ShowDialog();
                 }
-            }
+            };
+        }
 
 
         private Button TaoButton(string text, int x, int y)
@@ -72,4 +75,5 @@ namespace QuanLyThuVien
         private string GetDebuggerDisplay() => ToString();
     }
     }
-}
+    
+
