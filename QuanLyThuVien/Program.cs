@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyThuVien.Data;
+using QuanLyThuVien.Forms;
 
 namespace QuanLyThuVien;
 
@@ -32,6 +33,6 @@ static class Program
             return;
         }
 
-        Application.Run(new Forms.FrmTraSach());
+        Application.Run(new Forms.FrmMain());
     }
 }
