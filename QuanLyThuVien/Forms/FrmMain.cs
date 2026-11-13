@@ -91,4 +91,17 @@ public partial class FrmMain : Form
     {
         Close();
     }
+    
+    //Nút của trả sách và báo cáo
+    private void btnTraSach_Click(object sender, EventArgs e)
+    {
+        using var frm = new FrmTraSach();
+        frm.ShowDialog();
+    }
+
+    private void btnBaoCao_Click(object sender, EventArgs e)
+    {
+        using var frm = new FrmBaoCao();
+        frm.ShowDialog();
+    }
 }
