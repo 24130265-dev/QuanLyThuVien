@@ -35,7 +35,12 @@ namespace QuanLyThuVien.Forms
             btnSuaTheLoai = new Button();
             btnThemTheLoai = new Button();
             splPhai = new SplitContainer();
+            dgvDauSach = new DataGridView();
             grpDauSach = new GroupBox();
+            btnLamMoi = new Button();
+            btnXoa = new Button();
+            btnSua = new Button();
+            btnThem = new Button();
             cboTheLoai = new ComboBox();
             nudGiaBia = new NumericUpDown();
             nudNamXuatBan = new NumericUpDown();
@@ -48,17 +53,12 @@ namespace QuanLyThuVien.Forms
             lblTacGia = new Label();
             lblTenDauSach = new Label();
             lblMaDauSach = new Label();
-            btnThem = new Button();
-            btnSua = new Button();
-            btnXoa = new Button();
-            btnLamMoi = new Button();
-            dgvDauSach = new DataGridView();
-            pnlNutCuonSach = new Panel();
-            label1 = new Label();
-            nudSoLuong = new NumericUpDown();
-            btnNhapThemBanSao = new Button();
-            btnDoiTrangThai = new Button();
             dgvCuonSach = new DataGridView();
+            pnlNutCuonSach = new Panel();
+            btnDoiTrangThai = new Button();
+            btnNhapThemBanSao = new Button();
+            nudSoLuong = new NumericUpDown();
+            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)splMain).BeginInit();
             splMain.Panel1.SuspendLayout();
             splMain.Panel2.SuspendLayout();
@@ -68,13 +68,13 @@ namespace QuanLyThuVien.Forms
             splPhai.Panel1.SuspendLayout();
             splPhai.Panel2.SuspendLayout();
             splPhai.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvDauSach).BeginInit();
             grpDauSach.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudGiaBia).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudNamXuatBan).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dgvDauSach).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvCuonSach).BeginInit();
             pnlNutCuonSach.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudSoLuong).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dgvCuonSach).BeginInit();
             SuspendLayout();
             // 
             // splMain
@@ -102,6 +102,7 @@ namespace QuanLyThuVien.Forms
             tvTheLoai.Name = "tvTheLoai";
             tvTheLoai.Size = new Size(324, 558);
             tvTheLoai.TabIndex = 1;
+            tvTheLoai.AfterSelect += tvTheLoai_AfterSelect;
             // 
             // pnlNutTheLoai
             // 
@@ -122,6 +123,7 @@ namespace QuanLyThuVien.Forms
             btnXoaTheLoai.TabIndex = 2;
             btnXoaTheLoai.Text = "Xóa";
             btnXoaTheLoai.UseVisualStyleBackColor = true;
+            btnXoaTheLoai.Click += btnXoaTheLoai_Click;
             // 
             // btnSuaTheLoai
             // 
@@ -131,6 +133,7 @@ namespace QuanLyThuVien.Forms
             btnSuaTheLoai.TabIndex = 1;
             btnSuaTheLoai.Text = "Sửa";
             btnSuaTheLoai.UseVisualStyleBackColor = true;
+            btnSuaTheLoai.Click += btnSuaTheLoai_Click;
             // 
             // btnThemTheLoai
             // 
@@ -140,6 +143,7 @@ namespace QuanLyThuVien.Forms
             btnThemTheLoai.TabIndex = 0;
             btnThemTheLoai.Text = "Thêm";
             btnThemTheLoai.UseVisualStyleBackColor = true;
+            btnThemTheLoai.Click += btnThemTheLoai_Click;
             // 
             // splPhai
             // 
@@ -160,6 +164,22 @@ namespace QuanLyThuVien.Forms
             splPhai.Size = new Size(754, 603);
             splPhai.SplitterDistance = 360;
             splPhai.TabIndex = 0;
+            // 
+            // dgvDauSach
+            // 
+            dgvDauSach.AllowUserToAddRows = false;
+            dgvDauSach.AllowUserToDeleteRows = false;
+            dgvDauSach.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvDauSach.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvDauSach.Dock = DockStyle.Fill;
+            dgvDauSach.Location = new Point(0, 165);
+            dgvDauSach.MultiSelect = false;
+            dgvDauSach.Name = "dgvDauSach";
+            dgvDauSach.ReadOnly = true;
+            dgvDauSach.RowHeadersWidth = 51;
+            dgvDauSach.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvDauSach.Size = new Size(754, 195);
+            dgvDauSach.TabIndex = 1;
             // 
             // grpDauSach
             // 
@@ -186,6 +206,42 @@ namespace QuanLyThuVien.Forms
             grpDauSach.TabIndex = 0;
             grpDauSach.TabStop = false;
             grpDauSach.Text = "Thông tin đầu sách";
+            // 
+            // btnLamMoi
+            // 
+            btnLamMoi.Location = new Point(529, 136);
+            btnLamMoi.Name = "btnLamMoi";
+            btnLamMoi.Size = new Size(94, 29);
+            btnLamMoi.TabIndex = 15;
+            btnLamMoi.Text = "Làm mới";
+            btnLamMoi.UseVisualStyleBackColor = true;
+            // 
+            // btnXoa
+            // 
+            btnXoa.Location = new Point(353, 136);
+            btnXoa.Name = "btnXoa";
+            btnXoa.Size = new Size(94, 29);
+            btnXoa.TabIndex = 14;
+            btnXoa.Text = "Xóa";
+            btnXoa.UseVisualStyleBackColor = true;
+            // 
+            // btnSua
+            // 
+            btnSua.Location = new Point(202, 136);
+            btnSua.Name = "btnSua";
+            btnSua.Size = new Size(94, 29);
+            btnSua.TabIndex = 13;
+            btnSua.Text = "Sửa";
+            btnSua.UseVisualStyleBackColor = true;
+            // 
+            // btnThem
+            // 
+            btnThem.Location = new Point(55, 136);
+            btnThem.Name = "btnThem";
+            btnThem.Size = new Size(94, 29);
+            btnThem.TabIndex = 12;
+            btnThem.Text = "Thêm";
+            btnThem.UseVisualStyleBackColor = true;
             // 
             // cboTheLoai
             // 
@@ -292,100 +348,6 @@ namespace QuanLyThuVien.Forms
             lblMaDauSach.TabIndex = 0;
             lblMaDauSach.Text = "Mã đầu sách";
             // 
-            // btnThem
-            // 
-            btnThem.Location = new Point(55, 136);
-            btnThem.Name = "btnThem";
-            btnThem.Size = new Size(94, 29);
-            btnThem.TabIndex = 12;
-            btnThem.Text = "Thêm";
-            btnThem.UseVisualStyleBackColor = true;
-            // 
-            // btnSua
-            // 
-            btnSua.Location = new Point(202, 136);
-            btnSua.Name = "btnSua";
-            btnSua.Size = new Size(94, 29);
-            btnSua.TabIndex = 13;
-            btnSua.Text = "Sửa";
-            btnSua.UseVisualStyleBackColor = true;
-            // 
-            // btnXoa
-            // 
-            btnXoa.Location = new Point(353, 136);
-            btnXoa.Name = "btnXoa";
-            btnXoa.Size = new Size(94, 29);
-            btnXoa.TabIndex = 14;
-            btnXoa.Text = "Xóa";
-            btnXoa.UseVisualStyleBackColor = true;
-            // 
-            // btnLamMoi
-            // 
-            btnLamMoi.Location = new Point(529, 136);
-            btnLamMoi.Name = "btnLamMoi";
-            btnLamMoi.Size = new Size(94, 29);
-            btnLamMoi.TabIndex = 15;
-            btnLamMoi.Text = "Làm mới";
-            btnLamMoi.UseVisualStyleBackColor = true;
-            // 
-            // dgvDauSach
-            // 
-            dgvDauSach.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvDauSach.Dock = DockStyle.Fill;
-            dgvDauSach.Location = new Point(0, 165);
-            dgvDauSach.Name = "dgvDauSach";
-            dgvDauSach.RowHeadersWidth = 51;
-            dgvDauSach.Size = new Size(754, 195);
-            dgvDauSach.TabIndex = 1;
-            // 
-            // pnlNutCuonSach
-            // 
-            pnlNutCuonSach.Controls.Add(btnDoiTrangThai);
-            pnlNutCuonSach.Controls.Add(btnNhapThemBanSao);
-            pnlNutCuonSach.Controls.Add(nudSoLuong);
-            pnlNutCuonSach.Controls.Add(label1);
-            pnlNutCuonSach.Dock = DockStyle.Top;
-            pnlNutCuonSach.Location = new Point(0, 0);
-            pnlNutCuonSach.Name = "pnlNutCuonSach";
-            pnlNutCuonSach.Size = new Size(754, 45);
-            pnlNutCuonSach.TabIndex = 0;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(3, 10);
-            label1.Name = "label1";
-            label1.Size = new Size(82, 20);
-            label1.TabIndex = 0;
-            label1.Text = "Số bản sao";
-            // 
-            // nudSoLuong
-            // 
-            nudSoLuong.Location = new Point(114, 10);
-            nudSoLuong.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            nudSoLuong.Name = "nudSoLuong";
-            nudSoLuong.Size = new Size(150, 27);
-            nudSoLuong.TabIndex = 1;
-            nudSoLuong.Value = new decimal(new int[] { 1, 0, 0, 0 });
-            // 
-            // btnNhapThemBanSao
-            // 
-            btnNhapThemBanSao.Location = new Point(320, 8);
-            btnNhapThemBanSao.Name = "btnNhapThemBanSao";
-            btnNhapThemBanSao.Size = new Size(153, 29);
-            btnNhapThemBanSao.TabIndex = 2;
-            btnNhapThemBanSao.Text = "Nhập thêm bản sao";
-            btnNhapThemBanSao.UseVisualStyleBackColor = true;
-            // 
-            // btnDoiTrangThai
-            // 
-            btnDoiTrangThai.Location = new Point(529, 8);
-            btnDoiTrangThai.Name = "btnDoiTrangThai";
-            btnDoiTrangThai.Size = new Size(110, 29);
-            btnDoiTrangThai.TabIndex = 3;
-            btnDoiTrangThai.Text = "Đổi trạng thái";
-            btnDoiTrangThai.UseVisualStyleBackColor = true;
-            // 
             // dgvCuonSach
             // 
             dgvCuonSach.AllowUserToAddRows = false;
@@ -403,6 +365,54 @@ namespace QuanLyThuVien.Forms
             dgvCuonSach.Size = new Size(754, 194);
             dgvCuonSach.TabIndex = 1;
             // 
+            // pnlNutCuonSach
+            // 
+            pnlNutCuonSach.Controls.Add(btnDoiTrangThai);
+            pnlNutCuonSach.Controls.Add(btnNhapThemBanSao);
+            pnlNutCuonSach.Controls.Add(nudSoLuong);
+            pnlNutCuonSach.Controls.Add(label1);
+            pnlNutCuonSach.Dock = DockStyle.Top;
+            pnlNutCuonSach.Location = new Point(0, 0);
+            pnlNutCuonSach.Name = "pnlNutCuonSach";
+            pnlNutCuonSach.Size = new Size(754, 45);
+            pnlNutCuonSach.TabIndex = 0;
+            // 
+            // btnDoiTrangThai
+            // 
+            btnDoiTrangThai.Location = new Point(529, 8);
+            btnDoiTrangThai.Name = "btnDoiTrangThai";
+            btnDoiTrangThai.Size = new Size(110, 29);
+            btnDoiTrangThai.TabIndex = 3;
+            btnDoiTrangThai.Text = "Đổi trạng thái";
+            btnDoiTrangThai.UseVisualStyleBackColor = true;
+            // 
+            // btnNhapThemBanSao
+            // 
+            btnNhapThemBanSao.Location = new Point(320, 8);
+            btnNhapThemBanSao.Name = "btnNhapThemBanSao";
+            btnNhapThemBanSao.Size = new Size(153, 29);
+            btnNhapThemBanSao.TabIndex = 2;
+            btnNhapThemBanSao.Text = "Nhập thêm bản sao";
+            btnNhapThemBanSao.UseVisualStyleBackColor = true;
+            // 
+            // nudSoLuong
+            // 
+            nudSoLuong.Location = new Point(114, 10);
+            nudSoLuong.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudSoLuong.Name = "nudSoLuong";
+            nudSoLuong.Size = new Size(150, 27);
+            nudSoLuong.TabIndex = 1;
+            nudSoLuong.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(3, 10);
+            label1.Name = "label1";
+            label1.Size = new Size(82, 20);
+            label1.TabIndex = 0;
+            label1.Text = "Số bản sao";
+            // 
             // FrmQuanLySach
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -411,6 +421,7 @@ namespace QuanLyThuVien.Forms
             Controls.Add(splMain);
             Name = "FrmQuanLySach";
             Text = "Quản lý Sách";
+            Load += FrmQuanLySach_Load;
             splMain.Panel1.ResumeLayout(false);
             splMain.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splMain).EndInit();
@@ -420,15 +431,15 @@ namespace QuanLyThuVien.Forms
             splPhai.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splPhai).EndInit();
             splPhai.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvDauSach).EndInit();
             grpDauSach.ResumeLayout(false);
             grpDauSach.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)nudGiaBia).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudNamXuatBan).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dgvDauSach).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvCuonSach).EndInit();
             pnlNutCuonSach.ResumeLayout(false);
             pnlNutCuonSach.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)nudSoLuong).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dgvCuonSach).EndInit();
             ResumeLayout(false);
         }
 
