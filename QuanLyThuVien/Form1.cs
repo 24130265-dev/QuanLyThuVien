@@ -19,8 +19,8 @@ namespace QuanLyThuVien
         private void TaoDaoDien()
         {
             Label title = new Label();
-            title.Text ="Phan Mem Quan Ly Thu Vien";
-            title.Font =  new Font("Arial", 22, FontStyle.Bold);
+            title.Text = "Phan Mem Quan Ly Thu Vien";
+            title.Font = new Font("Arial", 22, FontStyle.Bold);
             title.Location = new Point(250, 30);
             title.Size = new Size(550, 50);
             Controls.Add(title);
@@ -32,34 +32,33 @@ namespace QuanLyThuVien
             Controls.Add(btnSach);
             Controls.Add(btnDocGia);
             Controls.Add(btnMuonTra);
-           
-           btnSach.Click += (s, e) => 
-           {
-            MessageBox.Show(
-              "Chuc nang quan ly sach duoc chon",
-              "Thong bao",
-              MessageBoxButtons.OK,
-              MessageBoxIcon.Information);
-            };
-
-            btnSach.Click += (s, e) => 
-           {
-            MessageBox.Show(
-              "Chuc nang quan doc gia duoc chon",
-              "Thong bao",
-              MessageBoxButtons.OK,
-              MessageBoxIcon.Information);
-            };
 
             btnSach.Click += (s, e) =>
             {
-                using(FormMuonTra form = new FormMuonTra())
+                MessageBox.Show(
+                  "Chuc nang quan ly sach duoc chon",
+                  "Thong bao",
+                  MessageBoxButtons.OK,
+                  MessageBoxIcon.Information);
+            };
+
+            btnDocGia.Click += (s, e) =>
+            {
+                MessageBox.Show(
+                  "Chuc nang quan ly doc gia duoc chon",
+                  "Thong bao",
+                  MessageBoxButtons.OK,
+                  MessageBoxIcon.Information);
+            };
+
+            btnMuonTra.Click += (s, e) =>
+            {
+                using (FormMuonTra form = new FormMuonTra())
                 {
-                    FormMuonTra.ShowDialog();
+                    form.ShowDialog();
                 }
             };
         }
-
 
         private Button TaoButton(string text, int x, int y)
         {
@@ -70,10 +69,9 @@ namespace QuanLyThuVien
             btn.Font = new Font("Arial", 12, FontStyle.Bold);
             return btn;
         }
+
         private void Form1_Load(object sender, EventArgs e) { }
         private void checkBox1_CheckedChanged(object sender, EventArgs e) { }
         private string GetDebuggerDisplay() => ToString();
     }
-    }
-    
-
+}

@@ -17,8 +17,7 @@ public class AppDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer(
-                @"Server=(localdb)\MSSQLLocalDB;Database=QuanLyThuVienDb;Trusted_Connection=True;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlite("Data Source=QuanLyThuVien.db");
         }
     }
 
@@ -26,86 +25,78 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-      
-        modelBuilder.Entity<TheLoai>(e =>
+        modelBuilder.Entity<TheLoai>(static e =>
         {
-            e.HasKey(x => x.MaTheLoai);
-            e.Property(x => x.TenTheLoai).IsRequired().HasMaxLength(100);
-            e.HasOne(x => x.TheLoaiCha)
-             .WithMany(x => x.TheLoaiCons)
-             .HasForeignKey(x => x.MaTheLoaiCha)
+            e.HasKey(static x => x.MaTheLoai);
+            e.Property(static x => x.TenTheLoai).IsRequired().HasMaxLength(100);
+            e.HasOne(static x => x.TheLoaiCha)
+             .WithMany(static x => x.TheLoaiCons)
+             .HasForeignKey(static x => x.MaTheLoaiCha)
              .OnDelete(DeleteBehavior.Restrict);
         });
 
-
-        modelBuilder.Entity<DauSach>(e =>
+        modelBuilder.Entity<DauSach>(static e =>
         {
-            e.HasKey(x => x.MaDauSach);
-            e.Property(x => x.TenDauSach).IsRequired().HasMaxLength(200);
-            e.Property(x => x.GiaBia).HasColumnType("decimal(18,2)");
-            e.HasOne(x => x.TheLoai)
-             .WithMany(x => x.DauSachs)
-             .HasForeignKey(x => x.MaTheLoai)
+            e.HasKey(static x => x.MaDauSach);
+            e.Property(static x => x.TenDauSach).IsRequired().HasMaxLength(200);
+            e.Property(static x => x.GiaBia).HasColumnType("decimal(18,2)");
+            e.HasOne(static x => x.TheLoai)
+             .WithMany(static x => x.DauSachs)
+             .HasForeignKey(static x => x.MaTheLoai)
              .OnDelete(DeleteBehavior.Restrict);
         });
 
-
-        modelBuilder.Entity<CuonSach>(e =>
+        modelBuilder.Entity<CuonSach>(static e =>
         {
-            e.HasKey(x => x.MaCuonSach);
-            e.Property(x => x.TrangThai).IsRequired().HasMaxLength(50);
-            e.HasOne(x => x.DauSach)
-             .WithMany(x => x.CuonSachs)
-             .HasForeignKey(x => x.MaDauSach)
+            e.HasKey(static x => x.MaCuonSach);
+            e.Property(static x => x.TrangThai).IsRequired().HasMaxLength(50);
+            e.HasOne(static x => x.DauSach)
+             .WithMany(static x => x.CuonSachs)
+             .HasForeignKey(static x => x.MaDauSach)
              .OnDelete(DeleteBehavior.Restrict);
         });
 
-     
-        modelBuilder.Entity<DocGia>(e =>
+        modelBuilder.Entity<DocGia>(static e =>
         {
-            e.HasKey(x => x.MaDocGia);
-            e.Property(x => x.HoTen).IsRequired().HasMaxLength(100);
-            e.Property(x => x.TienNoPhat).HasColumnType("decimal(18,2)");
+            e.HasKey(static x => x.MaDocGia);
+            e.Property(static x => x.HoTen).IsRequired().HasMaxLength(100);
+            e.Property(static x => x.TienNoPhat).HasColumnType("decimal(18,2)");
         });
 
-     
-        modelBuilder.Entity<PhieuMuon>(e =>
+        modelBuilder.Entity<PhieuMuon>(static e =>
         {
-            e.HasKey(x => x.MaPhieuMuon);
-            e.HasOne(x => x.DocGia)
-             .WithMany(x => x.PhieuMuons)
-             .HasForeignKey(x => x.MaDocGia)
+            e.HasKey(static x => x.MaPhieuMuon);
+            e.HasOne(static x => x.DocGia)
+             .WithMany(static x => x.PhieuMuons)
+             .HasForeignKey(static x => x.MaDocGia)
              .OnDelete(DeleteBehavior.Restrict);
         });
 
-       
-        modelBuilder.Entity<ChiTietPhieuMuon>(e =>
+        modelBuilder.Entity<ChiTietPhieuMuon>(static e =>
         {
-            e.HasKey(x => x.Id);
-            e.HasOne(x => x.PhieuMuon)
-             .WithMany(x => x.ChiTietPhieuMuons)
-             .HasForeignKey(x => x.MaPhieuMuon)
+            e.HasKey(static x => x.Id);
+            e.HasOne(static x => x.PhieuMuon)
+             .WithMany(static x => x.ChiTietPhieuMuons)
+             .HasForeignKey(static x => x.MaPhieuMuon)
              .OnDelete(DeleteBehavior.Restrict);
-            e.HasOne(x => x.CuonSach)
-             .WithMany(x => x.ChiTietPhieuMuons)
-             .HasForeignKey(x => x.MaCuonSach)
+            e.HasOne(static x => x.CuonSach)
+             .WithMany(static x => x.ChiTietPhieuMuons)
+             .HasForeignKey(static x => x.MaCuonSach)
              .OnDelete(DeleteBehavior.Restrict);
         });
 
-        
-        modelBuilder.Entity<HoaDonPhat>(e =>
+        modelBuilder.Entity<HoaDonPhat>(static e =>
         {
-            e.HasKey(x => x.MaHoaDon);
-            e.Property(x => x.TienPhatQuaHan).HasColumnType("decimal(18,2)");
-            e.Property(x => x.TienBoiThuong).HasColumnType("decimal(18,2)");
-            e.HasOne(x => x.DocGia)
-             .WithMany(x => x.HoaDonPhats)
-             .HasForeignKey(x => x.MaDocGia)
+            e.HasKey(static x => x.MaHoaDon);
+            e.Property(static x => x.TienPhatQuaHan).HasColumnType("decimal(18,2)");
+            e.Property(static x => x.TienBoiThuong).HasColumnType("decimal(18,2)");
+            e.HasOne(static x => x.DocGia)
+             .WithMany(static x => x.HoaDonPhats)
+             .HasForeignKey(static x => x.MaDocGia)
              .OnDelete(DeleteBehavior.Restrict);
         });
 
         // DỮ LIỆU MẪU (SEED DATA)
-
         modelBuilder.Entity<TheLoai>().HasData(
             new TheLoai { MaTheLoai = "TL_CNTT", TenTheLoai = "Công nghệ thông tin", MaTheLoaiCha = null },
             new TheLoai { MaTheLoai = "TL_LAPTRINH", TenTheLoai = "Lập trình C#", MaTheLoaiCha = "TL_CNTT" },

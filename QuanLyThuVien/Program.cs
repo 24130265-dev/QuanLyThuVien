@@ -12,10 +12,10 @@ static class Program
 
         // Báo Lỗi
         Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-        Application.ThreadException += (s, e) =>
+        Application.ThreadException += static (s, e) =>
             MessageBox.Show($"Lỗi giao diện: {e.Exception.Message}", "Cảnh báo",
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
-        AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+        AppDomain.CurrentDomain.UnhandledException += static (s, e) =>
             MessageBox.Show($"Lỗi hệ thống: {(e.ExceptionObject as Exception)?.Message}", "Lỗi nghiêm trọng",
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
 

@@ -153,7 +153,7 @@ namespace QuanLyThuVien
                 {
                     // Danh sách độc giả
                     var docGias = db.DocGias
-                        .Where(x => !x.BiKhoaThe)
+                        .Where(static x => !x.BiKhoaThe)
                         .ToList();
 
                     cboDocGia.DataSource = docGias;
@@ -162,10 +162,10 @@ namespace QuanLyThuVien
 
                     // Danh sách cuốn sách sẵn sàng
                     var cuonSachs = db.CuonSachs
-                        .Include(x => x.DauSach)
-                        .Where(x => x.TrangThai == TrangThaiSach.SanSang)
+                        .Include(static x => x.DauSach)
+                        .Where(static x => x.TrangThai == TrangThaiSach.SanSang)
                         .ToList()
-                        .Select(x => new
+                        .Select(static x => new
                         {
                             x.MaCuonSach,
                             TenHienThi = x.MaCuonSach + " - " +
@@ -181,13 +181,13 @@ namespace QuanLyThuVien
 
                     // Danh sách sách đang mượn
                     var danhSach = db.ChiTietPhieuMuons
-                        .Include(x => x.PhieuMuon)
-                            .ThenInclude(x => x.DocGia)
-                        .Include(x => x.CuonSach)
-                            .ThenInclude(x => x.DauSach)
-                        .Where(x => x.NgayTraThucTe == null)
+                        .Include(static x => x.PhieuMuon)
+                            .ThenInclude(static x => x.DocGia)
+                        .Include(static x => x.CuonSach)
+                            .ThenInclude(static x => x.DauSach)
+                        .Where(static x => x.NgayTraThucTe == null)
                         .ToList()
-                        .Select(x => new
+                        .Select(static x => new
                         {
                             x.Id,
                             MaPhieuMuon = x.MaPhieuMuon,
