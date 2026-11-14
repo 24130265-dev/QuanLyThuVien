@@ -15,7 +15,7 @@ public partial class FrmQuanLySach : Form
     private readonly BindingList<CuonSachDto> _dsCuonSach = new();
     private readonly BindingSource _bsCuonSach = new();
 
-    
+
     private List<TheLoai> _tatCaTheLoai = new();
 
     public FrmQuanLySach()
@@ -30,7 +30,10 @@ public partial class FrmQuanLySach : Form
 
         
         dgvDauSach.SelectionChanged += DgvDauSach_SelectionChanged;
+        dgvCuonSach.CellFormatting += DgvCuonSach_CellFormatting;
     }
+
+   
 
     //Event
 
@@ -68,6 +71,7 @@ public partial class FrmQuanLySach : Form
             if (_bsDauSach.Current is not DauSachDto d)
             {
                 _dsCuonSach.Clear();
+                LamMoiKhungNhapDauSach();
                 return;
             }
 
@@ -204,7 +208,7 @@ public partial class FrmQuanLySach : Form
 
     //TREEVIEW
 
-    
+
     private async Task NapCayTheLoaiAsync(string? maCanChon)
     {
         using (var db = new AppDbContext())
@@ -248,7 +252,7 @@ public partial class FrmQuanLySach : Form
         }
     }
 
-   //de quy
+    //de quy
     private static TreeNode? TimNut(TreeNode nut, string ma)
     {
         foreach (TreeNode con in nut.Nodes)
@@ -358,7 +362,33 @@ public partial class FrmQuanLySach : Form
         }
     }
 
-    
+
+    //ham phu
+    private void DgvCuonSach_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+    {
+        if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
+        if (dgvCuonSach.Columns[e.ColumnIndex].Name != "TrangThai") return;
+        if (e.Value is not string trangthai) return;
+
+        e.CellStyle.ForeColor = trangthai switch
+        {
+            TrangThaiSach.SanSang => Color.Green,
+            TrangThaiSach.DangMuon => Color.Orange,
+            TrangThaiSach.Hong => Color.Firebrick,
+            TrangThaiSach.Mat => Color.Firebrick,
+            _ => e.CellStyle.ForeColor
+        };
+
+    }
+    private void LamMoiKhungNhapDauSach()
+    {
+        txtMaDauSach.Clear();
+        txtTenDauSach.Clear();
+        txtTacGia.Clear();
+        nudNamXuatBan.Value = 2024;
+        nudGiaBia.Value = 0;
+        cboTheLoai.SelectedIndex = -1;
+    }
 
     private static decimal KeoVaoKhoang(decimal gt, decimal min, decimal max)
     {
@@ -396,5 +426,13 @@ public partial class FrmQuanLySach : Form
     {
         MessageBox.Show($"Có lỗi xảy ra:\n{ex.Message}", "Lỗi",
             MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+
+    private void btnLamMoi_Click(object sender, EventArgs e)
+    {
+        dgvDauSach.ClearSelection();
+        _dsCuonSach.Clear();
+        LamMoiKhungNhapDauSach();
+        txtTenDauSach.Focus();
     }
 }

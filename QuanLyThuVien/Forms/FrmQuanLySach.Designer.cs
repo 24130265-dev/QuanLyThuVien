@@ -172,13 +172,13 @@ namespace QuanLyThuVien.Forms
             dgvDauSach.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvDauSach.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDauSach.Dock = DockStyle.Fill;
-            dgvDauSach.Location = new Point(0, 165);
+            dgvDauSach.Location = new Point(0, 175);
             dgvDauSach.MultiSelect = false;
             dgvDauSach.Name = "dgvDauSach";
             dgvDauSach.ReadOnly = true;
             dgvDauSach.RowHeadersWidth = 51;
             dgvDauSach.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDauSach.Size = new Size(754, 195);
+            dgvDauSach.Size = new Size(754, 185);
             dgvDauSach.TabIndex = 1;
             // 
             // grpDauSach
@@ -202,7 +202,7 @@ namespace QuanLyThuVien.Forms
             grpDauSach.Dock = DockStyle.Top;
             grpDauSach.Location = new Point(0, 0);
             grpDauSach.Name = "grpDauSach";
-            grpDauSach.Size = new Size(754, 165);
+            grpDauSach.Size = new Size(754, 175);
             grpDauSach.TabIndex = 0;
             grpDauSach.TabStop = false;
             grpDauSach.Text = "Thông tin đầu sách";
@@ -215,6 +215,7 @@ namespace QuanLyThuVien.Forms
             btnLamMoi.TabIndex = 15;
             btnLamMoi.Text = "Làm mới";
             btnLamMoi.UseVisualStyleBackColor = true;
+            btnLamMoi.Click += btnLamMoi_Click;
             // 
             // btnXoa
             // 
