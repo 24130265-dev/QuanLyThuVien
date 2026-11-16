@@ -17,7 +17,8 @@ public class AppDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlite("Data Source=QuanLyThuVien.db");
+            var databasePath = Path.Combine(AppContext.BaseDirectory, "QuanLyThuVien.db");
+            optionsBuilder.UseSqlite($"Data Source={databasePath}");
         }
     }
 
