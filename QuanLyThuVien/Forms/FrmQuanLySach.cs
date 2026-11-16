@@ -31,10 +31,12 @@ public partial class FrmQuanLySach : Form
         dgvCuonSach.DataSource = _bsCuonSach;
 
 
-        dgvDauSach.SelectionChanged += DgvDauSach_SelectionChanged; 
+        dgvDauSach.SelectionChanged += DgvDauSach_SelectionChanged;
         dgvCuonSach.CellFormatting += DgvCuonSach_CellFormatting;
         AutoValidate = AutoValidate.EnableAllowFocusChange;
     }
+
+    
 
 
 
@@ -326,7 +328,7 @@ public partial class FrmQuanLySach : Form
     {
         using var db = new AppDbContext();
         var ds = await db.CuonSachs
-            .AsNoTracking() 
+            .AsNoTracking()
             .Where(c => c.MaDauSach == maDauSach)
             .OrderBy(c => c.MaCuonSach.Length)
             .ThenBy(c => c.MaCuonSach)
@@ -457,7 +459,7 @@ public partial class FrmQuanLySach : Form
 
     private void txtMaDauSach_Validating(object? sender, CancelEventArgs e)
     {
-        
+
         if (txtMaDauSach.ReadOnly)
         {
             errProvider.SetError(txtMaDauSach, "");
@@ -467,7 +469,7 @@ public partial class FrmQuanLySach : Form
         string ma = txtMaDauSach.Text.Trim();
         if (!Regex.IsMatch(ma, @"^[A-Z0-9]{4,10}$"))
         {
-            e.Cancel = true;
+            
             errProvider.SetError(txtMaDauSach,
                 "Mã gồm 4 đến 10 ký tự, chỉ chữ HOA và số, không khoảng trắng, không dấu gạch dưới");
         }
@@ -481,7 +483,7 @@ public partial class FrmQuanLySach : Form
     {
         if (string.IsNullOrWhiteSpace(txtTenDauSach.Text))
         {
-            e.Cancel = true;
+            
             errProvider.SetError(txtTenDauSach, "Tên đầu sách không được để trống");
         }
         else
@@ -494,7 +496,7 @@ public partial class FrmQuanLySach : Form
     {
         if (string.IsNullOrWhiteSpace(txtTacGia.Text))
         {
-            e.Cancel = true;
+           
             errProvider.SetError(txtTacGia, "Tác giả không được để trống");
         }
         else
@@ -506,7 +508,12 @@ public partial class FrmQuanLySach : Form
     // Kiểm tra toàn bộ form trước khi lưu
     private bool KiemTraDauVao()
     {
-        if (!ValidateChildren())
+        ValidateChildren();
+
+        if (errProvider.GetError(txtMaDauSach) != "" ||
+            errProvider.GetError(txtTenDauSach) != "" ||
+            errProvider.GetError(txtTacGia) != "")
+        
         {
             MessageBox.Show("Vui lòng sửa các ô có biểu tượng cảnh báo đỏ.", "Dữ liệu chưa hợp lệ",
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -744,5 +751,119 @@ public partial class FrmQuanLySach : Form
             }
         }
         return false;
+    }
+
+    private async void btnDoiTrangThai_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if (_bsCuonSach.Current is not CuonSachDto c)
+            {
+                MessageBox.Show("Hãy chọn một cuốn sách trong bảng để đổi trạng thái.", "Chưa chọn",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            if (c.TrangThai == TrangThaiSach.DangMuon)
+            {
+                MessageBox.Show("Cuốn này đang được mượn nên không thể đổi trạng thái ở đây.\n" +
+                    "Hãy xử lý ở màn hình Trả sách & Phạt.",
+                    "Không thể đổi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            string? moi = ChonTrangThai(c.MaCuonSach, c.TrangThai);
+            if (moi == null || moi == c.TrangThai) return;
+
+            using var db = new AppDbContext();
+            var cuon = await db.CuonSachs.FirstOrDefaultAsync(x => x.MaCuonSach == c.MaCuonSach);
+            if (cuon == null) return;
+
+            if (cuon.TrangThai == TrangThaiSach.DangMuon)
+            {
+                MessageBox.Show("Cuốn này vừa được cho mượn ở màn hình khác, không thể đổi trạng thái.",
+                    "Không thể đổi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                cuon.TrangThai = moi;
+                await db.SaveChangesAsync();
+            }
+
+            _maCanChon = cuon.MaDauSach;
+            await NapDauSachAsync(tvTheLoai.SelectedNode?.Tag as string);
+        }
+        catch (Exception ex)
+        {
+
+            BaoLoi(ex);
+        }
+    }
+
+    private async void btnXoaCuon_Click(object? sender, EventArgs e)
+    {
+        try
+        {
+            if (_bsCuonSach.Current is not CuonSachDto c)
+            {
+                MessageBox.Show("Hãy chọn một cuốn sách trong bảng cuốn sách để xóa.",
+                    "Chưa chọn", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            string ma = c.MaCuonSach;
+            using var db = new AppDbContext();
+
+            var cuon = await db.CuonSachs.FirstOrDefaultAsync(x => x.MaCuonSach == ma);
+            if (cuon == null) return;
+
+            bool coGiaoDich = await db.ChiTietPhieuMuons.AnyAsync(ct => ct.MaCuonSach == ma);
+            if (cuon.TrangThai == TrangThaiSach.DangMuon || coGiaoDich)
+            {
+                MessageBox.Show(
+                    "Không thể xóa: cuốn này đang được mượn hoặc đã từng nằm trong phiếu mượn.\n" +
+                    "Nếu sách không dùng được nữa, hãy đổi trạng thái sang \"Hỏng\" hoặc \"Mất\".",
+                    "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var kq = MessageBox.Show($"Xóa cuốn sách \"{ma}\"?", "Xác nhận xóa",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (kq != DialogResult.Yes) return;
+
+            string maDauSach = cuon.MaDauSach;
+            db.CuonSachs.Remove(cuon);
+            await db.SaveChangesAsync();
+
+            _maCanChon = maDauSach;
+            await NapDauSachAsync(tvTheLoai.SelectedNode?.Tag as string);
+        }
+        catch (Exception ex)
+        {
+            BaoLoi(ex);
+        }
+    }
+    private static string? ChonTrangThai(string maCuon, string hienTai)
+    {
+        using var f = new Form
+        {
+            Text = "Đổi trạng thái",
+            StartPosition = FormStartPosition.CenterParent,
+            FormBorderStyle = FormBorderStyle.FixedDialog,
+            MaximizeBox = false,
+            MinimizeBox = false,
+            ClientSize = new Size(360, 130)
+        };
+        var lbl = new Label { Text = $"Chọn trạng thái mới cho cuốn {maCuon}:", Left = 12, Top = 12, Width = 336, Height = 24 };
+        var cbo = new ComboBox { Left = 12, Top = 44, Width = 336, DropDownStyle = ComboBoxStyle.DropDownList };
+        cbo.Items.AddRange(new object[] { TrangThaiSach.SanSang, TrangThaiSach.Hong, TrangThaiSach.Mat });
+        cbo.SelectedIndex = Math.Max(0, cbo.Items.IndexOf(hienTai));
+
+        var ok = new Button { Text = "OK", Left = 172, Top = 92, Width = 80, DialogResult = DialogResult.OK };
+        var huy = new Button { Text = "Hủy", Left = 268, Top = 92, Width = 80, DialogResult = DialogResult.Cancel };
+
+        f.Controls.AddRange(new Control[] { lbl, cbo, ok, huy });
+        f.AcceptButton = ok;
+        f.CancelButton = huy;
+
+        return f.ShowDialog() == DialogResult.OK ? cbo.SelectedItem as string : null;
     }
 }

@@ -20,6 +20,7 @@ namespace QuanLyThuVien.Forms
             base.Dispose(disposing);
         }
 
+
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -56,13 +57,12 @@ namespace QuanLyThuVien.Forms
             lblMaDauSach = new Label();
             dgvCuonSach = new DataGridView();
             pnlNutCuonSach = new Panel();
+            btnXoaCuon = new Button();
             btnDoiTrangThai = new Button();
             btnNhapThemBanSao = new Button();
             nudSoLuong = new NumericUpDown();
             label1 = new Label();
             errProvider = new ErrorProvider(components);
-            errorProvider1 = new ErrorProvider(components);
-            errorProvider2 = new ErrorProvider(components);
             ((System.ComponentModel.ISupportInitialize)splMain).BeginInit();
             splMain.Panel1.SuspendLayout();
             splMain.Panel2.SuspendLayout();
@@ -80,8 +80,6 @@ namespace QuanLyThuVien.Forms
             pnlNutCuonSach.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudSoLuong).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errProvider).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)errorProvider2).BeginInit();
             SuspendLayout();
             // 
             // splMain
@@ -98,8 +96,8 @@ namespace QuanLyThuVien.Forms
             // splMain.Panel2
             // 
             splMain.Panel2.Controls.Add(splPhai);
-            splMain.Size = new Size(1082, 603);
-            splMain.SplitterDistance = 324;
+            splMain.Size = new Size(1248, 603);
+            splMain.SplitterDistance = 373;
             splMain.TabIndex = 0;
             // 
             // tvTheLoai
@@ -107,7 +105,7 @@ namespace QuanLyThuVien.Forms
             tvTheLoai.Dock = DockStyle.Fill;
             tvTheLoai.Location = new Point(0, 0);
             tvTheLoai.Name = "tvTheLoai";
-            tvTheLoai.Size = new Size(324, 558);
+            tvTheLoai.Size = new Size(373, 558);
             tvTheLoai.TabIndex = 1;
             tvTheLoai.AfterSelect += tvTheLoai_AfterSelect;
             // 
@@ -119,7 +117,7 @@ namespace QuanLyThuVien.Forms
             pnlNutTheLoai.Dock = DockStyle.Bottom;
             pnlNutTheLoai.Location = new Point(0, 558);
             pnlNutTheLoai.Name = "pnlNutTheLoai";
-            pnlNutTheLoai.Size = new Size(324, 45);
+            pnlNutTheLoai.Size = new Size(373, 45);
             pnlNutTheLoai.TabIndex = 0;
             // 
             // btnXoaTheLoai
@@ -168,7 +166,7 @@ namespace QuanLyThuVien.Forms
             // 
             splPhai.Panel2.Controls.Add(dgvCuonSach);
             splPhai.Panel2.Controls.Add(pnlNutCuonSach);
-            splPhai.Size = new Size(754, 603);
+            splPhai.Size = new Size(871, 603);
             splPhai.SplitterDistance = 360;
             splPhai.TabIndex = 0;
             // 
@@ -185,7 +183,7 @@ namespace QuanLyThuVien.Forms
             dgvDauSach.ReadOnly = true;
             dgvDauSach.RowHeadersWidth = 51;
             dgvDauSach.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDauSach.Size = new Size(754, 185);
+            dgvDauSach.Size = new Size(871, 185);
             dgvDauSach.TabIndex = 1;
             // 
             // grpDauSach
@@ -209,7 +207,7 @@ namespace QuanLyThuVien.Forms
             grpDauSach.Dock = DockStyle.Top;
             grpDauSach.Location = new Point(0, 0);
             grpDauSach.Name = "grpDauSach";
-            grpDauSach.Size = new Size(754, 175);
+            grpDauSach.Size = new Size(871, 175);
             grpDauSach.TabIndex = 0;
             grpDauSach.TabStop = false;
             grpDauSach.Text = "Thông tin đầu sách";
@@ -377,11 +375,12 @@ namespace QuanLyThuVien.Forms
             dgvCuonSach.RowHeadersVisible = false;
             dgvCuonSach.RowHeadersWidth = 51;
             dgvCuonSach.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvCuonSach.Size = new Size(754, 194);
+            dgvCuonSach.Size = new Size(871, 194);
             dgvCuonSach.TabIndex = 1;
             // 
             // pnlNutCuonSach
             // 
+            pnlNutCuonSach.Controls.Add(btnXoaCuon);
             pnlNutCuonSach.Controls.Add(btnDoiTrangThai);
             pnlNutCuonSach.Controls.Add(btnNhapThemBanSao);
             pnlNutCuonSach.Controls.Add(nudSoLuong);
@@ -389,8 +388,18 @@ namespace QuanLyThuVien.Forms
             pnlNutCuonSach.Dock = DockStyle.Top;
             pnlNutCuonSach.Location = new Point(0, 0);
             pnlNutCuonSach.Name = "pnlNutCuonSach";
-            pnlNutCuonSach.Size = new Size(754, 45);
+            pnlNutCuonSach.Size = new Size(871, 45);
             pnlNutCuonSach.TabIndex = 0;
+            // 
+            // btnXoaCuon
+            // 
+            btnXoaCuon.Location = new Point(686, 8);
+            btnXoaCuon.Name = "btnXoaCuon";
+            btnXoaCuon.Size = new Size(94, 29);
+            btnXoaCuon.TabIndex = 4;
+            btnXoaCuon.Text = "Xóa cuốn";
+            btnXoaCuon.UseVisualStyleBackColor = true;
+            btnXoaCuon.Click += btnXoaCuon_Click;
             // 
             // btnDoiTrangThai
             // 
@@ -400,6 +409,7 @@ namespace QuanLyThuVien.Forms
             btnDoiTrangThai.TabIndex = 3;
             btnDoiTrangThai.Text = "Đổi trạng thái";
             btnDoiTrangThai.UseVisualStyleBackColor = true;
+            btnDoiTrangThai.Click += btnDoiTrangThai_Click;
             // 
             // btnNhapThemBanSao
             // 
@@ -409,6 +419,7 @@ namespace QuanLyThuVien.Forms
             btnNhapThemBanSao.TabIndex = 2;
             btnNhapThemBanSao.Text = "Nhập thêm bản sao";
             btnNhapThemBanSao.UseVisualStyleBackColor = true;
+            btnNhapThemBanSao.Click += btnNhapThemBanSao_Click;
             // 
             // nudSoLuong
             // 
@@ -432,19 +443,11 @@ namespace QuanLyThuVien.Forms
             // 
             errProvider.ContainerControl = this;
             // 
-            // errorProvider1
-            // 
-            errorProvider1.ContainerControl = this;
-            // 
-            // errorProvider2
-            // 
-            errorProvider2.ContainerControl = this;
-            // 
             // FrmQuanLySach
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1082, 603);
+            ClientSize = new Size(1248, 603);
             Controls.Add(splMain);
             Name = "FrmQuanLySach";
             Text = "Quản lý Sách";
@@ -468,8 +471,6 @@ namespace QuanLyThuVien.Forms
             pnlNutCuonSach.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)nudSoLuong).EndInit();
             ((System.ComponentModel.ISupportInitialize)errProvider).EndInit();
-            ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)errorProvider2).EndInit();
             ResumeLayout(false);
         }
 
@@ -507,7 +508,6 @@ namespace QuanLyThuVien.Forms
         private Button btnDoiTrangThai;
         private DataGridView dgvCuonSach;
         private ErrorProvider errProvider;
-        private ErrorProvider errorProvider1;
-        private ErrorProvider errorProvider2;
+        private Button btnXoaCuon;
     }
 }
