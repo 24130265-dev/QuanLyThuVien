@@ -28,6 +28,7 @@ namespace QuanLyThuVien.Forms
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             splMain = new SplitContainer();
             tvTheLoai = new TreeView();
             pnlNutTheLoai = new Panel();
@@ -59,6 +60,9 @@ namespace QuanLyThuVien.Forms
             btnNhapThemBanSao = new Button();
             nudSoLuong = new NumericUpDown();
             label1 = new Label();
+            errProvider = new ErrorProvider(components);
+            errorProvider1 = new ErrorProvider(components);
+            errorProvider2 = new ErrorProvider(components);
             ((System.ComponentModel.ISupportInitialize)splMain).BeginInit();
             splMain.Panel1.SuspendLayout();
             splMain.Panel2.SuspendLayout();
@@ -75,6 +79,9 @@ namespace QuanLyThuVien.Forms
             ((System.ComponentModel.ISupportInitialize)dgvCuonSach).BeginInit();
             pnlNutCuonSach.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudSoLuong).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)errProvider).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)errorProvider2).BeginInit();
             SuspendLayout();
             // 
             // splMain
@@ -225,6 +232,7 @@ namespace QuanLyThuVien.Forms
             btnXoa.TabIndex = 14;
             btnXoa.Text = "Xóa";
             btnXoa.UseVisualStyleBackColor = true;
+            btnXoa.Click += btnXoa_Click;
             // 
             // btnSua
             // 
@@ -234,6 +242,7 @@ namespace QuanLyThuVien.Forms
             btnSua.TabIndex = 13;
             btnSua.Text = "Sửa";
             btnSua.UseVisualStyleBackColor = true;
+            btnSua.Click += btnSua_Click;
             // 
             // btnThem
             // 
@@ -243,12 +252,13 @@ namespace QuanLyThuVien.Forms
             btnThem.TabIndex = 12;
             btnThem.Text = "Thêm";
             btnThem.UseVisualStyleBackColor = true;
+            btnThem.Click += btnThem_Click;
             // 
             // cboTheLoai
             // 
             cboTheLoai.DropDownStyle = ComboBoxStyle.DropDownList;
             cboTheLoai.FormattingEnabled = true;
-            cboTheLoai.Location = new Point(430, 90);
+            cboTheLoai.Location = new Point(576, 94);
             cboTheLoai.Name = "cboTheLoai";
             cboTheLoai.Size = new Size(150, 28);
             cboTheLoai.TabIndex = 11;
@@ -256,7 +266,7 @@ namespace QuanLyThuVien.Forms
             // nudGiaBia
             // 
             nudGiaBia.Increment = new decimal(new int[] { 1000, 0, 0, 0 });
-            nudGiaBia.Location = new Point(430, 57);
+            nudGiaBia.Location = new Point(576, 61);
             nudGiaBia.Maximum = new decimal(new int[] { 100000000, 0, 0, 0 });
             nudGiaBia.Name = "nudGiaBia";
             nudGiaBia.Size = new Size(150, 27);
@@ -265,7 +275,7 @@ namespace QuanLyThuVien.Forms
             // 
             // nudNamXuatBan
             // 
-            nudNamXuatBan.Location = new Point(430, 24);
+            nudNamXuatBan.Location = new Point(576, 28);
             nudNamXuatBan.Maximum = new decimal(new int[] { 2100, 0, 0, 0 });
             nudNamXuatBan.Minimum = new decimal(new int[] { 1900, 0, 0, 0 });
             nudNamXuatBan.Name = "nudNamXuatBan";
@@ -279,6 +289,7 @@ namespace QuanLyThuVien.Forms
             txtTacGia.Name = "txtTacGia";
             txtTacGia.Size = new Size(182, 27);
             txtTacGia.TabIndex = 5;
+            txtTacGia.Validating += txtTacGia_Validating;
             // 
             // txtTenDauSach
             // 
@@ -286,19 +297,22 @@ namespace QuanLyThuVien.Forms
             txtTenDauSach.Name = "txtTenDauSach";
             txtTenDauSach.Size = new Size(182, 27);
             txtTenDauSach.TabIndex = 3;
+            txtTenDauSach.Validating += txtTenDauSach_Validating;
             // 
             // txtMaDauSach
             // 
+            txtMaDauSach.CharacterCasing = CharacterCasing.Upper;
             txtMaDauSach.Location = new Point(114, 24);
             txtMaDauSach.MaxLength = 10;
             txtMaDauSach.Name = "txtMaDauSach";
             txtMaDauSach.Size = new Size(182, 27);
             txtMaDauSach.TabIndex = 1;
+            txtMaDauSach.Validating += txtMaDauSach_Validating;
             // 
             // lblTheLoai
             // 
             lblTheLoai.AutoSize = true;
-            lblTheLoai.Location = new Point(320, 93);
+            lblTheLoai.Location = new Point(466, 97);
             lblTheLoai.Name = "lblTheLoai";
             lblTheLoai.Size = new Size(62, 20);
             lblTheLoai.TabIndex = 10;
@@ -307,7 +321,7 @@ namespace QuanLyThuVien.Forms
             // lblGiaBia
             // 
             lblGiaBia.AutoSize = true;
-            lblGiaBia.Location = new Point(320, 60);
+            lblGiaBia.Location = new Point(466, 64);
             lblGiaBia.Name = "lblGiaBia";
             lblGiaBia.Size = new Size(56, 20);
             lblGiaBia.TabIndex = 8;
@@ -316,7 +330,7 @@ namespace QuanLyThuVien.Forms
             // lblNamXuatBan
             // 
             lblNamXuatBan.AutoSize = true;
-            lblNamXuatBan.Location = new Point(320, 27);
+            lblNamXuatBan.Location = new Point(466, 31);
             lblNamXuatBan.Name = "lblNamXuatBan";
             lblNamXuatBan.Size = new Size(102, 20);
             lblNamXuatBan.TabIndex = 6;
@@ -414,6 +428,18 @@ namespace QuanLyThuVien.Forms
             label1.TabIndex = 0;
             label1.Text = "Số bản sao";
             // 
+            // errProvider
+            // 
+            errProvider.ContainerControl = this;
+            // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
+            // 
+            // errorProvider2
+            // 
+            errorProvider2.ContainerControl = this;
+            // 
             // FrmQuanLySach
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -441,6 +467,9 @@ namespace QuanLyThuVien.Forms
             pnlNutCuonSach.ResumeLayout(false);
             pnlNutCuonSach.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)nudSoLuong).EndInit();
+            ((System.ComponentModel.ISupportInitialize)errProvider).EndInit();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)errorProvider2).EndInit();
             ResumeLayout(false);
         }
 
@@ -477,5 +506,8 @@ namespace QuanLyThuVien.Forms
         private Button btnNhapThemBanSao;
         private Button btnDoiTrangThai;
         private DataGridView dgvCuonSach;
+        private ErrorProvider errProvider;
+        private ErrorProvider errorProvider1;
+        private ErrorProvider errorProvider2;
     }
 }
