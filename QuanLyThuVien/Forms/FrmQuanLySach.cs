@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using QuanLyThuVien.Data;
 using QuanLyThuVien.DTOs;
 using QuanLyThuVien.Entities;
+using QuanLyThuVien.UI;
 
 namespace QuanLyThuVien.Forms;
 
@@ -23,6 +24,7 @@ public partial class FrmQuanLySach : Form
     public FrmQuanLySach()
     {
         InitializeComponent();
+        Theme.Apply(this);
 
         _bsDauSach.DataSource = _dsDauSach;
         dgvDauSach.DataSource = _bsDauSach;

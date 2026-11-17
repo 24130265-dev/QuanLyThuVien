@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<PhieuMuon> PhieuMuons { get; set; }
     public DbSet<ChiTietPhieuMuon> ChiTietPhieuMuons { get; set; }
     public DbSet<HoaDonPhat> HoaDonPhats { get; set; }
+    public DbSet<TaiKhoan> TaiKhoans => Set<TaiKhoan>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
