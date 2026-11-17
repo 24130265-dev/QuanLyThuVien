@@ -12,13 +12,14 @@ public class AppDbContext : DbContext
     public DbSet<PhieuMuon> PhieuMuons { get; set; }
     public DbSet<ChiTietPhieuMuon> ChiTietPhieuMuons { get; set; }
     public DbSet<HoaDonPhat> HoaDonPhats { get; set; }
+    public DbSet<TaiKhoan> TaiKhoans => Set<TaiKhoan>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
         {
-            var databasePath = Path.Combine(AppContext.BaseDirectory, "QuanLyThuVien.db");
-            optionsBuilder.UseSqlite($"Data Source={databasePath}");
+            var dbPath = Path.Combine(AppContext.BaseDirectory, "QuanLyThuVien.db");
+            optionsBuilder.UseSqlite($"Data Source={dbPath}");
         }
     }
 
@@ -26,78 +27,86 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<TheLoai>(static e =>
+      
+        modelBuilder.Entity<TheLoai>(e =>
         {
-            e.HasKey(static x => x.MaTheLoai);
-            e.Property(static x => x.TenTheLoai).IsRequired().HasMaxLength(100);
-            e.HasOne(static x => x.TheLoaiCha)
-             .WithMany(static x => x.TheLoaiCons)
-             .HasForeignKey(static x => x.MaTheLoaiCha)
+            e.HasKey(x => x.MaTheLoai);
+            e.Property(x => x.TenTheLoai).IsRequired().HasMaxLength(100);
+            e.HasOne(x => x.TheLoaiCha)
+             .WithMany(x => x.TheLoaiCons)
+             .HasForeignKey(x => x.MaTheLoaiCha)
              .OnDelete(DeleteBehavior.Restrict);
         });
 
-        modelBuilder.Entity<DauSach>(static e =>
+
+        modelBuilder.Entity<DauSach>(e =>
         {
-            e.HasKey(static x => x.MaDauSach);
-            e.Property(static x => x.TenDauSach).IsRequired().HasMaxLength(200);
-            e.Property(static x => x.GiaBia).HasColumnType("decimal(18,2)");
-            e.HasOne(static x => x.TheLoai)
-             .WithMany(static x => x.DauSachs)
-             .HasForeignKey(static x => x.MaTheLoai)
+            e.HasKey(x => x.MaDauSach);
+            e.Property(x => x.TenDauSach).IsRequired().HasMaxLength(200);
+            e.Property(x => x.GiaBia).HasColumnType("decimal(18,2)");
+            e.HasOne(x => x.TheLoai)
+             .WithMany(x => x.DauSachs)
+             .HasForeignKey(x => x.MaTheLoai)
              .OnDelete(DeleteBehavior.Restrict);
         });
 
-        modelBuilder.Entity<CuonSach>(static e =>
+
+        modelBuilder.Entity<CuonSach>(e =>
         {
-            e.HasKey(static x => x.MaCuonSach);
-            e.Property(static x => x.TrangThai).IsRequired().HasMaxLength(50);
-            e.HasOne(static x => x.DauSach)
-             .WithMany(static x => x.CuonSachs)
-             .HasForeignKey(static x => x.MaDauSach)
+            e.HasKey(x => x.MaCuonSach);
+            e.Property(x => x.TrangThai).IsRequired().HasMaxLength(50);
+            e.HasOne(x => x.DauSach)
+             .WithMany(x => x.CuonSachs)
+             .HasForeignKey(x => x.MaDauSach)
              .OnDelete(DeleteBehavior.Restrict);
         });
 
-        modelBuilder.Entity<DocGia>(static e =>
+     
+        modelBuilder.Entity<DocGia>(e =>
         {
-            e.HasKey(static x => x.MaDocGia);
-            e.Property(static x => x.HoTen).IsRequired().HasMaxLength(100);
-            e.Property(static x => x.TienNoPhat).HasColumnType("decimal(18,2)");
+            e.HasKey(x => x.MaDocGia);
+            e.Property(x => x.HoTen).IsRequired().HasMaxLength(100);
+            e.Property(x => x.TienNoPhat).HasColumnType("decimal(18,2)");
         });
 
-        modelBuilder.Entity<PhieuMuon>(static e =>
+     
+        modelBuilder.Entity<PhieuMuon>(e =>
         {
-            e.HasKey(static x => x.MaPhieuMuon);
-            e.HasOne(static x => x.DocGia)
-             .WithMany(static x => x.PhieuMuons)
-             .HasForeignKey(static x => x.MaDocGia)
+            e.HasKey(x => x.MaPhieuMuon);
+            e.HasOne(x => x.DocGia)
+             .WithMany(x => x.PhieuMuons)
+             .HasForeignKey(x => x.MaDocGia)
              .OnDelete(DeleteBehavior.Restrict);
         });
 
-        modelBuilder.Entity<ChiTietPhieuMuon>(static e =>
+       
+        modelBuilder.Entity<ChiTietPhieuMuon>(e =>
         {
-            e.HasKey(static x => x.Id);
-            e.HasOne(static x => x.PhieuMuon)
-             .WithMany(static x => x.ChiTietPhieuMuons)
-             .HasForeignKey(static x => x.MaPhieuMuon)
+            e.HasKey(x => x.Id);
+            e.HasOne(x => x.PhieuMuon)
+             .WithMany(x => x.ChiTietPhieuMuons)
+             .HasForeignKey(x => x.MaPhieuMuon)
              .OnDelete(DeleteBehavior.Restrict);
-            e.HasOne(static x => x.CuonSach)
-             .WithMany(static x => x.ChiTietPhieuMuons)
-             .HasForeignKey(static x => x.MaCuonSach)
+            e.HasOne(x => x.CuonSach)
+             .WithMany(x => x.ChiTietPhieuMuons)
+             .HasForeignKey(x => x.MaCuonSach)
              .OnDelete(DeleteBehavior.Restrict);
         });
 
-        modelBuilder.Entity<HoaDonPhat>(static e =>
+        
+        modelBuilder.Entity<HoaDonPhat>(e =>
         {
-            e.HasKey(static x => x.MaHoaDon);
-            e.Property(static x => x.TienPhatQuaHan).HasColumnType("decimal(18,2)");
-            e.Property(static x => x.TienBoiThuong).HasColumnType("decimal(18,2)");
-            e.HasOne(static x => x.DocGia)
-             .WithMany(static x => x.HoaDonPhats)
-             .HasForeignKey(static x => x.MaDocGia)
+            e.HasKey(x => x.MaHoaDon);
+            e.Property(x => x.TienPhatQuaHan).HasColumnType("decimal(18,2)");
+            e.Property(x => x.TienBoiThuong).HasColumnType("decimal(18,2)");
+            e.HasOne(x => x.DocGia)
+             .WithMany(x => x.HoaDonPhats)
+             .HasForeignKey(x => x.MaDocGia)
              .OnDelete(DeleteBehavior.Restrict);
         });
 
         // DỮ LIỆU MẪU (SEED DATA)
+
         modelBuilder.Entity<TheLoai>().HasData(
             new TheLoai { MaTheLoai = "TL_CNTT", TenTheLoai = "Công nghệ thông tin", MaTheLoaiCha = null },
             new TheLoai { MaTheLoai = "TL_LAPTRINH", TenTheLoai = "Lập trình C#", MaTheLoaiCha = "TL_CNTT" },

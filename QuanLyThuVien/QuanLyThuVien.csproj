@@ -20,11 +20,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTOs\" />
-    <Folder Include="Forms\" />
-  </ItemGroup>
-
 </Project>
-
-  
