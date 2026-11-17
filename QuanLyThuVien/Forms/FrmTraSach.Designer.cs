@@ -98,7 +98,7 @@ partial class FrmTraSach
                 this.lblTitle, this.lblTimKiem, this.txtTimKiem, this.btnTimKiem, this.lblChonPhieu, this.cboPhieuMuon
             });
 
-            this.lblTitle.Text = "QUẢN LÝ TRẢ SÁCH & XỬ LÝ TIỀN PHẠT";
+            this.lblTitle.Text = "QUẢN LÝ TRẢ SÁCH && XỬ LÝ TIỀN PHẠT";
             this.lblTitle.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
             this.lblTitle.ForeColor = Color.FromArgb(30, 58, 138);
             this.lblTitle.Location = new Point(15, 10);
@@ -110,26 +110,26 @@ partial class FrmTraSach
             this.lblTimKiem.AutoSize = true;
 
             this.txtTimKiem.Font = new Font("Segoe UI", 9.5F);
-            this.txtTimKiem.Location = new Point(145, 49);
-            this.txtTimKiem.Size = new Size(220, 25);
+            this.txtTimKiem.Location = new Point(155, 55);
+            this.txtTimKiem.Size = new Size(170, 27);
 
             this.btnTimKiem.Text = "Tìm kiếm";
             this.btnTimKiem.BackColor = Color.FromArgb(37, 99, 235);
             this.btnTimKiem.ForeColor = Color.White;
             this.btnTimKiem.FlatStyle = FlatStyle.Flat;
-            this.btnTimKiem.Location = new Point(375, 48);
-            this.btnTimKiem.Size = new Size(95, 27);
+            this.btnTimKiem.Location = new System.Drawing.Point(335, 54);
+            this.btnTimKiem.Size = new System.Drawing.Size(95, 27);
             this.btnTimKiem.Click += new EventHandler(this.btnTimKiem_Click);
 
             this.lblChonPhieu.Text = "Phiếu đang mượn:";
             this.lblChonPhieu.Font = new Font("Segoe UI", 9.5F);
-            this.lblChonPhieu.Location = new Point(495, 52);
+            this.lblChonPhieu.Location = new System.Drawing.Point(440, 58);
             this.lblChonPhieu.AutoSize = true;
 
             this.cboPhieuMuon.DropDownStyle = ComboBoxStyle.DropDownList;
             this.cboPhieuMuon.Font = new Font("Segoe UI", 9.5F);
-            this.cboPhieuMuon.Location = new Point(620, 49);
-            this.cboPhieuMuon.Size = new Size(360, 25);
+            this.cboPhieuMuon.Location = new System.Drawing.Point(565, 55);
+            this.cboPhieuMuon.Size = new System.Drawing.Size(340, 28);
             this.cboPhieuMuon.SelectedIndexChanged += new EventHandler(this.cboPhieuMuon_SelectedIndexChanged);
 
             // 
@@ -147,7 +147,7 @@ partial class FrmTraSach
             // 
             // grpThongTinPhat (Bên phải Panel1)
             // 
-            this.grpThongTinPhat.Text = "Tính phí phạt & Xác nhận trả";
+            this.grpThongTinPhat.Text = "Tính phí phạt && Xác nhận trả";
             this.grpThongTinPhat.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             this.grpThongTinPhat.Dock = DockStyle.Right;
             this.grpThongTinPhat.Width = 340;
@@ -161,7 +161,7 @@ partial class FrmTraSach
 
             this.lblDonGiaTre.Text = "Phạt trễ hạn (VNĐ/ngày):";
             this.lblDonGiaTre.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
-            this.lblDonGiaTre.Location = new Point(15, 32);
+            this.lblDonGiaTre.Location = new Point(15, 42);
             this.lblDonGiaTre.AutoSize = true;
 
             this.numDonGiaTre.Font = new Font("Segoe UI", 9.5F);
@@ -169,21 +169,21 @@ partial class FrmTraSach
             this.numDonGiaTre.Increment = 1000;
             this.numDonGiaTre.Value = 5000;
             this.numDonGiaTre.ThousandsSeparator = true;
-            this.numDonGiaTre.Location = new Point(185, 29);
-            this.numDonGiaTre.Size = new Size(135, 25);
+            this.numDonGiaTre.Location = new System.Drawing.Point(200, 42);
+            this.numDonGiaTre.Size = new System.Drawing.Size(105, 27);
             this.numDonGiaTre.ValueChanged += (s, e) => TinhTongTienPhat();
 
             this.lblTienPhatHuHong.Text = "Phạt hư hỏng / mất (VNĐ):";
             this.lblTienPhatHuHong.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
-            this.lblTienPhatHuHong.Location = new Point(15, 68);
+            this.lblTienPhatHuHong.Location = new Point(15, 78);
             this.lblTienPhatHuHong.AutoSize = true;
 
             this.numTienPhatHuHong.Font = new Font("Segoe UI", 9.5F);
             this.numTienPhatHuHong.Maximum = 50000000;
             this.numTienPhatHuHong.Increment = 5000;
             this.numTienPhatHuHong.ThousandsSeparator = true;
-            this.numTienPhatHuHong.Location = new Point(185, 65);
-            this.numTienPhatHuHong.Size = new Size(135, 25);
+            this.numTienPhatHuHong.Location = new System.Drawing.Point(200, 78);
+            this.numTienPhatHuHong.Size = new System.Drawing.Size(105, 27);
             this.numTienPhatHuHong.ValueChanged += (s, e) => TinhTongTienPhat();
 
             this.lblLyDoPhat.Text = "Ghi chú / Lý do phạt:";

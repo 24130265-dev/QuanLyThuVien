@@ -9,8 +9,6 @@ namespace QuanLyThuVien.Forms;
 
 public partial class FrmBaoCao : Form
 {   
-    private readonly AppDbContext _context;
-    
     public FrmBaoCao()
     {
         InitializeComponent();
@@ -18,8 +16,6 @@ public partial class FrmBaoCao : Form
 
     private void FrmBaoCao_Load(object sender, EventArgs e)
     {
-        dtpTuNgay.Value = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-        dtpDenNgay.Value = DateTime.Today;
         NapDuLieuBaoCao();
     }
     
@@ -34,30 +30,36 @@ public partial class FrmBaoCao : Form
     }
     
     private void NapDuLieuBaoCao()
-        {
-            DateTime tuNgay = dtpTuNgay.Value.Date;
-            DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1).AddTicks(-1);
-            DateTime homNay = DateTime.Today;
+    {
+        using var _context = new AppDbContext();
 
-                // 1. Báo cáo Mượn - Trả & Quá hạn
+        DateTime tuNgay = dtpTuNgay.Value.Date;
+        DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1).AddTicks(-1);
+        DateTime homNay = DateTime.Today;
+
+        // 1. Báo cáo Mượn - Trả & Quá hạn
         var dsMuonTra = _context.ChiTietPhieuMuons
             .Include(ct => ct.PhieuMuon)
-                .ThenInclude(p => p.DocGia)
+                .ThenInclude(p => p!.DocGia)
             .Include(ct => ct.CuonSach)
-                .ThenInclude(cs => cs.DauSach)
-            .Where(ct => ct.PhieuMuon.NgayMuon >= tuNgay && ct.PhieuMuon.NgayMuon <= denNgay)
+                .ThenInclude(cs => cs!.DauSach)
+            .Where(ct => ct.PhieuMuon != null && ct.PhieuMuon.NgayMuon >= tuNgay && ct.PhieuMuon.NgayMuon <= denNgay)
             .Select(ct => new BaoCaoMuonTraDto
             {
                 MaPhieu = ct.MaPhieuMuon,
-                TenDocGia = ct.PhieuMuon.DocGia.HoTen,
-                TenDauSach = ct.CuonSach.DauSach.TenDauSach,
+                TenDocGia = (ct.PhieuMuon != null && ct.PhieuMuon.DocGia != null) 
+                    ? ct.PhieuMuon.DocGia.HoTen ?? "" 
+                    : "",
+                TenDauSach = (ct.CuonSach != null && ct.CuonSach.DauSach != null) 
+                    ? ct.CuonSach.DauSach.TenDauSach ?? "" 
+                    : "",
                 MaCuonSach = ct.MaCuonSach.ToString(),
-                NgayMuon = ct.PhieuMuon.NgayMuon,
-                HanTra = ct.PhieuMuon.NgayPhaiTra,
+                NgayMuon = ct.PhieuMuon != null ? ct.PhieuMuon.NgayMuon : DateTime.MinValue,
+                HanTra = ct.PhieuMuon != null ? ct.PhieuMuon.NgayPhaiTra : DateTime.MinValue,
                 NgayTraThucTe = ct.NgayTraThucTe,
                 TrangThai = ct.NgayTraThucTe != null
                     ? "Đã trả"
-                    : (homNay > ct.PhieuMuon.NgayPhaiTra.Date ? "Quá hạn" : "Đang mượn")
+                    : (ct.PhieuMuon != null && homNay > ct.PhieuMuon.NgayPhaiTra.Date ? "Quá hạn" : "Đang mượn")
             })
             .OrderByDescending(x => x.NgayMuon)
             .ToList();
@@ -68,22 +70,26 @@ public partial class FrmBaoCao : Form
         var topSach = _context.ChiTietPhieuMuons
             .Include(ct => ct.PhieuMuon)
             .Include(ct => ct.CuonSach)
-                .ThenInclude(cs => cs.DauSach)
-                    .ThenInclude(ds => ds.TheLoai)
-            .Where(ct => ct.PhieuMuon.NgayMuon >= tuNgay && ct.PhieuMuon.NgayMuon <= denNgay)
+                .ThenInclude(cs => cs!.DauSach)
+                    .ThenInclude(ds => ds!.TheLoai)
+            .Where(ct => ct.PhieuMuon != null 
+                      && ct.CuonSach != null 
+                      && ct.CuonSach.DauSach != null
+                      && ct.PhieuMuon.NgayMuon >= tuNgay 
+                      && ct.PhieuMuon.NgayMuon <= denNgay)
             .GroupBy(ct => new
             {
-                ct.CuonSach.DauSach.MaDauSach,
+                ct.CuonSach!.DauSach!.MaDauSach,
                 ct.CuonSach.DauSach.TenDauSach,
-                TenTheLoai = ct.CuonSach.DauSach.TheLoai.TenTheLoai
+                TenTheLoai = ct.CuonSach.DauSach.TheLoai != null ? ct.CuonSach.DauSach.TheLoai.TenTheLoai : ""
             })
             .Select(g => new TopDauSachDto
             {
                 MaDauSach = g.Key.MaDauSach,
-                TenSach = g.Key.TenDauSach,
-                TheLoai = g.Key.TenTheLoai,
+                TenSach = g.Key.TenDauSach ?? "",
+                TheLoai = g.Key.TenTheLoai ?? "",
                 SoLuotMuon = g.Count(),
-                TongSoCuon = _context.CuonSachs.Count(c => c.DauSach.MaDauSach == g.Key.MaDauSach)
+                TongSoCuon = _context.CuonSachs.Count(c => c.DauSach != null && c.DauSach.MaDauSach == g.Key.MaDauSach)
             })
             .OrderByDescending(x => x.SoLuotMuon)
             .ToList();
@@ -97,11 +103,10 @@ public partial class FrmBaoCao : Form
             .Select(h => new BaoCaoTienPhatDto
             {
                 MaHoaDon = h.MaHoaDon,
-                TenDocGia = h.DocGia.HoTen,
+                TenDocGia = h.DocGia != null ? h.DocGia.HoTen ?? "" : "",
                 NgayLap = h.NgayLap,
-                // Đổi h.TienPhat thành tên thuộc tính số tiền trong Entities/HoaDonPhat.cs của bạn
                 SoTien = h.TienPhatQuaHan,
-                LyDo = h.LyDo,
+                LyDo = h.LyDo ?? "",
                 TrangThai = h.DaThanhToan ? "Đã thanh toán" : "Chưa thanh toán"
             })
             .OrderByDescending(x => x.NgayLap)
@@ -119,6 +124,7 @@ public partial class FrmBaoCao : Form
             .Sum(x => x.SoTien);
         lblKpiTienPhat.Text = $"{tongThuPhat:N0} VNĐ";
     }
+
     private void btnXuatCsv_Click(object sender, EventArgs e)
     {
         DataGridView gridHienTai = tabBaoCao.SelectedIndex switch
@@ -154,11 +160,5 @@ public partial class FrmBaoCao : Form
 
         File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
         MessageBox.Show("Xuất báo cáo CSV thành công!", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
-    }
-
-    protected override void OnFormClosed(FormClosedEventArgs e)
-    {
-        _context?.Dispose();
-        base.OnFormClosed(e);
     }
 }
