@@ -191,7 +191,7 @@
             // 
             txtMatKhau.Location = new Point(35, 130);
             txtMatKhau.Name = "txtMatKhau";
-            txtMatKhau.Size = new Size(125, 27);
+            txtMatKhau.Size = new Size(220, 27);
             txtMatKhau.TabIndex = 5;
             // 
             // chkHienMatKhau
@@ -218,7 +218,7 @@
             // 
             txtEmail.Location = new Point(35, 65);
             txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(125, 27);
+            txtEmail.Size = new Size(220, 27);
             txtEmail.TabIndex = 1;
             // 
             // lblEmail

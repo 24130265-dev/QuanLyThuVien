@@ -11,7 +11,7 @@ static class Program
     {
         ApplicationConfiguration.Initialize();
 
-        // Báo Lỗi
+        // Báo lỗi
         Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
         Application.ThreadException += (s, e) =>
             MessageBox.Show($"Lỗi giao diện: {e.Exception.Message}", "Cảnh báo",
@@ -25,7 +25,7 @@ static class Program
         {
             using var db = new AppDbContext();
             db.Database.EnsureCreated();
-            PhienDangNhap.KhoiTaoDuLieuTaiKhoan(db); //Tự tạo bảng TaiKhoans & tài khoản mẫu
+            PhienDangNhap.KhoiTaoDuLieuTaiKhoan(db);
         }
         catch (Exception ex)
         {
@@ -34,19 +34,23 @@ static class Program
             return;
         }
 
-        // Mở màn hình Đăng nhập
-        using (var frmLogin = new Forms.FrmDangNhap())
+        // Màn hình đăng nhập
+        using (var frmLogin = new FrmDangNhap())
         {
             if (frmLogin.ShowDialog() != DialogResult.OK)
                 return;
         }
 
-        Application.Run(new Forms.FrmMain()); using (var frmLogin = new Forms.FrmDangNhap())
+        // Phân quyền theo vai trò
+        if (PhienDangNhap.LaThuThu)
         {
-            if (frmLogin.ShowDialog() != DialogResult.OK)
-                return; 
+            Application.Run(new FrmMain());
         }
-
-        Application.Run(new Forms.FrmMain());
+        else
+        {
+            
+            MessageBox.Show("Cổng thông tin độc giả đang được phát triển.", "Thông báo",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }
