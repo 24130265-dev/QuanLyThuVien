@@ -2,34 +2,11 @@
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using QuanLyThuVien.Entities;
 
 namespace QuanLyThuVien.Data;
 
-// 1. BẢNG LƯU TRỮ TÀI KHOẢN TRONG SQLITE (Tách biệt Thủ thư & Sinh viên qua cột VaiTro)
-public class TaiKhoan
-{
-    [Key]
-    public int MaTaiKhoan { get; set; }
-
-    [Required, MaxLength(100)]
-    public string TenDangNhap { get; set; } = string.Empty; // Email trường hoặc Mã đăng nhập
-
-    [Required]
-    public string MatKhauHash { get; set; } = string.Empty; // Mật khẩu đã băm SHA256
-
-    [Required, MaxLength(50)]
-    public string HoTen { get; set; } = string.Empty;
-
-    [Required, MaxLength(20)]
-    public string VaiTro { get; set; } = "DocGia"; // "ThuThu" (Quản trị) hoặc "DocGia" (Sinh viên)
-
-    [MaxLength(20)]
-    public string? MaDocGia { get; set; } // Null nếu là Thủ thư; chứa mã DG01, DG02... nếu là Sinh viên
-
-    public bool BatBuocDoiMatKhau { get; set; } = false;
-}
-
-// 2. BỘ NHỚ LƯU PHIÊN ĐĂNG NHẬP HIỆN TẠI & QUẢN LÝ TÀI KHOẢN
+// BỘ NHỚ LƯU PHIÊN ĐĂNG NHẬP HIỆN TẠI & QUẢN LÝ TÀI KHOẢN
 public static class PhienDangNhap
 {
     // Thông tin người dùng đang đăng nhập (mọi Form đều gọi trực tiếp được)
@@ -73,17 +50,10 @@ public static class PhienDangNhap
         MaDocGia = null;
     }
 
-    // Hàm băm mật khẩu để không lưu mật khẩu chữ thường trong CSDL
-    public static string BamMatKhau(string matKhau)
-    {
-        byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes("NLU_SALT_" + matKhau));
-        return Convert.ToHexString(bytes);
-    }
-
     // Tự động tạo bảng TaiKhoans và nạp tài khoản Thủ thư + Sinh viên nếu chưa có
     public static void KhoiTaoDuLieuTaiKhoan(AppDbContext db)
     {
-        // Tạo bảng TaiKhoans trực tiếp nếu file QuanLyThuVien.db cũ chưa có bảng này
+        
         db.Database.ExecuteSqlRaw(@"
             CREATE TABLE IF NOT EXISTS ""TaiKhoans"" (
                 ""MaTaiKhoan"" INTEGER NOT NULL CONSTRAINT ""PK_TaiKhoans"" PRIMARY KEY AUTOINCREMENT,
@@ -95,7 +65,7 @@ public static class PhienDangNhap
                 ""BatBuocDoiMatKhau"" INTEGER NOT NULL DEFAULT 0
             );");
 
-        string matKhauMacDinh = BamMatKhau("123");
+        string matKhauMacDinh = MatKhau.Bam("123");
 
         // A. Tạo 2 tài khoản THỦ THƯ mặc định nếu chưa có
         if (!db.TaiKhoans.Any(t => t.VaiTro == "ThuThu"))

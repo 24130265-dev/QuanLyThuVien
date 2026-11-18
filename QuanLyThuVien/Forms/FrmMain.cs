@@ -11,7 +11,7 @@ public partial class FrmMain : Form
     {
         InitializeComponent();
 
-        Load += FrmMain_Load;
+        
         FormClosing += FrmMain_FormClosing;
         timerDongHo.Tick += (s, e) => CapNhatDongHo();
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QuanLyThuVien.Data;
+using QuanLyThuVien.Entities;
 using QuanLyThuVien.UI;
 
 namespace QuanLyThuVien.Forms;
@@ -13,6 +14,8 @@ public partial class FrmDangNhap : Form
 
         // 1. Áp dụng bộ giao diện phẳng dùng chung
         Theme.Apply(this);
+
+        txtMatKhau.UseSystemPasswordChar = true;
 
         // 2. Giữ lại màu nền xanh đậm và chữ trắng cho cột thương hiệu bên trái (pnlTrai)
         pnlTrai.BackColor = Theme.PrimaryDark;
@@ -64,12 +67,10 @@ public partial class FrmDangNhap : Form
         }
 
         using var db = new AppDbContext();
-        // Đảm bảo bảng TaiKhoans đã đồng bộ tài khoản cho các Độc giả mới
-        PhienDangNhap.KhoiTaoDuLieuTaiKhoan(db);
-
         // Băm mật khẩu người dùng vừa nhập để so sánh với cột MatKhauHash trong CSDL
+        PhienDangNhap.KhoiTaoDuLieuTaiKhoan(db);
         string nhap = taiKhoan.ToLowerInvariant();
-        string matKhauBam = PhienDangNhap.BamMatKhau(matKhau);
+        
         TaiKhoan? tkTimThay;
 
         // TRƯỜNG HỢP 1: Đăng nhập vai trò Thủ thư / Quản trị
@@ -77,12 +78,9 @@ public partial class FrmDangNhap : Form
         {
             string emailThuThu = nhap.Contains('@') ? nhap : $"{nhap}@hcmuaf.edu.vn";
 
-            tkTimThay = await db.TaiKhoans
-                .AsNoTracking()
-                .FirstOrDefaultAsync(t =>
+            tkTimThay = await db.TaiKhoans.FirstOrDefaultAsync(t =>
                     t.VaiTro == "ThuThu" &&
-                    (t.TenDangNhap.ToLower() == nhap || t.TenDangNhap.ToLower() == emailThuThu) &&
-                    t.MatKhauHash == matKhauBam);
+                    (t.TenDangNhap.ToLower() == nhap || t.TenDangNhap.ToLower() == emailThuThu));
         }
         // TRƯỜNG HỢP 2: Đăng nhập vai trò Độc giả / Sinh viên
         else
@@ -90,18 +88,15 @@ public partial class FrmDangNhap : Form
             string emailSv = nhap.Contains('@') ? nhap : $"{nhap}@st.hcmuaf.edu.vn";
             string maDocGia = nhap.Split('@')[0].ToUpperInvariant();
 
-            tkTimThay = await db.TaiKhoans
-                .AsNoTracking()
-                .FirstOrDefaultAsync(t =>
+            tkTimThay = await db.TaiKhoans.FirstOrDefaultAsync(t =>
                     t.VaiTro == "DocGia" &&
                     (t.TenDangNhap.ToLower() == nhap ||
                      t.TenDangNhap.ToLower() == emailSv ||
-                     t.MaDocGia == maDocGia) &&
-                    t.MatKhauHash == matKhauBam);
+                     t.MaDocGia == maDocGia));
         }
 
-        // Nếu không tìm thấy tài khoản khớp vai trò và mật khẩu
-        if (tkTimThay == null)
+        // Nếu không tìm thấy tài khoản HOẶC mật khẩu nhập vào không khớp
+        if (tkTimThay == null || !MatKhau.Kiem(matKhau, tkTimThay.MatKhauHash))
         {
             string goiY = rdoThuThu.Checked
                 ? "Tài khoản Thủ thư mẫu: admin@hcmuaf.edu.vn / Mật khẩu: 123"
@@ -110,6 +105,12 @@ public partial class FrmDangNhap : Form
             MessageBox.Show($"Sai tài khoản, mật khẩu hoặc chọn sai vai trò!\n\n({goiY})",
                 "Đăng nhập thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
+        }
+        // Tự động nâng cấp mật khẩu từ chuẩn SHA256 cũ lên PBKDF2 mới
+        if (MatKhau.CanNangCap(tkTimThay.MatKhauHash))
+        {
+            tkTimThay.MatKhauHash = MatKhau.Bam(matKhau);
+            await db.SaveChangesAsync();
         }
 
         // Lưu phiên đăng nhập vào PhienDangNhap để FrmMain sử dụng
