@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<PhieuMuon> PhieuMuons { get; set; }
     public DbSet<ChiTietPhieuMuon> ChiTietPhieuMuons { get; set; }
     public DbSet<HoaDonPhat> HoaDonPhats { get; set; }
+    public DbSet<YeuCauMuon> YeuCauMuons { get; set; }
     public DbSet<TaiKhoan> TaiKhoans => Set<TaiKhoan>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -103,6 +104,17 @@ public class AppDbContext : DbContext
              .WithMany(x => x.HoaDonPhats)
              .HasForeignKey(x => x.MaDocGia)
              .OnDelete(DeleteBehavior.Restrict);
+        });
+
+
+        modelBuilder.Entity<YeuCauMuon>(e =>
+        {
+            e.HasKey(x => x.MaYeuCau);
+            e.Property(x => x.TrangThai).IsRequired().HasMaxLength(20);
+            e.HasOne(x => x.DocGia).WithMany()
+             .HasForeignKey(x => x.MaDocGia).OnDelete(DeleteBehavior.Restrict);
+            e.HasOne(x => x.DauSach).WithMany()
+             .HasForeignKey(x => x.MaDauSach).OnDelete(DeleteBehavior.Restrict);
         });
 
         // DỮ LIỆU MẪU (SEED DATA)

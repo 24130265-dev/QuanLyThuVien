@@ -53,6 +53,7 @@ public static class PhienDangNhap
     // Tự động tạo bảng TaiKhoans và nạp tài khoản Thủ thư + Sinh viên nếu chưa có
     public static void KhoiTaoDuLieuTaiKhoan(AppDbContext db)
     {
+
         
         db.Database.ExecuteSqlRaw(@"
             CREATE TABLE IF NOT EXISTS ""TaiKhoans"" (
@@ -63,6 +64,16 @@ public static class PhienDangNhap
                 ""VaiTro"" TEXT NOT NULL,
                 ""MaDocGia"" TEXT NULL,
                 ""BatBuocDoiMatKhau"" INTEGER NOT NULL DEFAULT 0
+            );");
+        db.Database.ExecuteSqlRaw(@"
+            CREATE TABLE IF NOT EXISTS ""YeuCauMuons"" (
+                ""MaYeuCau"" INTEGER NOT NULL CONSTRAINT ""PK_YeuCauMuons"" PRIMARY KEY AUTOINCREMENT,
+                ""MaDocGia"" TEXT NOT NULL,
+                ""MaDauSach"" TEXT NOT NULL,
+                ""NgayGui"" TEXT NOT NULL,
+                ""TrangThai"" TEXT NOT NULL,
+                CONSTRAINT ""FK_YeuCauMuons_DocGias"" FOREIGN KEY (""MaDocGia"") REFERENCES ""DocGias"" (""MaDocGia"") ON DELETE RESTRICT,
+                CONSTRAINT ""FK_YeuCauMuons_DauSachs"" FOREIGN KEY (""MaDauSach"") REFERENCES ""DauSachs"" (""MaDauSach"") ON DELETE RESTRICT
             );");
 
         string matKhauMacDinh = MatKhau.Bam("123");

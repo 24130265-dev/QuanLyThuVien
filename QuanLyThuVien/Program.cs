@@ -35,22 +35,26 @@ static class Program
         }
 
         // Màn hình đăng nhập
-        using (var frmLogin = new FrmDangNhap())
+        while (true)
         {
-            if (frmLogin.ShowDialog() != DialogResult.OK)
-                return;
-        }
+            using (var frmLogin = new FrmDangNhap())
+            {
+                if (frmLogin.ShowDialog() != DialogResult.OK)
+                    return;
+            }
 
-        // Phân quyền theo vai trò
-        if (PhienDangNhap.LaThuThu)
-        {
-            Application.Run(new FrmMain());
-        }
-        else
-        {
-            
-            MessageBox.Show("Cổng thông tin độc giả đang được phát triển.", "Thông báo",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (PhienDangNhap.LaThuThu)
+            {
+                var frmMain = new FrmMain();
+                Application.Run(frmMain);
+                if (!frmMain.DaDangXuat) return;   // bấm X thì thoát hẳn
+            }
+            else
+            {
+                MessageBox.Show("Cổng thông tin độc giả đang được phát triển.", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                PhienDangNhap.DangXuat();
+            }
         }
     }
 }
