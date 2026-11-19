@@ -124,6 +124,7 @@
             lblXinChao.Size = new Size(420, 24);
             lblXinChao.TabIndex = 2;
             lblXinChao.Text = "Xin chào:";
+            lblXinChao.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lblPhanHe
             // 

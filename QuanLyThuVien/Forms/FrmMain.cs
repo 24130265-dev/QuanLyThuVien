@@ -136,10 +136,7 @@ public partial class FrmMain : Form
 
 
 
-    private void mnuThoat_Click(object sender, EventArgs e)
-    {
-        Close();
-    }
+   
 
     
 }
