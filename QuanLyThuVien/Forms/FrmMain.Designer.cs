@@ -108,9 +108,9 @@
             // btnDangXuat
             // 
             btnDangXuat.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnDangXuat.Location = new Point(990, 15);
+            btnDangXuat.Location = new Point(960, 15);
             btnDangXuat.Name = "btnDangXuat";
-            btnDangXuat.Size = new Size(100, 34);
+            btnDangXuat.Size = new Size(130, 34);
             btnDangXuat.TabIndex = 3;
             btnDangXuat.Text = "Đăng xuất";
             btnDangXuat.UseVisualStyleBackColor = true;
@@ -119,7 +119,7 @@
             // lblXinChao
             // 
             lblXinChao.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lblXinChao.Location = new Point(560, 20);
+            lblXinChao.Location = new Point(530, 20);
             lblXinChao.Name = "lblXinChao";
             lblXinChao.Size = new Size(420, 24);
             lblXinChao.TabIndex = 2;

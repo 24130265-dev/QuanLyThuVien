@@ -105,7 +105,7 @@ namespace QuanLyThuVien.Forms
             tvTheLoai.Dock = DockStyle.Fill;
             tvTheLoai.Location = new Point(0, 0);
             tvTheLoai.Name = "tvTheLoai";
-            tvTheLoai.Size = new Size(373, 558);
+            tvTheLoai.Size = new Size(373, 551);
             tvTheLoai.TabIndex = 1;
             tvTheLoai.AfterSelect += tvTheLoai_AfterSelect;
             // 
@@ -115,16 +115,16 @@ namespace QuanLyThuVien.Forms
             pnlNutTheLoai.Controls.Add(btnSuaTheLoai);
             pnlNutTheLoai.Controls.Add(btnThemTheLoai);
             pnlNutTheLoai.Dock = DockStyle.Bottom;
-            pnlNutTheLoai.Location = new Point(0, 558);
+            pnlNutTheLoai.Location = new Point(0, 551);
             pnlNutTheLoai.Name = "pnlNutTheLoai";
-            pnlNutTheLoai.Size = new Size(373, 45);
+            pnlNutTheLoai.Size = new Size(373, 52);
             pnlNutTheLoai.TabIndex = 0;
             // 
             // btnXoaTheLoai
             // 
-            btnXoaTheLoai.Location = new Point(242, 8);
+            btnXoaTheLoai.Location = new Point(232, 8);
             btnXoaTheLoai.Name = "btnXoaTheLoai";
-            btnXoaTheLoai.Size = new Size(70, 29);
+            btnXoaTheLoai.Size = new Size(100, 36);
             btnXoaTheLoai.TabIndex = 2;
             btnXoaTheLoai.Text = "Xóa";
             btnXoaTheLoai.UseVisualStyleBackColor = true;
@@ -132,9 +132,9 @@ namespace QuanLyThuVien.Forms
             // 
             // btnSuaTheLoai
             // 
-            btnSuaTheLoai.Location = new Point(127, 8);
+            btnSuaTheLoai.Location = new Point(122, 8);
             btnSuaTheLoai.Name = "btnSuaTheLoai";
-            btnSuaTheLoai.Size = new Size(70, 29);
+            btnSuaTheLoai.Size = new Size(100, 36);
             btnSuaTheLoai.TabIndex = 1;
             btnSuaTheLoai.Text = "Sửa";
             btnSuaTheLoai.UseVisualStyleBackColor = true;
@@ -144,7 +144,7 @@ namespace QuanLyThuVien.Forms
             // 
             btnThemTheLoai.Location = new Point(12, 8);
             btnThemTheLoai.Name = "btnThemTheLoai";
-            btnThemTheLoai.Size = new Size(70, 29);
+            btnThemTheLoai.Size = new Size(100, 36);
             btnThemTheLoai.TabIndex = 0;
             btnThemTheLoai.Text = "Thêm";
             btnThemTheLoai.UseVisualStyleBackColor = true;
@@ -177,13 +177,13 @@ namespace QuanLyThuVien.Forms
             dgvDauSach.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvDauSach.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDauSach.Dock = DockStyle.Fill;
-            dgvDauSach.Location = new Point(0, 175);
+            dgvDauSach.Location = new Point(0, 195);
             dgvDauSach.MultiSelect = false;
             dgvDauSach.Name = "dgvDauSach";
             dgvDauSach.ReadOnly = true;
             dgvDauSach.RowHeadersWidth = 51;
             dgvDauSach.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDauSach.Size = new Size(871, 185);
+            dgvDauSach.Size = new Size(871, 165);
             dgvDauSach.TabIndex = 1;
             // 
             // grpDauSach
@@ -207,16 +207,16 @@ namespace QuanLyThuVien.Forms
             grpDauSach.Dock = DockStyle.Top;
             grpDauSach.Location = new Point(0, 0);
             grpDauSach.Name = "grpDauSach";
-            grpDauSach.Size = new Size(871, 175);
+            grpDauSach.Size = new Size(871, 195);
             grpDauSach.TabIndex = 0;
             grpDauSach.TabStop = false;
             grpDauSach.Text = "Thông tin đầu sách";
             // 
             // btnLamMoi
             // 
-            btnLamMoi.Location = new Point(529, 136);
+            btnLamMoi.Location = new Point(380, 148);
             btnLamMoi.Name = "btnLamMoi";
-            btnLamMoi.Size = new Size(94, 29);
+            btnLamMoi.Size = new Size(130, 36);
             btnLamMoi.TabIndex = 15;
             btnLamMoi.Text = "Làm mới";
             btnLamMoi.UseVisualStyleBackColor = true;
@@ -224,9 +224,9 @@ namespace QuanLyThuVien.Forms
             // 
             // btnXoa
             // 
-            btnXoa.Location = new Point(353, 136);
+            btnXoa.Location = new Point(260, 148);
             btnXoa.Name = "btnXoa";
-            btnXoa.Size = new Size(94, 29);
+            btnXoa.Size = new Size(110, 36);
             btnXoa.TabIndex = 14;
             btnXoa.Text = "Xóa";
             btnXoa.UseVisualStyleBackColor = true;
@@ -234,9 +234,9 @@ namespace QuanLyThuVien.Forms
             // 
             // btnSua
             // 
-            btnSua.Location = new Point(202, 136);
+            btnSua.Location = new Point(140, 148);
             btnSua.Name = "btnSua";
-            btnSua.Size = new Size(94, 29);
+            btnSua.Size = new Size(110, 36);
             btnSua.TabIndex = 13;
             btnSua.Text = "Sửa";
             btnSua.UseVisualStyleBackColor = true;
@@ -244,9 +244,9 @@ namespace QuanLyThuVien.Forms
             // 
             // btnThem
             // 
-            btnThem.Location = new Point(55, 136);
+            btnThem.Location = new Point(20, 148);
             btnThem.Name = "btnThem";
-            btnThem.Size = new Size(94, 29);
+            btnThem.Size = new Size(110, 36);
             btnThem.TabIndex = 12;
             btnThem.Text = "Thêm";
             btnThem.UseVisualStyleBackColor = true;
@@ -256,61 +256,61 @@ namespace QuanLyThuVien.Forms
             // 
             cboTheLoai.DropDownStyle = ComboBoxStyle.DropDownList;
             cboTheLoai.FormattingEnabled = true;
-            cboTheLoai.Location = new Point(576, 94);
+            cboTheLoai.Location = new Point(560, 106);
             cboTheLoai.Name = "cboTheLoai";
-            cboTheLoai.Size = new Size(150, 28);
+            cboTheLoai.Size = new Size(210, 28);
             cboTheLoai.TabIndex = 11;
             // 
             // nudGiaBia
             // 
             nudGiaBia.Increment = new decimal(new int[] { 1000, 0, 0, 0 });
-            nudGiaBia.Location = new Point(576, 61);
+            nudGiaBia.Location = new Point(560, 68);
             nudGiaBia.Maximum = new decimal(new int[] { 100000000, 0, 0, 0 });
             nudGiaBia.Name = "nudGiaBia";
-            nudGiaBia.Size = new Size(150, 27);
+            nudGiaBia.Size = new Size(210, 27);
             nudGiaBia.TabIndex = 9;
             nudGiaBia.ThousandsSeparator = true;
             // 
             // nudNamXuatBan
             // 
-            nudNamXuatBan.Location = new Point(576, 28);
+            nudNamXuatBan.Location = new Point(560, 30);
             nudNamXuatBan.Maximum = new decimal(new int[] { 2100, 0, 0, 0 });
             nudNamXuatBan.Minimum = new decimal(new int[] { 1900, 0, 0, 0 });
             nudNamXuatBan.Name = "nudNamXuatBan";
-            nudNamXuatBan.Size = new Size(150, 27);
+            nudNamXuatBan.Size = new Size(210, 27);
             nudNamXuatBan.TabIndex = 7;
             nudNamXuatBan.Value = new decimal(new int[] { 2024, 0, 0, 0 });
             // 
             // txtTacGia
             // 
-            txtTacGia.Location = new Point(114, 90);
+            txtTacGia.Location = new Point(140, 106);
             txtTacGia.Name = "txtTacGia";
-            txtTacGia.Size = new Size(182, 27);
+            txtTacGia.Size = new Size(240, 27);
             txtTacGia.TabIndex = 5;
             txtTacGia.Validating += txtTacGia_Validating;
             // 
             // txtTenDauSach
             // 
-            txtTenDauSach.Location = new Point(114, 57);
+            txtTenDauSach.Location = new Point(140, 68);
             txtTenDauSach.Name = "txtTenDauSach";
-            txtTenDauSach.Size = new Size(182, 27);
+            txtTenDauSach.Size = new Size(240, 27);
             txtTenDauSach.TabIndex = 3;
             txtTenDauSach.Validating += txtTenDauSach_Validating;
             // 
             // txtMaDauSach
             // 
             txtMaDauSach.CharacterCasing = CharacterCasing.Upper;
-            txtMaDauSach.Location = new Point(114, 24);
+            txtMaDauSach.Location = new Point(140, 30);
             txtMaDauSach.MaxLength = 10;
             txtMaDauSach.Name = "txtMaDauSach";
-            txtMaDauSach.Size = new Size(182, 27);
+            txtMaDauSach.Size = new Size(240, 27);
             txtMaDauSach.TabIndex = 1;
             txtMaDauSach.Validating += txtMaDauSach_Validating;
             // 
             // lblTheLoai
             // 
             lblTheLoai.AutoSize = true;
-            lblTheLoai.Location = new Point(466, 97);
+            lblTheLoai.Location = new Point(430, 110);
             lblTheLoai.Name = "lblTheLoai";
             lblTheLoai.Size = new Size(62, 20);
             lblTheLoai.TabIndex = 10;
@@ -319,7 +319,7 @@ namespace QuanLyThuVien.Forms
             // lblGiaBia
             // 
             lblGiaBia.AutoSize = true;
-            lblGiaBia.Location = new Point(466, 64);
+            lblGiaBia.Location = new Point(430, 72);
             lblGiaBia.Name = "lblGiaBia";
             lblGiaBia.Size = new Size(56, 20);
             lblGiaBia.TabIndex = 8;
@@ -328,7 +328,7 @@ namespace QuanLyThuVien.Forms
             // lblNamXuatBan
             // 
             lblNamXuatBan.AutoSize = true;
-            lblNamXuatBan.Location = new Point(466, 31);
+            lblNamXuatBan.Location = new Point(430, 34);
             lblNamXuatBan.Name = "lblNamXuatBan";
             lblNamXuatBan.Size = new Size(102, 20);
             lblNamXuatBan.TabIndex = 6;
@@ -337,7 +337,7 @@ namespace QuanLyThuVien.Forms
             // lblTacGia
             // 
             lblTacGia.AutoSize = true;
-            lblTacGia.Location = new Point(14, 93);
+            lblTacGia.Location = new Point(20, 110);
             lblTacGia.Name = "lblTacGia";
             lblTacGia.Size = new Size(55, 20);
             lblTacGia.TabIndex = 4;
@@ -346,7 +346,7 @@ namespace QuanLyThuVien.Forms
             // lblTenDauSach
             // 
             lblTenDauSach.AutoSize = true;
-            lblTenDauSach.Location = new Point(14, 60);
+            lblTenDauSach.Location = new Point(20, 72);
             lblTenDauSach.Name = "lblTenDauSach";
             lblTenDauSach.Size = new Size(94, 20);
             lblTenDauSach.TabIndex = 2;
@@ -355,7 +355,7 @@ namespace QuanLyThuVien.Forms
             // lblMaDauSach
             // 
             lblMaDauSach.AutoSize = true;
-            lblMaDauSach.Location = new Point(14, 27);
+            lblMaDauSach.Location = new Point(20, 34);
             lblMaDauSach.Name = "lblMaDauSach";
             lblMaDauSach.Size = new Size(92, 20);
             lblMaDauSach.TabIndex = 0;
@@ -368,14 +368,14 @@ namespace QuanLyThuVien.Forms
             dgvCuonSach.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvCuonSach.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvCuonSach.Dock = DockStyle.Fill;
-            dgvCuonSach.Location = new Point(0, 45);
+            dgvCuonSach.Location = new Point(0, 52);
             dgvCuonSach.MultiSelect = false;
             dgvCuonSach.Name = "dgvCuonSach";
             dgvCuonSach.ReadOnly = true;
             dgvCuonSach.RowHeadersVisible = false;
             dgvCuonSach.RowHeadersWidth = 51;
             dgvCuonSach.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvCuonSach.Size = new Size(871, 194);
+            dgvCuonSach.Size = new Size(871, 187);
             dgvCuonSach.TabIndex = 1;
             // 
             // pnlNutCuonSach
@@ -388,14 +388,14 @@ namespace QuanLyThuVien.Forms
             pnlNutCuonSach.Dock = DockStyle.Top;
             pnlNutCuonSach.Location = new Point(0, 0);
             pnlNutCuonSach.Name = "pnlNutCuonSach";
-            pnlNutCuonSach.Size = new Size(871, 45);
+            pnlNutCuonSach.Size = new Size(871, 52);
             pnlNutCuonSach.TabIndex = 0;
             // 
             // btnXoaCuon
             // 
-            btnXoaCuon.Location = new Point(686, 8);
+            btnXoaCuon.Location = new Point(590, 8);
             btnXoaCuon.Name = "btnXoaCuon";
-            btnXoaCuon.Size = new Size(94, 29);
+            btnXoaCuon.Size = new Size(130, 36);
             btnXoaCuon.TabIndex = 4;
             btnXoaCuon.Text = "Xóa cuốn";
             btnXoaCuon.UseVisualStyleBackColor = true;
@@ -403,9 +403,9 @@ namespace QuanLyThuVien.Forms
             // 
             // btnDoiTrangThai
             // 
-            btnDoiTrangThai.Location = new Point(529, 8);
+            btnDoiTrangThai.Location = new Point(420, 8);
             btnDoiTrangThai.Name = "btnDoiTrangThai";
-            btnDoiTrangThai.Size = new Size(110, 29);
+            btnDoiTrangThai.Size = new Size(160, 36);
             btnDoiTrangThai.TabIndex = 3;
             btnDoiTrangThai.Text = "Đổi trạng thái";
             btnDoiTrangThai.UseVisualStyleBackColor = true;
@@ -413,9 +413,9 @@ namespace QuanLyThuVien.Forms
             // 
             // btnNhapThemBanSao
             // 
-            btnNhapThemBanSao.Location = new Point(320, 8);
+            btnNhapThemBanSao.Location = new Point(210, 8);
             btnNhapThemBanSao.Name = "btnNhapThemBanSao";
-            btnNhapThemBanSao.Size = new Size(153, 29);
+            btnNhapThemBanSao.Size = new Size(200, 36);
             btnNhapThemBanSao.TabIndex = 2;
             btnNhapThemBanSao.Text = "Nhập thêm bản sao";
             btnNhapThemBanSao.UseVisualStyleBackColor = true;
@@ -423,17 +423,17 @@ namespace QuanLyThuVien.Forms
             // 
             // nudSoLuong
             // 
-            nudSoLuong.Location = new Point(114, 10);
+            nudSoLuong.Location = new Point(110, 11);
             nudSoLuong.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             nudSoLuong.Name = "nudSoLuong";
-            nudSoLuong.Size = new Size(150, 27);
+            nudSoLuong.Size = new Size(80, 27);
             nudSoLuong.TabIndex = 1;
             nudSoLuong.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(3, 10);
+            label1.Location = new Point(16, 16);
             label1.Name = "label1";
             label1.Size = new Size(82, 20);
             label1.TabIndex = 0;

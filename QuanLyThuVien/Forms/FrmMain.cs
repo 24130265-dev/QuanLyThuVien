@@ -16,6 +16,15 @@ public partial class FrmMain : Form
 
         // 1. Áp Theme chung, sau đó tùy biến riêng phần khung chính
         Theme.Apply(this);
+        Theme.FadeIn(this);
+
+        // Mở rộng sidebar để chữ không bị cắt
+        pnlSidebar.Width = 250;
+        foreach (var b in flpMenu.Controls.OfType<Button>())
+        {
+            b.Width = 250;
+            b.Height = 52;
+        }
 
         // 2. Thanh tiêu đề trên
         pnlHeader.BackColor = Theme.CardBg;
