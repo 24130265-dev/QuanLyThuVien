@@ -14,9 +14,6 @@ public partial class FrmMain : Form
     {
         InitializeComponent();
 
-        FormClosing += FrmMain_FormClosing;
-        timerDongHo.Tick += (s, e) => CapNhatDongHo();
-
         // 1. Áp Theme chung, sau đó tùy biến riêng phần khung chính
         Theme.Apply(this);
         Theme.FadeIn(this);
@@ -57,10 +54,10 @@ public partial class FrmMain : Form
         => DieuHuong(btnBaoCao, "Báo cáo & Tổng quan", new FrmBaoCao());
 
     private void btnDocGia_Click(object? sender, EventArgs e)
-        => ChuaCo("Quản lý Độc giả");
+        => DieuHuong(btnDocGia, "Quản lý Độc giả", new FrmDocGia());
 
     private void btnMuonSach_Click(object? sender, EventArgs e)
-        => ChuaCo("Mượn sách");
+        => DieuHuong(btnMuonSach, "Mượn sách", new FrmMuonSach());
 
     private void DieuHuong(Button nut, string tenManHinh, Form form)
     {
@@ -140,9 +137,11 @@ public partial class FrmMain : Form
         f.Show();
     }
 
-    private static void ChuaCo(string ten)
-    {
-        MessageBox.Show($"Màn hình \"{ten}\" sẽ được nối sau khi ghép code của nhóm.",
-            "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-    }
+   
+
+
+
+
+
+
 }
