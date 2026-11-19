@@ -14,6 +14,9 @@ public partial class FrmMain : Form
     {
         InitializeComponent();
 
+        FormClosing += FrmMain_FormClosing;
+        timerDongHo.Tick += (s, e) => CapNhatDongHo();
+
         // 1. Áp Theme chung, sau đó tùy biến riêng phần khung chính
         Theme.Apply(this);
         Theme.FadeIn(this);
@@ -142,10 +145,4 @@ public partial class FrmMain : Form
         MessageBox.Show($"Màn hình \"{ten}\" sẽ được nối sau khi ghép code của nhóm.",
             "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
-
-
-
-   
-
-    
 }
