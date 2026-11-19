@@ -295,7 +295,8 @@ public partial class FrmMuonSach : Form
         _soSachDangGiu = dangGiu;
         grpChonSach.Enabled = true;
         lblThongTinDocGia.ForeColor = Color.ForestGreen;
-        lblThongTinDocGia.Text = $"{dg.HoTen} đủ điều kiện mượn.";
+        lblThongTinDocGia.Text =
+            $"{dg.HoTen} | SĐT: {dg.SoDienThoai} | Đang giữ: {dangGiu}/{SoSachToiDa} cuốn | Đủ điều kiện mượn";
         CapNhatDem();
         txtMaCuonSach.Focus();
     }

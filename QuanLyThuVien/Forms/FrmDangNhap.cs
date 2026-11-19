@@ -19,7 +19,7 @@ public partial class FrmDangNhap : Form
         lblLogo.ForeColor = Color.White;
         lblLogo.Font = new Font("Segoe UI", 40F, FontStyle.Bold);
         lblTenTruong.ForeColor = Color.White;
-        lblTenTruong.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+        lblTenTruong.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
         lblKhoa.ForeColor = Color.FromArgb(204, 251, 241);
         lblHeThong.ForeColor = Color.White;
         lblHeThong.Font = new Font("Segoe UI", 11F, FontStyle.Bold);

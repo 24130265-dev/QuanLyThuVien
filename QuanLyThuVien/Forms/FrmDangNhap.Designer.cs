@@ -60,7 +60,7 @@
             pnlTrai.Dock = DockStyle.Left;
             pnlTrai.Location = new Point(0, 0);
             pnlTrai.Name = "pnlTrai";
-            pnlTrai.Size = new Size(359, 493);
+            pnlTrai.Size = new Size(270, 493);
             pnlTrai.TabIndex = 0;
             // 
             // lblHeThong
@@ -69,7 +69,7 @@
             lblHeThong.ForeColor = Color.White;
             lblHeThong.Location = new Point(15, 290);
             lblHeThong.Name = "lblHeThong";
-            lblHeThong.Size = new Size(330, 60);
+            lblHeThong.Size = new Size(240, 60);
             lblHeThong.TabIndex = 3;
             lblHeThong.Text = "HỆ THỐNG QUẢN LÝ MƯỢN / TRẢ SÁCH";
             lblHeThong.TextAlign = ContentAlignment.MiddleCenter;
@@ -80,7 +80,7 @@
             lblKhoa.ForeColor = Color.White;
             lblKhoa.Location = new Point(15, 215);
             lblKhoa.Name = "lblKhoa";
-            lblKhoa.Size = new Size(330, 30);
+            lblKhoa.Size = new Size(240, 30);
             lblKhoa.TabIndex = 2;
             lblKhoa.Text = "KHOA CÔNG NGHỆ THÔNG TIN";
             lblKhoa.TextAlign = ContentAlignment.MiddleCenter;
@@ -91,9 +91,9 @@
             lblTenTruong.ForeColor = Color.White;
             lblTenTruong.Location = new Point(15, 150);
             lblTenTruong.Name = "lblTenTruong";
-            lblTenTruong.Size = new Size(330, 60);
+            lblTenTruong.Size = new Size(240, 60);
             lblTenTruong.TabIndex = 1;
-            lblTenTruong.Text = "THƯ VIỆN ĐẠI HỌC NÔNG LÂM TP. HCM";
+            lblTenTruong.Text = "THƯ VIỆN ĐẠI HỌC\nNÔNG LÂM TP. HCM";
             lblTenTruong.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lblLogo
@@ -102,7 +102,7 @@
             lblLogo.ForeColor = Color.White;
             lblLogo.Location = new Point(20, 45);
             lblLogo.Name = "lblLogo";
-            lblLogo.Size = new Size(330, 90);
+            lblLogo.Size = new Size(230, 90);
             lblLogo.TabIndex = 0;
             lblLogo.Text = "📚";
             lblLogo.TextAlign = ContentAlignment.MiddleCenter;
@@ -118,9 +118,9 @@
             grpDangNhap.Controls.Add(lblMatKhau);
             grpDangNhap.Controls.Add(txtEmail);
             grpDangNhap.Controls.Add(lblEmail);
-            grpDangNhap.Location = new Point(365, 35);
+            grpDangNhap.Location = new Point(300, 55);
             grpDangNhap.Name = "grpDangNhap";
-            grpDangNhap.Size = new Size(520, 430);
+            grpDangNhap.Size = new Size(590, 380);
             grpDangNhap.TabIndex = 1;
             grpDangNhap.TabStop = false;
             grpDangNhap.Text = "ĐĂNG NHẬP HỆ THỐNG";
@@ -128,7 +128,7 @@
             // lblGhiChu
             // 
             lblGhiChu.AutoSize = true;
-            lblGhiChu.Location = new Point(35, 382);
+            lblGhiChu.Location = new Point(35, 320);
             lblGhiChu.Name = "lblGhiChu";
             lblGhiChu.Size = new Size(266, 20);
             lblGhiChu.TabIndex = 9;
@@ -136,9 +136,9 @@
             // 
             // btnThoat
             // 
-            btnThoat.Location = new Point(270, 322);
+            btnThoat.Location = new Point(300, 265);
             btnThoat.Name = "btnThoat";
-            btnThoat.Size = new Size(215, 42);
+            btnThoat.Size = new Size(250, 42);
             btnThoat.TabIndex = 8;
             btnThoat.Text = "Thoát";
             btnThoat.UseVisualStyleBackColor = true;
@@ -146,9 +146,9 @@
             // 
             // btnDangNhap
             // 
-            btnDangNhap.Location = new Point(35, 322);
+            btnDangNhap.Location = new Point(35, 265);
             btnDangNhap.Name = "btnDangNhap";
-            btnDangNhap.Size = new Size(220, 42);
+            btnDangNhap.Size = new Size(250, 42);
             btnDangNhap.TabIndex = 7;
             btnDangNhap.Text = "Đăng nhập";
             btnDangNhap.UseVisualStyleBackColor = true;
@@ -158,9 +158,9 @@
             // 
             grpVaiTro.Controls.Add(rdoDocGia);
             grpVaiTro.Controls.Add(rdoThuThu);
-            grpVaiTro.Location = new Point(35, 195);
+            grpVaiTro.Location = new Point(35, 190);
             grpVaiTro.Name = "grpVaiTro";
-            grpVaiTro.Size = new Size(450, 121);
+            grpVaiTro.Size = new Size(520, 68);
             grpVaiTro.TabIndex = 6;
             grpVaiTro.TabStop = false;
             grpVaiTro.Text = "Vai trò đăng nhập";
@@ -168,7 +168,7 @@
             // rdoDocGia
             // 
             rdoDocGia.AutoSize = true;
-            rdoDocGia.Location = new Point(235, 28);
+            rdoDocGia.Location = new Point(255, 28);
             rdoDocGia.Name = "rdoDocGia";
             rdoDocGia.Size = new Size(155, 24);
             rdoDocGia.TabIndex = 1;
@@ -191,7 +191,7 @@
             // 
             txtMatKhau.Location = new Point(35, 130);
             txtMatKhau.Name = "txtMatKhau";
-            txtMatKhau.Size = new Size(125, 27);
+            txtMatKhau.Size = new Size(520, 27);
             txtMatKhau.TabIndex = 5;
             // 
             // chkHienMatKhau
@@ -218,7 +218,7 @@
             // 
             txtEmail.Location = new Point(35, 65);
             txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(125, 27);
+            txtEmail.Size = new Size(520, 27);
             txtEmail.TabIndex = 1;
             // 
             // lblEmail

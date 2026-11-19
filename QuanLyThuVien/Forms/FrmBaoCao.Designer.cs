@@ -29,6 +29,8 @@ partial class FrmBaoCao
     private TabPage tabTopSach;
     private TabPage tabTienPhat;
 
+    private TableLayoutPanel tblChiTietMuonTra;
+    private Panel pnlBieuDoMuon;
     private DataGridView dgvMuonTra;
     private DataGridView dgvTopSach;
     private DataGridView dgvTienPhat;
@@ -59,6 +61,8 @@ partial class FrmBaoCao
             this.tabTopSach = new TabPage();
             this.tabTienPhat = new TabPage();
 
+            this.tblChiTietMuonTra = new TableLayoutPanel();
+            this.pnlBieuDoMuon = new Panel();
             this.dgvMuonTra = new DataGridView();
             this.dgvTopSach = new DataGridView();
             this.dgvTienPhat = new DataGridView();
@@ -69,6 +73,7 @@ partial class FrmBaoCao
             this.tabMuonTra.SuspendLayout();
             this.tabTopSach.SuspendLayout();
             this.tabTienPhat.SuspendLayout();
+            this.tblChiTietMuonTra.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMuonTra)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTopSach)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTienPhat)).BeginInit();
@@ -151,7 +156,23 @@ partial class FrmBaoCao
             this.tabBaoCao.Controls.AddRange(new Control[] { this.tabMuonTra, this.tabTopSach, this.tabTienPhat });
 
             this.tabMuonTra.Text = "1. Tình hình Mượn - Trả & Quá hạn";
-            this.tabMuonTra.Controls.Add(this.dgvMuonTra);
+            this.tabMuonTra.Controls.Add(this.tblChiTietMuonTra);
+
+            this.tblChiTietMuonTra.Dock = DockStyle.Fill;
+            this.tblChiTietMuonTra.ColumnCount = 2;
+            this.tblChiTietMuonTra.RowCount = 1;
+            this.tblChiTietMuonTra.Padding = new Padding(6);
+            this.tblChiTietMuonTra.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 38F));
+            this.tblChiTietMuonTra.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 62F));
+            this.tblChiTietMuonTra.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            this.tblChiTietMuonTra.Controls.Add(this.pnlBieuDoMuon, 0, 0);
+            this.tblChiTietMuonTra.Controls.Add(this.dgvMuonTra, 1, 0);
+
+            this.pnlBieuDoMuon.BackColor = Color.White;
+            this.pnlBieuDoMuon.BorderStyle = BorderStyle.FixedSingle;
+            this.pnlBieuDoMuon.Dock = DockStyle.Fill;
+            this.pnlBieuDoMuon.Margin = new Padding(4, 4, 8, 4);
+            this.pnlBieuDoMuon.Paint += new PaintEventHandler(this.pnlBieuDoMuon_Paint);
             CauHinhLuoi(this.dgvMuonTra);
 
             this.tabTopSach.Text = "2. Top Đầu Sách Mượn Nhiều";
@@ -181,6 +202,7 @@ partial class FrmBaoCao
             this.tabMuonTra.ResumeLayout(false);
             this.tabTopSach.ResumeLayout(false);
             this.tabTienPhat.ResumeLayout(false);
+            this.tblChiTietMuonTra.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvMuonTra)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTopSach)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTienPhat)).EndInit();
