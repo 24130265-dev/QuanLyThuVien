@@ -26,6 +26,7 @@ public partial class FrmQuanLySach : Form
         InitializeComponent();
         Theme.Apply(this);
 
+
         _bsDauSach.DataSource = _dsDauSach;
         dgvDauSach.DataSource = _bsDauSach;
 
