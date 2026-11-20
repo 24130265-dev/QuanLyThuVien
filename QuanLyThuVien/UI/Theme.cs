@@ -38,6 +38,7 @@ public static class Theme
     public static readonly Font FontNormal = new("Segoe UI", 10F, FontStyle.Regular);
     public static readonly Font FontBold = new("Segoe UI", 10F, FontStyle.Bold);
     public static readonly Font FontTitle = new("Segoe UI", 13F, FontStyle.Bold);
+    public static readonly Font FontSmall = new("Segoe UI", 9F, FontStyle.Regular);
 
     // Font biểu tượng có sẵn trên Windows 10/11 (Segoe Fluent Icons hoặc Segoe MDL2 Assets)
     private static readonly Font? FontIcon = TaoFontIcon();
@@ -561,5 +562,40 @@ public static class Theme
             }
         };
         f.Shown += (s, e) => timer.Start();
+    }
+
+    // =====================================================================
+    // 11. THANH TRẠNG THÁI (StatusStrip): nền trắng, vạch kẻ mảnh phía trên
+    //     Cách dùng: Theme.StyleStatusStrip(statusStrip1);
+    // =====================================================================
+    private sealed class StatusRenderer : ToolStripProfessionalRenderer
+    {
+        public StatusRenderer() : base(new ProfessionalColorTable())
+        {
+            RoundedEdges = false;
+        }
+
+        protected override void OnRenderToolStripBackground(ToolStripRenderEventArgs e)
+        {
+            using var b = new SolidBrush(e.BackColor);
+            e.Graphics.FillRectangle(b, e.AffectedBounds);
+        }
+
+        protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
+        {
+            using var pen = new Pen(Border);
+            e.Graphics.DrawLine(pen, 0, 0, e.ToolStrip.Width, 0);
+        }
+    }
+
+    public static void StyleStatusStrip(StatusStrip ss)
+    {
+        ss.SizingGrip = false;
+        ss.BackColor = CardBg;
+        ss.ForeColor = Neutral;
+        ss.Font = FontSmall;
+        ss.Renderer = new StatusRenderer();
+        foreach (ToolStripItem item in ss.Items)
+            item.ForeColor = Neutral;
     }
 }

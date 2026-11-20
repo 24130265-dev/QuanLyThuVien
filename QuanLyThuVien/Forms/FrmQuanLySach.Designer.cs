@@ -97,7 +97,7 @@ namespace QuanLyThuVien.Forms
             // 
             splMain.Panel2.Controls.Add(splPhai);
             splMain.Size = new Size(1248, 603);
-            splMain.SplitterDistance = 373;
+            splMain.SplitterDistance = 345;
             splMain.TabIndex = 0;
             // 
             // tvTheLoai
@@ -105,7 +105,7 @@ namespace QuanLyThuVien.Forms
             tvTheLoai.Dock = DockStyle.Fill;
             tvTheLoai.Location = new Point(0, 0);
             tvTheLoai.Name = "tvTheLoai";
-            tvTheLoai.Size = new Size(373, 551);
+            tvTheLoai.Size = new Size(345, 551);
             tvTheLoai.TabIndex = 1;
             tvTheLoai.AfterSelect += tvTheLoai_AfterSelect;
             // 
@@ -117,7 +117,7 @@ namespace QuanLyThuVien.Forms
             pnlNutTheLoai.Dock = DockStyle.Bottom;
             pnlNutTheLoai.Location = new Point(0, 551);
             pnlNutTheLoai.Name = "pnlNutTheLoai";
-            pnlNutTheLoai.Size = new Size(373, 52);
+            pnlNutTheLoai.Size = new Size(345, 52);
             pnlNutTheLoai.TabIndex = 0;
             // 
             // btnXoaTheLoai
@@ -166,7 +166,7 @@ namespace QuanLyThuVien.Forms
             // 
             splPhai.Panel2.Controls.Add(dgvCuonSach);
             splPhai.Panel2.Controls.Add(pnlNutCuonSach);
-            splPhai.Size = new Size(871, 603);
+            splPhai.Size = new Size(899, 603);
             splPhai.SplitterDistance = 360;
             splPhai.TabIndex = 0;
             // 
@@ -183,7 +183,7 @@ namespace QuanLyThuVien.Forms
             dgvDauSach.ReadOnly = true;
             dgvDauSach.RowHeadersWidth = 51;
             dgvDauSach.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDauSach.Size = new Size(871, 165);
+            dgvDauSach.Size = new Size(899, 165);
             dgvDauSach.TabIndex = 1;
             // 
             // grpDauSach
@@ -207,7 +207,7 @@ namespace QuanLyThuVien.Forms
             grpDauSach.Dock = DockStyle.Top;
             grpDauSach.Location = new Point(0, 0);
             grpDauSach.Name = "grpDauSach";
-            grpDauSach.Size = new Size(871, 195);
+            grpDauSach.Size = new Size(899, 195);
             grpDauSach.TabIndex = 0;
             grpDauSach.TabStop = false;
             grpDauSach.Text = "Thông tin đầu sách";
@@ -375,7 +375,7 @@ namespace QuanLyThuVien.Forms
             dgvCuonSach.RowHeadersVisible = false;
             dgvCuonSach.RowHeadersWidth = 51;
             dgvCuonSach.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvCuonSach.Size = new Size(871, 187);
+            dgvCuonSach.Size = new Size(899, 187);
             dgvCuonSach.TabIndex = 1;
             // 
             // pnlNutCuonSach
@@ -388,7 +388,7 @@ namespace QuanLyThuVien.Forms
             pnlNutCuonSach.Dock = DockStyle.Top;
             pnlNutCuonSach.Location = new Point(0, 0);
             pnlNutCuonSach.Name = "pnlNutCuonSach";
-            pnlNutCuonSach.Size = new Size(871, 52);
+            pnlNutCuonSach.Size = new Size(899, 52);
             pnlNutCuonSach.TabIndex = 0;
             // 
             // btnXoaCuon

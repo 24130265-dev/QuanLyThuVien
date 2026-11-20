@@ -191,7 +191,7 @@
             // 
             txtMatKhau.Location = new Point(35, 130);
             txtMatKhau.Name = "txtMatKhau";
-            txtMatKhau.Size = new Size(220, 27);
+            txtMatKhau.Size = new Size(320, 27);
             txtMatKhau.TabIndex = 5;
             // 
             // chkHienMatKhau
@@ -218,7 +218,7 @@
             // 
             txtEmail.Location = new Point(35, 65);
             txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(220, 27);
+            txtEmail.Size = new Size(320, 27);
             txtEmail.TabIndex = 1;
             // 
             // lblEmail
@@ -241,6 +241,7 @@
             Controls.Add(pnlTrai);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
+            MinimizeBox = false;
             Name = "FrmDangNhap";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Đăng nhập - Hệ thống Quản lý Thư viện NLU";

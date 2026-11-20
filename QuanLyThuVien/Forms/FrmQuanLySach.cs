@@ -355,11 +355,36 @@ public partial class FrmQuanLySach : Form
             ["TongSoCuon"] = "Tổng số cuốn",
             ["SoCuonSanSang"] = "Sẵn sàng"
         };
+
+        var tiLeCotDauSach = new Dictionary<string, float>
+        {
+            ["MaDauSach"] = 75,
+            ["TenDauSach"] = 220,
+            ["TacGia"] = 150,
+            ["NamXuatBan"] = 65,
+            ["GiaBia"] = 85,
+            ["TenTheLoai"] = 120,
+            ["TongSoCuon"] = 70,
+            ["SoCuonSanSang"] = 70
+        };
+
+        string[] cotSo = { "NamXuatBan", "GiaBia", "TongSoCuon", "SoCuonSanSang" };
+
         foreach (DataGridViewColumn cot in dgvDauSach.Columns)
         {
             if (tieuDeDauSach.TryGetValue(cot.Name, out var t))
                 cot.HeaderText = t;
+
+            if (tiLeCotDauSach.TryGetValue(cot.Name, out var tiLe))
+            {
+                cot.FillWeight = tiLe;
+                cot.MinimumWidth = (int)(tiLe * 0.7f);
+            }
+
+            if (cotSo.Contains(cot.Name))
+                cot.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
         }
+
         if (dgvDauSach.Columns["MaTheLoai"] is { } cotMaTheLoai)
             cotMaTheLoai.Visible = false;
         if (dgvDauSach.Columns["GiaBia"] is { } cotGia)
@@ -371,12 +396,14 @@ public partial class FrmQuanLySach : Form
             ["ViTriKe"] = "Vị trí kệ",
             ["TrangThai"] = "Trạng thái"
         };
+
         foreach (DataGridViewColumn cot in dgvCuonSach.Columns)
         {
             if (tieuDeCuon.TryGetValue(cot.Name, out var t))
                 cot.HeaderText = t;
         }
     }
+
 
 
     //ham phu
@@ -584,8 +611,7 @@ public partial class FrmQuanLySach : Form
             _maCanChon = ma;
             await NapCayTheLoaiAsync(maTheLoai);
 
-            MessageBox.Show($"Đã thêm đầu sách {ma} cùng {soLuong} cuốn sách.", "Thành công",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Toast.ThanhCong(this, $"Đã thêm đầu sách {ma} cùng {soLuong} cuốn sách.");
         }
         catch (Exception ex)
         {
@@ -626,6 +652,7 @@ public partial class FrmQuanLySach : Form
 
             _maCanChon = ma;
             await NapCayTheLoaiAsync(maTheLoai);
+            Toast.ThanhCong(this, $"Đã cập nhật đầu sách {ma}.");
         }
         catch (Exception ex)
         {

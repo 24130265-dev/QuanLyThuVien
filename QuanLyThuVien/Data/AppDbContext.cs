@@ -129,7 +129,13 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<DauSach>().HasData(
             new DauSach { MaDauSach = "SACH01", TenDauSach = "Lập trình C#", TacGia = "Nguyễn Văn A", NamXuatBan = 2024, GiaBia = 150000m, MaTheLoai = "TL_LAPTRINH" },
-            new DauSach { MaDauSach = "SACH02", TenDauSach = "Thực hành SQL Server", TacGia = "Trần Thị B", NamXuatBan = 2023, GiaBia = 120000m, MaTheLoai = "TL_CSDL" }
+            new DauSach { MaDauSach = "SACH02", TenDauSach = "Thực hành SQL Server", TacGia = "Trần Thị B", NamXuatBan = 2023, GiaBia = 120000m, MaTheLoai = "TL_CSDL" },
+            new DauSach { MaDauSach = "SACH03", TenDauSach = "Cấu trúc dữ liệu & Giải thuật", TacGia = "Đỗ Xuân Lôi", NamXuatBan = 2022, GiaBia = 135000m, MaTheLoai = "TL_LAPTRINH" },
+            new DauSach { MaDauSach = "SACH04", TenDauSach = "Lập trình hướng đối tượng", TacGia = "Phạm Văn Ất", NamXuatBan = 2023, GiaBia = 145000m, MaTheLoai = "TL_LAPTRINH" },
+            new DauSach { MaDauSach = "SACH05", TenDauSach = "Hệ quản trị CSDL SQLite", TacGia = "Lê Minh Hoàng", NamXuatBan = 2024, GiaBia = 110000m, MaTheLoai = "TL_CSDL" },
+            new DauSach { MaDauSach = "SACH06", TenDauSach = "Nhập môn Mạng máy tính", TacGia = "Nguyễn Quốc Tuấn", NamXuatBan = 2021, GiaBia = 125000m, MaTheLoai = "TL_CNTT" },
+            new DauSach { MaDauSach = "SACH07", TenDauSach = "Quản trị học đại cương", TacGia = "Nguyễn Thị Liên", NamXuatBan = 2022, GiaBia = 95000m, MaTheLoai = "TL_QUANTRI" },
+            new DauSach { MaDauSach = "SACH08", TenDauSach = "Kinh tế vi mô", TacGia = "Trần Minh Đạo", NamXuatBan = 2023, GiaBia = 105000m, MaTheLoai = "TL_KINHTE" }
         );
 
         modelBuilder.Entity<CuonSach>().HasData(
@@ -137,21 +143,31 @@ public class AppDbContext : DbContext
             new CuonSach { MaCuonSach = "SACH01_2", MaDauSach = "SACH01", ViTriKe = "Kệ A1 - Tầng 2", TrangThai = TrangThaiSach.SanSang },
             new CuonSach { MaCuonSach = "SACH01_3", MaDauSach = "SACH01", ViTriKe = "Kệ A1 - Tầng 2", TrangThai = TrangThaiSach.DangMuon },
             new CuonSach { MaCuonSach = "SACH02_1", MaDauSach = "SACH02", ViTriKe = "Kệ B2 - Tầng 1", TrangThai = TrangThaiSach.SanSang },
-            new CuonSach { MaCuonSach = "SACH02_2", MaDauSach = "SACH02", ViTriKe = "Kệ B2 - Tầng 1", TrangThai = TrangThaiSach.SanSang }
+            new CuonSach { MaCuonSach = "SACH02_2", MaDauSach = "SACH02", ViTriKe = "Kệ B2 - Tầng 1", TrangThai = TrangThaiSach.SanSang },
+            new CuonSach { MaCuonSach = "SACH03_1", MaDauSach = "SACH03", ViTriKe = "Kệ A1 - Tầng 2", TrangThai = TrangThaiSach.SanSang },
+            new CuonSach { MaCuonSach = "SACH03_2", MaDauSach = "SACH03", ViTriKe = "Kệ A1 - Tầng 2", TrangThai = TrangThaiSach.SanSang },
+            new CuonSach { MaCuonSach = "SACH04_1", MaDauSach = "SACH04", ViTriKe = "Kệ A2 - Tầng 2", TrangThai = TrangThaiSach.SanSang },
+            new CuonSach { MaCuonSach = "SACH04_2", MaDauSach = "SACH04", ViTriKe = "Kệ A2 - Tầng 2", TrangThai = TrangThaiSach.SanSang },
+            new CuonSach { MaCuonSach = "SACH05_1", MaDauSach = "SACH05", ViTriKe = "Kệ A2 - Tầng 2", TrangThai = TrangThaiSach.SanSang },
+            new CuonSach { MaCuonSach = "SACH06_1", MaDauSach = "SACH06", ViTriKe = "Kệ A3 - Tầng 2", TrangThai = TrangThaiSach.SanSang },
+            new CuonSach { MaCuonSach = "SACH07_1", MaDauSach = "SACH07", ViTriKe = "Kệ B1 - Tầng 1", TrangThai = TrangThaiSach.SanSang },
+            new CuonSach { MaCuonSach = "SACH07_2", MaDauSach = "SACH07", ViTriKe = "Kệ B1 - Tầng 1", TrangThai = TrangThaiSach.SanSang },
+            new CuonSach { MaCuonSach = "SACH08_1", MaDauSach = "SACH08", ViTriKe = "Kệ B2 - Tầng 1", TrangThai = TrangThaiSach.SanSang }
         );
 
         modelBuilder.Entity<DocGia>().HasData(
-            new DocGia { MaDocGia = "DG01", HoTen = "Lê Hoàng Nam", SoDienThoai = "0901234567", BiKhoaThe = false, TienNoPhat = 0m },
-            new DocGia { MaDocGia = "DG02", HoTen = "Phạm Minh Tuấn", SoDienThoai = "0902345678", BiKhoaThe = true, TienNoPhat = 0m },
-            new DocGia { MaDocGia = "DG03", HoTen = "Võ Thị Lan", SoDienThoai = "0903456789", BiKhoaThe = false, TienNoPhat = 15000m }
+            new DocGia { MaDocGia = "24130265", HoTen = "Lê Ngọc Tài", SoDienThoai = "0901234561" },
+            new DocGia { MaDocGia = "24130114", HoTen = "Lâm Thế Huy", SoDienThoai = "0901234562" },
+            new DocGia { MaDocGia = "24130284", HoTen = "Nguyễn Toàn Thắng", SoDienThoai = "0901234563", TienNoPhat = 15000m },
+            new DocGia { MaDocGia = "24130001", HoTen = "Nguyễn Văn A", SoDienThoai = "0901234564" }
         );
 
-        // Phiếu mượn đã quá hạn: DG01 mượn SACH01_3
+        // Phiếu mượn đã quá hạn: 24130265 mượn SACH01_3
         modelBuilder.Entity<PhieuMuon>().HasData(
             new PhieuMuon
             {
                 MaPhieuMuon = 1,
-                MaDocGia = "DG01",
+                MaDocGia = "24130265",
                 NgayMuon = new DateTime(2026, 10, 1),
                 NgayPhaiTra = new DateTime(2026, 10, 15)
             }
@@ -168,12 +184,12 @@ public class AppDbContext : DbContext
             }
         );
 
-        // Hóa đơn phạt chưa thanh toán của DG03
+        // Hóa đơn phạt chưa thanh toán của 24130284
         modelBuilder.Entity<HoaDonPhat>().HasData(
             new HoaDonPhat
             {
                 MaHoaDon = 1,
-                MaDocGia = "DG03",
+                MaDocGia = "24130284",
                 MaPhieuMuon = null,
                 NgayLap = new DateTime(2026, 10, 20),
                 TienPhatQuaHan = 15000m,

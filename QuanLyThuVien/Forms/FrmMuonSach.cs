@@ -7,27 +7,14 @@ using QuanLyThuVien.UI;
 
 namespace QuanLyThuVien.Forms;
 
-// ============================================================================
-// MÀN HÌNH MƯỢN SÁCH (Thành viên 2)
-//
-// Control cần kéo thả trong Designer (đặt đúng (Name)):
-//   txtMaDocGia, btnKiemTra, lblThongTinDocGia
-//   grpChonSach (GroupBox, Enabled = False) chứa:
-//       txtMaCuonSach, btnThemVaoGio, btnXoaKhoiGio, dgvGioMuon,
-//       lblSoLuong, dtpNgayMuon, dtpNgayPhaiTra
-//   btnLapPhieu, btnLamMoi
-//
-// LƯU Ý: các sự kiện được nối ngay trong constructor bên dưới.
-//        KHÔNG bấm đúp vào control để tạo sự kiện (sẽ bị nối trùng).
-// ============================================================================
 public partial class FrmMuonSach : Form
 {
-    private const int SoSachToiDa = 3;   // đề bài: tối đa 3 cuốn
-    private const int SoNgayMuon = 14;   // đề bài: ngày phải trả = ngày mượn + 14
+    private const int SoSachToiDa = 3;   // Đề bài: tối đa 3 cuốn
+    private const int SoNgayMuon = 14;   // Đề bài: ngày phải trả = ngày mượn + 14
 
     private readonly BindingList<GioMuonDto> _gio = new();
-    private string? _maDocGia;           // độc giả đã qua kiểm tra, null nếu chưa
-    private int _soSachDangGiu;          // số cuốn độc giả đang giữ trong CSDL (chưa trả)
+    private string? _maDocGia;           // Độc giả đã qua kiểm tra, null nếu chưa
+    private int _soSachDangGiu;          // Số cuốn độc giả đang giữ trong CSDL (chưa trả)
 
     public FrmMuonSach()
     {
@@ -35,10 +22,11 @@ public partial class FrmMuonSach : Form
         Theme.Apply(this);
 
         dgvGioMuon.DataSource = _gio;
+        dgvGioMuon.DataBindingComplete += (s, e) => CauHinhLuoi();
 
         dtpNgayMuon.Format = DateTimePickerFormat.Short;
         dtpNgayPhaiTra.Format = DateTimePickerFormat.Short;
-        dtpNgayPhaiTra.Enabled = false;  // tự tính, không cho sửa tay
+        dtpNgayPhaiTra.Enabled = false;  // Tự tính, không cho sửa tay
 
         Load += FrmMuonSach_Load;
         btnKiemTra.Click += btnKiemTra_Click;
@@ -73,6 +61,7 @@ public partial class FrmMuonSach : Form
 
     private async void btnKiemTra_Click(object? sender, EventArgs e)
     {
+        btnKiemTra.Enabled = false;
         try
         {
             await KiemTraDocGiaAsync();
@@ -81,10 +70,15 @@ public partial class FrmMuonSach : Form
         {
             BaoLoi(ex);
         }
+        finally
+        {
+            btnKiemTra.Enabled = true;
+        }
     }
 
     private async void btnThemVaoGio_Click(object? sender, EventArgs e)
     {
+        btnThemVaoGio.Enabled = false;
         try
         {
             if (_maDocGia == null)
@@ -149,6 +143,10 @@ public partial class FrmMuonSach : Form
         {
             BaoLoi(ex);
         }
+        finally
+        {
+            btnThemVaoGio.Enabled = true;
+        }
     }
 
     private void btnXoaKhoiGio_Click(object? sender, EventArgs e)
@@ -162,6 +160,7 @@ public partial class FrmMuonSach : Form
 
     private async void btnLapPhieu_Click(object? sender, EventArgs e)
     {
+        btnLapPhieu.Enabled = false;
         try
         {
             if (_maDocGia == null || _gio.Count == 0)
@@ -171,10 +170,17 @@ public partial class FrmMuonSach : Form
                 return;
             }
 
-            // Mỗi lần xử lý dùng một DbContext mới (không giữ DbContext dùng chung cả Form)
+            var ngayMuon = dtpNgayMuon.Value.Date;
+            if (ngayMuon > DateTime.Today)
+            {
+                MessageBox.Show("Ngày mượn không được lớn hơn ngày hiện tại.",
+                    "Ngày mượn không hợp lệ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             using var db = new AppDbContext();
 
-            // Kiểm tra lại với CSDL: có thể màn hình khác vừa đổi dữ liệu
+            // Kiểm tra lại với CSDL: tránh xung đột nếu màn hình khác vừa cập nhật
             var docGia = await db.DocGias.FirstOrDefaultAsync(d => d.MaDocGia == _maDocGia);
             if (docGia == null || docGia.BiKhoaThe || docGia.TienNoPhat > 0)
             {
@@ -201,7 +207,6 @@ public partial class FrmMuonSach : Form
                 return;
             }
 
-            var ngayMuon = dtpNgayMuon.Value.Date;
             var phieu = new PhieuMuon
             {
                 MaDocGia = _maDocGia,
@@ -211,7 +216,6 @@ public partial class FrmMuonSach : Form
 
             foreach (var cuon in cacCuon)
             {
-                // NgayTraThucTe phải để null khi mới mượn (TV3 dựa vào điều kiện này)
                 phieu.ChiTietPhieuMuons.Add(new ChiTietPhieuMuon
                 {
                     MaCuonSach = cuon.MaCuonSach,
@@ -221,7 +225,7 @@ public partial class FrmMuonSach : Form
             }
 
             db.PhieuMuons.Add(phieu);
-            await db.SaveChangesAsync();   // 1 lần lưu duy nhất: phiếu, chi tiết và đổi trạng thái sách
+            await db.SaveChangesAsync();
 
             MessageBox.Show(
                 $"Đã lập phiếu mượn số {phieu.MaPhieuMuon}.\nNgày phải trả: {phieu.NgayPhaiTra:dd/MM/yyyy}",
@@ -233,6 +237,10 @@ public partial class FrmMuonSach : Form
         {
             BaoLoi(ex);
         }
+        finally
+        {
+            CapNhatDem();
+        }
     }
 
     private void btnLamMoi_Click(object? sender, EventArgs e)
@@ -242,10 +250,8 @@ public partial class FrmMuonSach : Form
 
     // ===================== NGHIỆP VỤ =====================
 
-    // Kiểm tra 3 điều kiện chặn theo đề bài; hợp lệ thì mở khu chọn sách
     private async Task KiemTraDocGiaAsync()
     {
-        // Đổi độc giả thì bỏ giỏ cũ
         _gio.Clear();
         _maDocGia = null;
         _soSachDangGiu = 0;
@@ -295,12 +301,12 @@ public partial class FrmMuonSach : Form
         _soSachDangGiu = dangGiu;
         grpChonSach.Enabled = true;
         lblThongTinDocGia.ForeColor = Color.ForestGreen;
-        lblThongTinDocGia.Text = $"{dg.HoTen} đủ điều kiện mượn.";
+        lblThongTinDocGia.Text =
+            $"{dg.HoTen} | SĐT: {dg.SoDienThoai} | Đang giữ: {dangGiu}/{SoSachToiDa} cuốn | Đủ điều kiện mượn";
         CapNhatDem();
         txtMaCuonSach.Focus();
     }
 
-    // Đếm số sách độc giả đang giữ: chi tiết phiếu chưa có ngày trả thực tế
     private static Task<int> DemSachDangGiuAsync(AppDbContext db, string maDocGia)
     {
         return db.ChiTietPhieuMuons.CountAsync(
