@@ -196,7 +196,7 @@ public static class Theme
             };
         }
     }
-
+    
     // =====================================================================
     // 5. NÚT BẤM: tự vẽ bo góc + hiệu ứng rê chuột / nhấn / biểu tượng
     // =====================================================================
@@ -410,8 +410,7 @@ public static class Theme
         Color cha = grp.Parent?.BackColor ?? BgMain;
         g.Clear(cha);
 
-        int th = grp.Font.Height;
-        var khung = new Rectangle(0, th / 2, grp.Width - 1, grp.Height - th / 2 - 1);
+        var khung = new Rectangle(0, 0, grp.Width - 1, grp.Height - 1);
         using (var path = TaoBoGoc(khung, 8))
         using (var nen = new SolidBrush(CardBg))
         using (var vien = new Pen(Border))
@@ -419,14 +418,15 @@ public static class Theme
             g.FillPath(nen, path);
             g.DrawPath(vien, path);
         }
-
+        
         if (!string.IsNullOrEmpty(grp.Text))
         {
             var flags = TextFormatFlags.NoPadding | TextFormatFlags.HidePrefix | TextFormatFlags.SingleLine;
-            var size = TextRenderer.MeasureText(g, grp.Text, grp.Font, new Size(int.MaxValue, int.MaxValue), flags);
-            using (var xoaVien = new SolidBrush(cha))
-                g.FillRectangle(xoaVien, 10, 0, size.Width + 8, th);
-            TextRenderer.DrawText(g, grp.Text, grp.Font, new Point(14, 0), grp.ForeColor, flags);
+            TextRenderer.DrawText(g, grp.Text, grp.Font, new Point(14, 8), grp.ForeColor, flags);
+
+            int lineY = grp.Font.Height + 13;
+            using var linePen = new Pen(Color.FromArgb(226, 232, 240));
+            g.DrawLine(linePen, 12, lineY, grp.Width - 13, lineY);
         }
     }
 

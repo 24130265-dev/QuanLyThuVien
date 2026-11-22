@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using QuanLyThuVien.Data;
+using QuanLyThuVien.UI;
 
 namespace QuanLyThuVien.Forms;
 
@@ -37,6 +38,7 @@ public partial class FrmBaoCao : Form
         this.tblKpi.Controls.Add(TaoTheKpi("SÁCH ĐANG MƯỢN", Color.FromArgb(13, 148, 136), out this.lblKpiDangMuon), 1, 0);
         this.tblKpi.Controls.Add(TaoTheKpi("SÁCH QUÁ HẠN", Color.FromArgb(220, 38, 38), out this.lblKpiQuaHan), 2, 0);
         this.tblKpi.Controls.Add(TaoTheKpi("TỔNG THU TIỀN PHẠT", Color.FromArgb(217, 119, 6), out this.lblKpiTienPhat), 3, 0);
+        CauHinhGiaoDienBaoCao();
     }
 
     private void FrmBaoCao_Load(object? sender, EventArgs e)
@@ -357,4 +359,110 @@ public partial class FrmBaoCao : Form
         dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
     }
+    
+        private void CauHinhGiaoDienBaoCao()
+    {
+        // 1. Áp dụng Theme (bo tròn nút, làm đẹp 3 bảng DataGridView)
+        Theme.Apply(this);
+
+        pnlHeader.BackColor = Theme.CardBg;
+        pnlBieuDoMuon.BackColor = Theme.CardBg;
+
+        // 2. Sửa tiêu đề chính (dùng && để hiển thị ký tự '&' thay vì mất dấu)
+        lblTitle.Text = "BÁO CÁO && THỐNG KÊ HOẠT ĐỘNG THƯ VIỆN";
+        lblTitle.Font = Theme.FontTitle;
+        lblTitle.ForeColor = Theme.PrimaryDark;
+
+        // Khôi phục font đậm & màu nhấn cho 4 thẻ KPI (do Theme.Apply đưa Label về FontNormal)
+        foreach (Control card in tblKpi.Controls)
+        {
+            if (card is Panel pnl && pnl.Controls.Count >= 2)
+            {
+                pnl.Controls[0].Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+                pnl.Controls[0].ForeColor = Color.Gray;
+            }
+        }
+        lblKpiLuotMuon.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+        lblKpiLuotMuon.ForeColor = Color.FromArgb(37, 99, 235);
+        lblKpiDangMuon.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+        lblKpiDangMuon.ForeColor = Color.FromArgb(13, 148, 136);
+        lblKpiQuaHan.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+        lblKpiQuaHan.ForeColor = Color.FromArgb(220, 38, 38);
+        lblKpiTienPhat.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+        lblKpiTienPhat.ForeColor = Color.FromArgb(217, 119, 6);
+
+        // 3. Nhích 2 ô chọn ngày sang phải để không dính chữ & đồng bộ định dạng dd/MM/yyyy
+        lblTuNgay.Location = new Point(15, 55);
+        dtpTuNgay.Format = DateTimePickerFormat.Custom;
+        dtpTuNgay.CustomFormat = "dd/MM/yyyy";
+        dtpTuNgay.Location = new Point(92, 51);    // Nhích từ 80 -> 92
+        dtpTuNgay.Size = new Size(135, 28);
+
+        lblDenNgay.Location = new Point(245, 55);
+        dtpDenNgay.Format = DateTimePickerFormat.Custom;
+        dtpDenNgay.CustomFormat = "dd/MM/yyyy";
+        dtpDenNgay.Location = new Point(332, 51);   // Nhích từ 305 -> 332
+        dtpDenNgay.Size = new Size(135, 28);
+
+        // 4. Căn thẳng hàng 2 nút & mở rộng nút Xuất CSV sang phải để không bị cắt chữ
+        Theme.StyleButton(btnXemBaoCao, Theme.Secondary);
+        btnXemBaoCao.Location = new Point(485, 49);
+        btnXemBaoCao.Size = new Size(125, 32);
+
+        Theme.StyleButton(btnXuatCsv, Theme.Primary);
+        btnXuatCsv.Location = new Point(622, 49);
+        btnXuatCsv.Size = new Size(185, 32);       // Mở rộng từ 125 -> 185
+
+        // 5. Tăng chiều cao vùng 4 thẻ KPI (từ 95 -> 115) để không bị tabBaoCao đè mất viền dưới
+        tblKpi.Height = 115;
+
+        // 6. Kéo nội dung bên trong tab "1. Tình hình Mượn - Trả & Quá hạn" xuống khỏi viền tab
+        tblChiTietMuonTra.Padding = new Padding(8, 12, 8, 8);
+        tabTopSach.Padding = new Padding(8, 12, 8, 8);
+        tabTienPhat.Padding = new Padding(8, 12, 8, 8);
+
+        // 7. Việt hóa tiêu đề cột cho cả 3 bảng báo cáo
+        VietHoaCotBaoCao(dgvMuonTra, new Dictionary<string, string>
+        {
+            { "MaPhieu", "Mã phiếu" },
+            { "TenDocGia", "Tên độc giả" },
+            { "TenDauSach", "Tên đầu sách" },
+            { "MaCuonSach", "Mã cuốn" },
+            { "NgayMuon", "Ngày mượn" },
+            { "HanTra", "Hạn trả" },
+            { "NgayTraThucTe", "Ngày trả thực tế" },
+            { "TrangThai", "Trạng thái" }
+        });
+
+        VietHoaCotBaoCao(dgvTopSach, new Dictionary<string, string>
+        {
+            { "MaDauSach", "Mã đầu sách" },
+            { "TenSach", "Tên đầu sách" },
+            { "TheLoai", "Thể loại" },
+            { "SoLuotMuon", "Số lượt mượn" },
+            { "TongSoCuon", "Tổng số cuốn" }
+        });
+
+        VietHoaCotBaoCao(dgvTienPhat, new Dictionary<string, string>
+        {
+            { "MaHoaDon", "Mã hóa đơn" },
+            { "TenDocGia", "Tên độc giả" },
+            { "NgayLap", "Ngày lập" },
+            { "SoTien", "Số tiền (VNĐ)" },
+            { "LyDo", "Lý do phạt" },
+            { "TrangThai", "Trạng thái" }
+        });
+    }
+
+    private static void VietHoaCotBaoCao(DataGridView dgv, Dictionary<string, string> map)
+    {
+        dgv.DataBindingComplete += (s, e) =>
+        {
+            foreach (DataGridViewColumn col in dgv.Columns)
+            {
+                if (map.TryGetValue(col.Name, out var header))
+                    col.HeaderText = header;
+            }
+        };
+    } 
 }

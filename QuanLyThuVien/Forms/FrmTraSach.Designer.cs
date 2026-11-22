@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using QuanLyThuVien.UI;
 
 namespace QuanLyThuVien.Forms;
 
@@ -44,7 +45,8 @@ partial class FrmTraSach
     }
     
     private void InitializeComponent()
-    {
+    { 
+      
       this.pnlTopFilter = new Panel();
             this.lblTitle = new Label();
             this.lblTimKiem = new Label();
@@ -296,6 +298,22 @@ partial class FrmTraSach
             this.grpHoaDonPhat.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvHoaDonPhat)).EndInit();
             this.ResumeLayout(false);
+            
+            Theme.Apply(this);
+
+            // Tùy chỉnh màu sắc nhấn mạnh cho các thành phần đặc biệt sau khi Theme.Apply chạy
+            this.pnlTopFilter.BackColor = Theme.CardBg;
+
+            this.lblTitle.Font = Theme.FontTitle;
+            this.lblTitle.ForeColor = Theme.PrimaryDark;
+
+            this.lblTongTienPhatTitle.Font = Theme.FontBold;
+            this.lblTongTienPhat.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            this.lblTongTienPhat.ForeColor = Theme.Danger;
+
+            Theme.StyleButton(this.btnTimKiem, Theme.Secondary);
+            Theme.StyleButton(this.btnXacNhanTra, Theme.Primary);
+            Theme.StyleButton(this.btnThanhToanHoaDon, Color.FromArgb(234, 88, 12)); // Cam nổi bật
         }
     }
 
