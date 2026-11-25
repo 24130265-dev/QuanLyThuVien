@@ -51,9 +51,9 @@ static class Program
             }
             else
             {
-                MessageBox.Show("Cổng thông tin độc giả đang được phát triển.", "Thông báo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                PhienDangNhap.DangXuat();
+                var portal = new FrmDocGiaPortal();
+                Application.Run(portal);
+                if (!portal.DaDangXuat) return;
             }
         }
     }

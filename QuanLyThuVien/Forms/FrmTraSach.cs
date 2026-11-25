@@ -5,22 +5,25 @@ using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using QuanLyThuVien.Data;
 using QuanLyThuVien.Entities;
+using QuanLyThuVien.UI;
 
 namespace QuanLyThuVien.Forms;
 
 public partial class FrmTraSach : Form
 {
     private readonly AppDbContext _context;
-
+    private decimal _tongTienPhat = 0;
     public FrmTraSach()
     {
         InitializeComponent();
         _context = new AppDbContext();
+        CauHinhGiaoDien();
     }
 
     private void FrmTraSach_Load(object sender, EventArgs e)
     {
         CauHinhCotLuoiChiTiet();
+        KhoiTaoCotLuoiHoaDonPhatMacDinh();
         TaiDanhSachPhieuDangMuon();
     }
 
@@ -205,6 +208,9 @@ public partial class FrmTraSach : Form
 
         lblTongTienPhat.Text = $"{tongPhat:N0} VNĐ";
         txtLyDoPhat.Text = string.Join("; ", lyDoList);
+
+        _tongTienPhat = tienPhatTre + phatHuHong;
+        lblTongTienPhat.Text = $"{_tongTienPhat:N0} VNĐ";
     }
 
     private void btnXacNhanTra_Click(object sender, EventArgs e)
@@ -304,6 +310,7 @@ public partial class FrmTraSach : Form
             })
             .ToList();
 
+        dgvHoaDonPhat.Columns.Clear();
         dgvHoaDonPhat.DataSource = hoaDons;
 
         if (dgvHoaDonPhat.Columns.Count > 0)
@@ -341,6 +348,115 @@ public partial class FrmTraSach : Form
 
         MessageBox.Show($"Đã thu tiền hóa đơn phạt #{hd.MaHoaDon}!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
         TaiHoaDonPhatCuaDocGia(hd.MaDocGia);
+    }
+
+    private void KhoiTaoCotLuoiHoaDonPhatMacDinh()
+    {
+        if (dgvHoaDonPhat.Columns.Count > 0) return;
+
+        dgvHoaDonPhat.Columns.Add("MaHoaDon", "Mã Hóa Đơn");
+        dgvHoaDonPhat.Columns.Add("MaPhieuMuon", "Mã Phiếu Mượn");
+        dgvHoaDonPhat.Columns.Add("NgayLap", "Ngày Lập");
+        dgvHoaDonPhat.Columns.Add("SoTien", "Số Tiền Phạt");
+        dgvHoaDonPhat.Columns.Add("LyDo", "Lý Do Phạt");
+        dgvHoaDonPhat.Columns.Add("TrangThai", "Trạng Thái");
+    }
+
+    private void CauHinhGiaoDien()
+    {
+        // 0. Đăng ký các sự kiện tính tiền phạt (chuyển từ Designer.cs sang)
+        numDonGiaTre.ValueChanged += (s, e) => TinhTongTienPhat();
+        numTienPhatHuHong.ValueChanged += (s, e) => TinhTongTienPhat();
+        dgvChiTietMuon.CurrentCellDirtyStateChanged += (s, e) =>
+        {
+            if (dgvChiTietMuon.IsCurrentCellDirty)
+                dgvChiTietMuon.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        };
+        dgvChiTietMuon.CellValueChanged += (s, e) => TinhTongTienPhat();
+
+        // 1. Áp dụng Theme
+        Theme.Apply(this);
+
+        Theme.StyleButton(btnTimKiem, Theme.Secondary);
+        Theme.StyleButton(btnXacNhanTra, Theme.Primary);
+        Theme.StyleButton(btnThanhToanHoaDon, Color.FromArgb(234, 88, 12));
+
+        pnlTopFilter.BackColor = Theme.CardBg;
+        lblTitle.Font = Theme.FontTitle;
+        lblTitle.ForeColor = Theme.PrimaryDark;
+        lblTongTienPhatTitle.Font = Theme.FontBold;
+        lblTongTienPhat.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+        lblTongTienPhat.ForeColor = Theme.Danger;
+
+        // 2. Tự động nối tiếp tọa độ theo đúng độ rộng thực tế của chữ -> không bao giờ dính chữ!
+        pnlTopFilter.PerformLayout();
+        lblTimKiem.Location = new Point(15, 56);
+        txtTimKiem.Location = new Point(lblTimKiem.Right + 10, 53);
+        txtTimKiem.Size = new Size(175, 28);
+
+        btnTimKiem.Location = new Point(txtTimKiem.Right + 12, 51);
+        btnTimKiem.Size = new Size(115, 32);
+
+        lblChonPhieu.Location = new Point(btnTimKiem.Right + 24, 56);
+        cboPhieuMuon.Location = new Point(lblChonPhieu.Right + 10, 53);
+        cboPhieuMuon.Size = new Size(360, 28);
+
+        // 3. Tạo khe hở 12px giữa 2 khung trên
+        var splitterGap = new Panel
+        {
+            Dock = DockStyle.Right,
+            Width = 12,
+            BackColor = Theme.BgMain
+        };
+        splitMain.Panel1.Controls.Add(splitterGap);
+        splitterGap.SendToBack();
+        grpThongTinPhat.SendToBack();
+
+        // 4. Tinh chỉnh khung Tính phí phạt bên phải
+        grpThongTinPhat.Width = 385;
+        grpThongTinPhat.PerformLayout();
+
+        lblDonGiaTre.Location = new Point(15, 38);
+        numDonGiaTre.Location = new Point(240, 35);
+        numDonGiaTre.Size = new Size(130, 28);
+
+        lblTienPhatHuHong.Location = new Point(15, 76);
+        numTienPhatHuHong.Location = new Point(240, 73);
+        numTienPhatHuHong.Size = new Size(130, 28);
+
+        lblLyDoPhat.Location = new Point(15, 112);
+        txtLyDoPhat.Location = new Point(15, 136);
+        txtLyDoPhat.Size = new Size(355, 54);
+
+        lblTongTienPhatTitle.Location = new Point(15, 204);
+        lblTongTienPhat.Location = new Point(170, 200);
+        chkDaThanhToanNgay.Location = new Point(15, 236);
+
+        btnXacNhanTra.Location = new Point(15, 270);
+        btnXacNhanTra.Size = new Size(355, 40);
+
+        // 5. Thu hẹp khoảng hở thừa phía trên 2 bảng DataGridView (mũi tên đỏ 2 chiều)
+        // GroupBox mặc định đã chừa ~22px cho tiêu đề nên chỉ cần Padding.Top = 8 là vừa khít đẹp
+        grpChiTietMuon.Padding = new Padding(12, 8, 12, 12);
+        grpHoaDonPhat.Padding = new Padding(12, 8, 12, 12);
+
+        // 6. Đặt nút Xác nhận thu tiền gọn gàng ở góc dưới bên phải khung Hóa đơn phạt
+        var pnlActionBottom = new Panel
+        {
+            Dock = DockStyle.Bottom,
+            Height = 44,
+            BackColor = Theme.CardBg
+        };
+
+        grpHoaDonPhat.Controls.Remove(btnThanhToanHoaDon);
+        btnThanhToanHoaDon.Dock = DockStyle.None;
+        btnThanhToanHoaDon.Size = new Size(340, 36);
+        btnThanhToanHoaDon.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        btnThanhToanHoaDon.Location = new Point(pnlActionBottom.Width - btnThanhToanHoaDon.Width, 6);
+
+        pnlActionBottom.Controls.Add(btnThanhToanHoaDon);
+        grpHoaDonPhat.Controls.Add(pnlActionBottom);
+        dgvHoaDonPhat.BringToFront();
     }
 
     protected override void OnFormClosed(FormClosedEventArgs e)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using QuanLyThuVien.UI;
 
 namespace QuanLyThuVien.Forms;
 
@@ -198,6 +199,16 @@ partial class FrmBaoCao
         ((ISupportInitialize)(this.dgvTopSach)).EndInit();
         ((ISupportInitialize)(this.dgvTienPhat)).EndInit();
         this.ResumeLayout(false);
+
+        Theme.Apply(this);
+
+        this.pnlHeader.BackColor = Theme.CardBg;
+        this.pnlBieuDoMuon.BackColor = Theme.CardBg;
+        this.lblTitle.Font = Theme.FontTitle;
+        this.lblTitle.ForeColor = Theme.PrimaryDark;
+
+        Theme.StyleButton(this.btnXemBaoCao, Theme.Secondary);
+        Theme.StyleButton(this.btnXuatCsv, Theme.Primary);
     }
 
     public class BaoCaoMuonTraDto
