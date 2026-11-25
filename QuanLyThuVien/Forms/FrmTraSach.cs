@@ -7,6 +7,7 @@ using QuanLyThuVien.Data;
 using QuanLyThuVien.Entities;
 using QuanLyThuVien.UI;
 
+
 namespace QuanLyThuVien.Forms;
 
 public partial class FrmTraSach : Form
@@ -126,6 +127,7 @@ public partial class FrmTraSach : Form
         {
             dgvChiTietMuon.Rows.Clear();
             dgvHoaDonPhat.DataSource = null;
+            TinhTongTienPhat();
         }
     }
 
@@ -204,13 +206,10 @@ public partial class FrmTraSach : Form
         }
 
         decimal tienPhatTre = tongNgayTre * donGiaTre;
-        decimal tongPhat = tienPhatTre + phatHuHong;
-
-        lblTongTienPhat.Text = $"{tongPhat:N0} VNĐ";
-        txtLyDoPhat.Text = string.Join("; ", lyDoList);
-
         _tongTienPhat = tienPhatTre + phatHuHong;
+
         lblTongTienPhat.Text = $"{_tongTienPhat:N0} VNĐ";
+        txtLyDoPhat.Text = string.Join("; ", lyDoList);
     }
 
     private void btnXacNhanTra_Click(object sender, EventArgs e)
@@ -269,27 +268,35 @@ public partial class FrmTraSach : Form
         }
 
         // 2. Nếu có phát sinh tiền phạt -> Tạo HoaDonPhat
-        decimal tongTienPhat = 0;
-        decimal.TryParse(lblTongTienPhat.Text.Replace("VNĐ", "").Replace(",", "").Replace(".", "").Trim(), out tongTienPhat);
-
-        if (tongTienPhat > 0)
+        if (_tongTienPhat > 0)
         {
             var hoaDonPhat = new HoaDonPhat
             {
                 MaDocGia = phieu.MaDocGia,
                 MaPhieuMuon = phieu.MaPhieuMuon,
                 NgayLap = DateTime.Now,
-                TienPhatQuaHan = tongTienPhat,
-                LyDo = string.IsNullOrWhiteSpace(txtLyDoPhat.Text) ? "Phạt vi phạm mượn trả" : txtLyDoPhat.Text.Trim(),
+                TienPhatQuaHan = _tongTienPhat - numTienPhatHuHong.Value,
+                TienBoiThuong = numTienPhatHuHong.Value,
+                LyDo = string.IsNullOrWhiteSpace(txtLyDoPhat.Text) ? "Phạt vi phạm mượn trả" : txtLyDoPhat.Text,
                 DaThanhToan = chkDaThanhToanNgay.Checked
             };
             _context.HoaDonPhats.Add(hoaDonPhat);
+
+            // Chỉ cộng nợ khi phát sinh phạt và chưa thanh toán ngay
+            if (!chkDaThanhToanNgay.Checked)
+            {
+                var dg = _context.DocGias.FirstOrDefault(d => d.MaDocGia == phieu.MaDocGia);
+                if (dg != null)
+                {
+                    dg.TienNoPhat += _tongTienPhat;
+                }
+            }
         }
 
         _context.SaveChanges();
 
-        MessageBox.Show("Đã ghi nhận trả sách thành công!", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+        Toast.ThanhCong(this, "Đã ghi nhận trả sách thành công!");
         numTienPhatHuHong.Value = 0;
         TaiDanhSachPhieuDangMuon(txtTimKiem.Text);
     }
@@ -344,9 +351,11 @@ public partial class FrmTraSach : Form
         }
 
         hd.DaThanhToan = true;
+        var docGia = _context.DocGias.First(d => d.MaDocGia == hd.MaDocGia);
+        docGia.TienNoPhat = Math.Max(0, docGia.TienNoPhat - (hd.TienPhatQuaHan + hd.TienBoiThuong));
         _context.SaveChanges();
 
-        MessageBox.Show($"Đã thu tiền hóa đơn phạt #{hd.MaHoaDon}!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        Toast.ThanhCong(this, $"Đã thu tiền hóa đơn phạt #{hd.MaHoaDon}!");
         TaiHoaDonPhatCuaDocGia(hd.MaDocGia);
     }
 

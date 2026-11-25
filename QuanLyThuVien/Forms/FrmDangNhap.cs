@@ -67,6 +67,7 @@ public partial class FrmDangNhap : Form
         }
 
         using var db = new AppDbContext();
+        PhienDangNhap.KhoiTaoDuLieuTaiKhoan(db);
         string nhap = taiKhoan.ToLowerInvariant();
         
         TaiKhoan? tkTimThay;

@@ -8,24 +8,11 @@ using QuanLyThuVien.UI;
 
 namespace QuanLyThuVien.Forms;
 
-// ============================================================================
-// MÀN HÌNH QUẢN LÝ ĐỘC GIẢ (Thành viên 2)
-//
-// Control cần kéo thả trong Designer (đặt đúng (Name)):
-//   txtMaDocGia, txtHoTen, txtSoDienThoai
-//   lblTienNoPhat, nudSoTienTra (NumericUpDown: Minimum 0, Maximum 100000000,
-//                                Increment 1000, ThousandsSeparator True)
-//   btnThem, btnSua, btnKhoa, btnXoa, btnLamMoi, btnThanhToan, btnTraHet
-//   dgvDocGia (DataGridView), errProvider (ErrorProvider)
-//
-// LƯU Ý: các sự kiện được nối ngay trong constructor bên dưới.
-//        KHÔNG bấm đúp vào control để tạo sự kiện (sẽ bị nối trùng).
-// ============================================================================
 public partial class FrmDocGia : Form
 {
     private readonly BindingList<DocGiaDto> _ds = new();
     private readonly BindingSource _bs = new();
-    private bool _dangLamMoi;   // true khi đang bỏ chọn dòng, để bỏ qua SelectionChanged
+    private bool _dangLamMoi;   
 
     public FrmDocGia()
     {
@@ -117,6 +104,8 @@ public partial class FrmDocGia : Form
             await db.SaveChangesAsync();
 
             await NapDanhSachAsync(ma);
+            Toast.ThanhCong(this, $"Đã thêm độc giả \"{ma}\" thành công!");
+
         }
         catch (Exception ex)
         {
@@ -145,6 +134,8 @@ public partial class FrmDocGia : Form
             await db.SaveChangesAsync();
 
             await NapDanhSachAsync(d.MaDocGia);
+            Toast.ThanhCong(this, "Cập nhật thông tin độc giả thành công!");
+
         }
         catch (Exception ex)
         {
@@ -172,6 +163,8 @@ public partial class FrmDocGia : Form
             await db.SaveChangesAsync();
 
             await NapDanhSachAsync(d.MaDocGia);
+            Toast.ThanhCong(this, dg.BiKhoaThe ? "Đã khóa thẻ độc giả!" : "Đã mở khóa thẻ độc giả!");
+
         }
         catch (Exception ex)
         {
@@ -210,10 +203,14 @@ public partial class FrmDocGia : Form
 
             var dg = await db.DocGias.FirstOrDefaultAsync(x => x.MaDocGia == d.MaDocGia);
             if (dg == null) return;
+            var tk = await db.TaiKhoans.FirstOrDefaultAsync(t => t.MaDocGia == dg.MaDocGia);
+            if (tk != null) db.TaiKhoans.Remove(tk);
             db.DocGias.Remove(dg);
             await db.SaveChangesAsync();
 
             await NapDanhSachAsync(null);
+            Toast.ThanhCong(this, $"Đã xóa độc giả \"{d.HoTen}\" thành công!");
+
         }
         catch (Exception ex)
         {
@@ -302,7 +299,9 @@ public partial class FrmDocGia : Form
 
         nudSoTienTra.Value = 0;
         await NapDanhSachAsync(d.MaDocGia);
+        Toast.ThanhCong(this, $"Đã thanh toán {soTien:N0} VNĐ tiền phạt!");
     }
+
 
     // ===================== KIỂM TRA DỮ LIỆU (Validating) =====================
     // Chỉ hiện biểu tượng cảnh báo, KHÔNG đặt e.Cancel = true
