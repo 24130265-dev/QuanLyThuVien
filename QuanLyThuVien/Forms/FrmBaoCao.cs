@@ -19,6 +19,14 @@ public partial class FrmBaoCao : Form
     {
         InitializeComponent();
 
+        Theme.Apply(this);
+
+        // Khôi phục định dạng tiêu đề và nút sau khi áp dụng Theme
+        lblTitle.Font = Theme.FontTitle;
+        lblTitle.ForeColor = Theme.PrimaryDark;
+
+        Theme.StyleButton(btnXemBaoCao, Theme.Secondary);
+
         // Bật DoubleBuffered để vẽ biểu đồ mượt, không bị nhấp nháy
         typeof(Panel).GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
             ?.SetValue(this.pnlBieuDoMuon, true);
@@ -27,6 +35,7 @@ public partial class FrmBaoCao : Form
         CauHinhLuoi(this.dgvMuonTra);
         CauHinhLuoi(this.dgvTopSach);
         CauHinhLuoi(this.dgvTienPhat);
+        CauHinhLuoi(this.dgvQuaHan);
 
         // Khởi tạo 4 thẻ KPI tổng quan
         for (int i = 0; i < 4; i++)
@@ -174,7 +183,7 @@ public partial class FrmBaoCao : Form
                 MaHoaDon = h.MaHoaDon,
                 TenDocGia = h.DocGia != null ? (h.DocGia.HoTen ?? "") : "",
                 NgayLap = h.NgayLap,
-                SoTien = h.TienPhatQuaHan,
+                SoTien = h.TienPhatQuaHan + h.TienBoiThuong,
                 LyDo = h.LyDo ?? "",
                 TrangThai = h.DaThanhToan ? "Đã thanh toán" : "Chưa thanh toán"
             })
@@ -182,11 +191,55 @@ public partial class FrmBaoCao : Form
             .ToList();
 
         dgvTienPhat.DataSource = dsPhat;
+        // 4. Báo cáo độc giả quá hạn chưa trả
+        // Thống kê toàn bộ sách đang quá hạn, không giới hạn kỳ báo cáo.
 
-        // 4. Cập nhật 4 thẻ KPI
+        var dsDocGiaQuaHan = context.ChiTietPhieuMuons
+            .AsNoTracking()
+            .Where(ct =>
+                ct.NgayTraThucTe == null
+                && ct.PhieuMuon != null
+                && ct.PhieuMuon.NgayPhaiTra.Date < homNay
+                && ct.PhieuMuon.DocGia != null
+                && ct.CuonSach != null
+                && ct.CuonSach.DauSach != null)
+            .Select(ct => new
+            {
+                ct.PhieuMuon!.MaDocGia,
+                HoTen = ct.PhieuMuon.DocGia!.HoTen,
+                SoDienThoai = ct.PhieuMuon.DocGia.SoDienThoai,
+                TenDauSach = ct.CuonSach!.DauSach!.TenDauSach,
+                HanTra = ct.PhieuMuon.NgayPhaiTra
+            })
+            .ToList();
+
+        dgvQuaHan.DataSource = dsDocGiaQuaHan
+            .OrderBy(x => x.HanTra)
+            .Select(x => new
+            {
+                x.MaDocGia,
+                HoTen = x.HoTen ?? "",
+                SoDienThoai = x.SoDienThoai ?? "",
+                TenDauSach = x.TenDauSach ?? "",
+                x.HanTra,
+                SoNgayTre = (homNay - x.HanTra.Date).Days
+            })
+            .ToList();
+
+        // Tổng lượt mượn trong kỳ báo cáo
         lblKpiLuotMuon.Text = dsMuonTra.Count.ToString("N0");
-        lblKpiDangMuon.Text = dsMuonTra.Count(x => x.TrangThai == "Đang mượn").ToString("N0");
-        lblKpiQuaHan.Text = dsMuonTra.Count(x => x.TrangThai == "Quá hạn").ToString("N0");
+
+        // Tổng số sách hiện đang được mượn (không giới hạn kỳ báo cáo)
+        int dangMuon = context.ChiTietPhieuMuons
+            .Count(ct => ct.NgayTraThucTe == null);
+
+        // Tổng số sách đang mượn và đã quá hạn
+        int quaHan = context.ChiTietPhieuMuons
+            .Count(ct => ct.NgayTraThucTe == null
+                      && ct.PhieuMuon!.NgayPhaiTra < homNay);
+
+        lblKpiDangMuon.Text = dangMuon.ToString("N0");
+        lblKpiQuaHan.Text = quaHan.ToString("N0");
 
         decimal tongThuPhat = dsPhat
             .Where(x => x.TrangThai == "Đã thanh toán")
@@ -201,7 +254,7 @@ public partial class FrmBaoCao : Form
             return;
 
         e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-        e.Graphics.Clear(Color.White);
+        e.Graphics.Clear(pnlBieuDoMuon.BackColor);
 
         using var titleFont = new Font("Segoe UI", 9F, FontStyle.Bold);
         using var labelFont = new Font("Segoe UI", 8F);
@@ -274,7 +327,9 @@ public partial class FrmBaoCao : Form
         {
             0 => dgvMuonTra,
             1 => dgvTopSach,
-            _ => dgvTienPhat
+            2 => dgvTienPhat,
+            3 => dgvQuaHan,
+            _ => dgvMuonTra
         };
 
         if (gridHienTai.Rows.Count == 0)
@@ -358,7 +413,48 @@ public partial class FrmBaoCao : Form
         dgv.RowHeadersVisible = false;
         dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+        dgv.DataBindingComplete += (s, e) =>
+        {
+            foreach (DataGridViewColumn c in dgv.Columns)
+            {
+                c.MinimumWidth = 90;
+
+                if (TieuDeCot.TryGetValue(c.DataPropertyName, out var tieuDe))
+                    c.HeaderText = tieuDe;
+
+                if (c.ValueType == typeof(DateTime) || c.ValueType == typeof(DateTime?))
+                    c.DefaultCellStyle.Format = "dd/MM/yyyy";
+
+                if (c.DataPropertyName == "SoTien")
+                    c.DefaultCellStyle.Format = "N0";
+            }
+        };
     }
+    private static readonly Dictionary<string, string> TieuDeCot = new()
+    {
+        ["MaPhieu"] = "Mã phiếu",
+        ["TenDocGia"] = "Độc giả",
+        ["TenDauSach"] = "Đầu sách",
+        ["MaCuonSach"] = "Mã cuốn",
+        ["NgayMuon"] = "Ngày mượn",
+        ["HanTra"] = "Hạn trả",
+        ["NgayTraThucTe"] = "Ngày trả",
+        ["TrangThai"] = "Trạng thái",
+        ["MaDauSach"] = "Mã đầu sách",
+        ["TenSach"] = "Tên sách",
+        ["TheLoai"] = "Thể loại",
+        ["SoLuotMuon"] = "Lượt mượn",
+        ["TongSoCuon"] = "Tổng số cuốn",
+        ["MaHoaDon"] = "Mã hóa đơn",
+        ["NgayLap"] = "Ngày lập",
+        ["SoTien"] = "Số tiền",
+        ["LyDo"] = "Lý do",
+        ["MaDocGia"] = "Mã độc giả",
+        ["HoTen"] = "Họ tên",
+        ["SoDienThoai"] = "SĐT",
+        ["SoNgayTre"] = "Số ngày trễ"
+    };
     
         private void CauHinhGiaoDienBaoCao()
     {

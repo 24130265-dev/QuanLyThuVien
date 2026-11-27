@@ -227,9 +227,8 @@ public partial class FrmMuonSach : Form
             db.PhieuMuons.Add(phieu);
             await db.SaveChangesAsync();
 
-            MessageBox.Show(
-                $"Đã lập phiếu mượn số {phieu.MaPhieuMuon}.\nNgày phải trả: {phieu.NgayPhaiTra:dd/MM/yyyy}",
-                "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Toast.ThanhCong(this, $"Lập phiếu mượn thành công! Mã phiếu: {phieu.MaPhieuMuon}");
+
 
             LamMoi();
         }
@@ -371,5 +370,18 @@ public partial class FrmMuonSach : Form
     {
         MessageBox.Show($"Có lỗi xảy ra:\n{ex.Message}", "Lỗi",
             MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+
+    private async void btnDuyetYeuCau_Click(object? sender, EventArgs e)
+    {
+        using var dlg = new DlgDuyetYeuCau();
+        if (dlg.ShowDialog(this) != DialogResult.OK) return;
+        try
+        {
+            txtMaDocGia.Text = dlg.MaDocGiaDuocChon;
+            await KiemTraDocGiaAsync();
+            txtMaCuonSach.Text = dlg.MaCuonSachGoiY ?? "";
+        }
+        catch (Exception ex) { BaoLoi(ex); }
     }
 }

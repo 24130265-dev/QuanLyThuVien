@@ -6,7 +6,7 @@ namespace QuanLyThuVien.Forms;
 partial class FrmTraSach
 {
     private System.ComponentModel.IContainer components = null;
-    
+
     private Panel pnlTopFilter;
     private Label lblTitle;
     private Label lblTimKiem;
@@ -43,117 +43,117 @@ partial class FrmTraSach
         }
         base.Dispose(disposing);
     }
-    
+
     private void InitializeComponent()
-    { 
-      
-      this.pnlTopFilter = new Panel();
-            this.lblTitle = new Label();
-            this.lblTimKiem = new Label();
-            this.txtTimKiem = new TextBox();
-            this.btnTimKiem = new Button();
-            this.lblChonPhieu = new Label();
-            this.cboPhieuMuon = new ComboBox();
+    {
 
-            this.splitMain = new SplitContainer();
-            this.grpChiTietMuon = new GroupBox();
-            this.dgvChiTietMuon = new DataGridView();
-            this.grpThongTinPhat = new GroupBox();
+        this.pnlTopFilter = new Panel();
+        this.lblTitle = new Label();
+        this.lblTimKiem = new Label();
+        this.txtTimKiem = new TextBox();
+        this.btnTimKiem = new Button();
+        this.lblChonPhieu = new Label();
+        this.cboPhieuMuon = new ComboBox();
 
-            this.lblDonGiaTre = new Label();
-            this.numDonGiaTre = new NumericUpDown();
-            this.lblTienPhatHuHong = new Label();
-            this.numTienPhatHuHong = new NumericUpDown();
-            this.lblLyDoPhat = new Label();
-            this.txtLyDoPhat = new TextBox();
-            this.lblTongTienPhatTitle = new Label();
-            this.lblTongTienPhat = new Label();
-            this.chkDaThanhToanNgay = new CheckBox();
-            this.btnXacNhanTra = new Button();
+        this.splitMain = new SplitContainer();
+        this.grpChiTietMuon = new GroupBox();
+        this.dgvChiTietMuon = new DataGridView();
+        this.grpThongTinPhat = new GroupBox();
 
-            this.grpHoaDonPhat = new GroupBox();
-            this.dgvHoaDonPhat = new DataGridView();
-            this.btnThanhToanHoaDon = new Button();
+        this.lblDonGiaTre = new Label();
+        this.numDonGiaTre = new NumericUpDown();
+        this.lblTienPhatHuHong = new Label();
+        this.numTienPhatHuHong = new NumericUpDown();
+        this.lblLyDoPhat = new Label();
+        this.txtLyDoPhat = new TextBox();
+        this.lblTongTienPhatTitle = new Label();
+        this.lblTongTienPhat = new Label();
+        this.chkDaThanhToanNgay = new CheckBox();
+        this.btnXacNhanTra = new Button();
 
-            this.pnlTopFilter.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
-            this.splitMain.Panel1.SuspendLayout();
-            this.splitMain.Panel2.SuspendLayout();
-            this.splitMain.SuspendLayout();
-            this.grpChiTietMuon.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvChiTietMuon)).BeginInit();
-            this.grpThongTinPhat.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numDonGiaTre)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numTienPhatHuHong)).BeginInit();
-            this.grpHoaDonPhat.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvHoaDonPhat)).BeginInit();
-            this.SuspendLayout();
+        this.grpHoaDonPhat = new GroupBox();
+        this.dgvHoaDonPhat = new DataGridView();
+        this.btnThanhToanHoaDon = new Button();
 
-            // 
-            // pnlTopFilter
-            // 
-            this.pnlTopFilter.BackColor = Color.FromArgb(245, 247, 250);
-            this.pnlTopFilter.Dock = DockStyle.Top;
-            this.pnlTopFilter.Height = 95;
-            this.pnlTopFilter.Padding = new Padding(15, 10, 15, 10);
-            this.pnlTopFilter.Controls.AddRange(new Control[] {
+        this.pnlTopFilter.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
+        this.splitMain.Panel1.SuspendLayout();
+        this.splitMain.Panel2.SuspendLayout();
+        this.splitMain.SuspendLayout();
+        this.grpChiTietMuon.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)(this.dgvChiTietMuon)).BeginInit();
+        this.grpThongTinPhat.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)(this.numDonGiaTre)).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)(this.numTienPhatHuHong)).BeginInit();
+        this.grpHoaDonPhat.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)(this.dgvHoaDonPhat)).BeginInit();
+        this.SuspendLayout();
+
+        // 
+        // pnlTopFilter
+        // 
+        this.pnlTopFilter.BackColor = Color.FromArgb(245, 247, 250);
+        this.pnlTopFilter.Dock = DockStyle.Top;
+        this.pnlTopFilter.Height = 95;
+        this.pnlTopFilter.Padding = new Padding(15, 10, 15, 10);
+        this.pnlTopFilter.Controls.AddRange(new Control[] {
                 this.lblTitle, this.lblTimKiem, this.txtTimKiem, this.btnTimKiem, this.lblChonPhieu, this.cboPhieuMuon
             });
 
-            this.lblTitle.Text = "QUẢN LÝ TRẢ SÁCH && XỬ LÝ TIỀN PHẠT";
-            this.lblTitle.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
-            this.lblTitle.ForeColor = Color.FromArgb(30, 58, 138);
-            this.lblTitle.Location = new Point(15, 10);
-            this.lblTitle.AutoSize = true;
+        this.lblTitle.Text = "QUẢN LÝ TRẢ SÁCH && XỬ LÝ TIỀN PHẠT";
+        this.lblTitle.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
+        this.lblTitle.ForeColor = Color.FromArgb(30, 58, 138);
+        this.lblTitle.Location = new Point(15, 10);
+        this.lblTitle.AutoSize = true;
 
-            this.lblTimKiem.Text = "Độc giả / Mã phiếu:";
-            this.lblTimKiem.Font = new Font("Segoe UI", 9.5F);
-            this.lblTimKiem.Location = new Point(15, 52);
-            this.lblTimKiem.AutoSize = true;
+        this.lblTimKiem.Text = "Độc giả / Mã phiếu:";
+        this.lblTimKiem.Font = new Font("Segoe UI", 9.5F);
+        this.lblTimKiem.Location = new Point(15, 52);
+        this.lblTimKiem.AutoSize = true;
 
-            this.txtTimKiem.Font = new Font("Segoe UI", 9.5F);
-            this.txtTimKiem.Location = new Point(155, 55);
-            this.txtTimKiem.Size = new Size(170, 27);
+        this.txtTimKiem.Font = new Font("Segoe UI", 9.5F);
+        this.txtTimKiem.Location = new Point(155, 55);
+        this.txtTimKiem.Size = new Size(170, 27);
 
-            this.btnTimKiem.Text = "Tìm kiếm";
-            this.btnTimKiem.BackColor = Color.FromArgb(37, 99, 235);
-            this.btnTimKiem.ForeColor = Color.White;
-            this.btnTimKiem.FlatStyle = FlatStyle.Flat;
-            this.btnTimKiem.Location = new System.Drawing.Point(335, 54);
-            this.btnTimKiem.Size = new System.Drawing.Size(95, 27);
-            this.btnTimKiem.Click += new EventHandler(this.btnTimKiem_Click);
+        this.btnTimKiem.Text = "Tìm kiếm";
+        this.btnTimKiem.BackColor = Color.FromArgb(37, 99, 235);
+        this.btnTimKiem.ForeColor = Color.White;
+        this.btnTimKiem.FlatStyle = FlatStyle.Flat;
+        this.btnTimKiem.Location = new System.Drawing.Point(335, 54);
+        this.btnTimKiem.Size = new System.Drawing.Size(95, 27);
+        this.btnTimKiem.Click += new EventHandler(this.btnTimKiem_Click);
 
-            this.lblChonPhieu.Text = "Phiếu đang mượn:";
-            this.lblChonPhieu.Font = new Font("Segoe UI", 9.5F);
-            this.lblChonPhieu.Location = new System.Drawing.Point(440, 58);
-            this.lblChonPhieu.AutoSize = true;
+        this.lblChonPhieu.Text = "Phiếu đang mượn:";
+        this.lblChonPhieu.Font = new Font("Segoe UI", 9.5F);
+        this.lblChonPhieu.Location = new System.Drawing.Point(440, 58);
+        this.lblChonPhieu.AutoSize = true;
 
-            this.cboPhieuMuon.DropDownStyle = ComboBoxStyle.DropDownList;
-            this.cboPhieuMuon.Font = new Font("Segoe UI", 9.5F);
-            this.cboPhieuMuon.Location = new System.Drawing.Point(565, 55);
-            this.cboPhieuMuon.Size = new System.Drawing.Size(340, 28);
-            this.cboPhieuMuon.SelectedIndexChanged += new EventHandler(this.cboPhieuMuon_SelectedIndexChanged);
+        this.cboPhieuMuon.DropDownStyle = ComboBoxStyle.DropDownList;
+        this.cboPhieuMuon.Font = new Font("Segoe UI", 9.5F);
+        this.cboPhieuMuon.Location = new System.Drawing.Point(565, 55);
+        this.cboPhieuMuon.Size = new System.Drawing.Size(340, 28);
+        this.cboPhieuMuon.SelectedIndexChanged += new EventHandler(this.cboPhieuMuon_SelectedIndexChanged);
 
-            // 
-            // splitMain
-            // 
-            this.splitMain.Dock = DockStyle.Fill;
-            this.splitMain.Orientation = Orientation.Horizontal;
-            this.splitMain.SplitterDistance = 360;
-            this.splitMain.Panel1.Padding = new Padding(15, 10, 15, 5);
-            this.splitMain.Panel2.Padding = new Padding(15, 5, 15, 15);
-            this.splitMain.Panel1.Controls.Add(this.grpChiTietMuon);
-            this.splitMain.Panel1.Controls.Add(this.grpThongTinPhat);
-            this.splitMain.Panel2.Controls.Add(this.grpHoaDonPhat);
+        // 
+        // splitMain
+        // 
+        this.splitMain.Dock = DockStyle.Fill;
+        this.splitMain.Orientation = Orientation.Horizontal;
+        this.splitMain.SplitterDistance = 360;
+        this.splitMain.Panel1.Padding = new Padding(15, 10, 15, 5);
+        this.splitMain.Panel2.Padding = new Padding(15, 5, 15, 15);
+        this.splitMain.Panel1.Controls.Add(this.grpChiTietMuon);
+        this.splitMain.Panel1.Controls.Add(this.grpThongTinPhat);
+        this.splitMain.Panel2.Controls.Add(this.grpHoaDonPhat);
 
-            // 
-            // grpThongTinPhat (Bên phải Panel1)
-            // 
-            this.grpThongTinPhat.Text = "Tính phí phạt && Xác nhận trả";
-            this.grpThongTinPhat.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            this.grpThongTinPhat.Dock = DockStyle.Right;
-            this.grpThongTinPhat.Width = 340;
-            this.grpThongTinPhat.Controls.AddRange(new Control[] {
+        // 
+        // grpThongTinPhat (Bên phải Panel1)
+        // 
+        this.grpThongTinPhat.Text = "Tính phí phạt && Xác nhận trả";
+        this.grpThongTinPhat.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+        this.grpThongTinPhat.Dock = DockStyle.Right;
+        this.grpThongTinPhat.Width = 340;
+        this.grpThongTinPhat.Controls.AddRange(new Control[] {
                 this.lblDonGiaTre, this.numDonGiaTre,
                 this.lblTienPhatHuHong, this.numTienPhatHuHong,
                 this.lblLyDoPhat, this.txtLyDoPhat,
@@ -161,127 +161,122 @@ partial class FrmTraSach
                 this.chkDaThanhToanNgay, this.btnXacNhanTra
             });
 
-            this.lblDonGiaTre.Text = "Phạt trễ hạn (VNĐ/ngày):";
-            this.lblDonGiaTre.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
-            this.lblDonGiaTre.Location = new Point(15, 42);
-            this.lblDonGiaTre.AutoSize = true;
+        this.lblDonGiaTre.Text = "Phạt trễ hạn (VNĐ/ngày):";
+        this.lblDonGiaTre.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
+        this.lblDonGiaTre.Location = new Point(15, 42);
+        this.lblDonGiaTre.AutoSize = true;
 
-            this.numDonGiaTre.Font = new Font("Segoe UI", 9.5F);
-            this.numDonGiaTre.Maximum = 1000000;
-            this.numDonGiaTre.Increment = 1000;
-            this.numDonGiaTre.Value = 5000;
-            this.numDonGiaTre.ThousandsSeparator = true;
-            this.numDonGiaTre.Location = new System.Drawing.Point(200, 42);
-            this.numDonGiaTre.Size = new System.Drawing.Size(105, 27);
-            this.numDonGiaTre.ValueChanged += (s, e) => TinhTongTienPhat();
+        this.numDonGiaTre.Font = new Font("Segoe UI", 9.5F);
+        this.numDonGiaTre.Maximum = 1000000;
+        this.numDonGiaTre.Increment = 1000;
+        this.numDonGiaTre.Value = 5000;
+        this.numDonGiaTre.ThousandsSeparator = true;
+        this.numDonGiaTre.Location = new System.Drawing.Point(200, 42);
+        this.numDonGiaTre.Size = new System.Drawing.Size(105, 27);
+        
 
-            this.lblTienPhatHuHong.Text = "Phạt hư hỏng / mất (VNĐ):";
-            this.lblTienPhatHuHong.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
-            this.lblTienPhatHuHong.Location = new Point(15, 78);
-            this.lblTienPhatHuHong.AutoSize = true;
+        this.lblTienPhatHuHong.Text = "Phạt hư hỏng / mất (VNĐ):";
+        this.lblTienPhatHuHong.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
+        this.lblTienPhatHuHong.Location = new Point(15, 78);
+        this.lblTienPhatHuHong.AutoSize = true;
 
-            this.numTienPhatHuHong.Font = new Font("Segoe UI", 9.5F);
-            this.numTienPhatHuHong.Maximum = 50000000;
-            this.numTienPhatHuHong.Increment = 5000;
-            this.numTienPhatHuHong.ThousandsSeparator = true;
-            this.numTienPhatHuHong.Location = new System.Drawing.Point(200, 78);
-            this.numTienPhatHuHong.Size = new System.Drawing.Size(105, 27);
-            this.numTienPhatHuHong.ValueChanged += (s, e) => TinhTongTienPhat();
+        this.numTienPhatHuHong.Font = new Font("Segoe UI", 9.5F);
+        this.numTienPhatHuHong.Maximum = 50000000;
+        this.numTienPhatHuHong.Increment = 5000;
+        this.numTienPhatHuHong.ThousandsSeparator = true;
+        this.numTienPhatHuHong.Location = new System.Drawing.Point(200, 78);
+        this.numTienPhatHuHong.Size = new System.Drawing.Size(105, 27);
+        
 
-            this.lblLyDoPhat.Text = "Ghi chú / Lý do phạt:";
-            this.lblLyDoPhat.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
-            this.lblLyDoPhat.Location = new Point(15, 102);
-            this.lblLyDoPhat.AutoSize = true;
+        this.lblLyDoPhat.Text = "Ghi chú / Lý do phạt:";
+        this.lblLyDoPhat.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
+        this.lblLyDoPhat.Location = new Point(15, 102);
+        this.lblLyDoPhat.AutoSize = true;
 
-            this.txtLyDoPhat.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
-            this.txtLyDoPhat.Multiline = true;
-            this.txtLyDoPhat.Location = new Point(15, 124);
-            this.txtLyDoPhat.Size = new Size(305, 52);
+        this.txtLyDoPhat.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
+        this.txtLyDoPhat.Multiline = true;
+        this.txtLyDoPhat.Location = new Point(15, 124);
+        this.txtLyDoPhat.Size = new Size(305, 52);
 
-            this.lblTongTienPhatTitle.Text = "TỔNG TIỀN PHẠT:";
-            this.lblTongTienPhatTitle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            this.lblTongTienPhatTitle.Location = new Point(15, 190);
-            this.lblTongTienPhatTitle.AutoSize = true;
+        this.lblTongTienPhatTitle.Text = "TỔNG TIỀN PHẠT:";
+        this.lblTongTienPhatTitle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+        this.lblTongTienPhatTitle.Location = new Point(15, 190);
+        this.lblTongTienPhatTitle.AutoSize = true;
 
-            this.lblTongTienPhat.Text = "0 VNĐ";
-            this.lblTongTienPhat.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            this.lblTongTienPhat.ForeColor = Color.FromArgb(220, 38, 38);
-            this.lblTongTienPhat.Location = new Point(155, 186);
-            this.lblTongTienPhat.AutoSize = true;
+        this.lblTongTienPhat.Text = "0 VNĐ";
+        this.lblTongTienPhat.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+        this.lblTongTienPhat.ForeColor = Color.FromArgb(220, 38, 38);
+        this.lblTongTienPhat.Location = new Point(155, 186);
+        this.lblTongTienPhat.AutoSize = true;
 
-            this.chkDaThanhToanNgay.Text = "Độc giả thanh toán phạt ngay";
-            this.chkDaThanhToanNgay.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
-            this.chkDaThanhToanNgay.Checked = true;
-            this.chkDaThanhToanNgay.Location = new Point(15, 222);
-            this.chkDaThanhToanNgay.AutoSize = true;
+        this.chkDaThanhToanNgay.Text = "Độc giả thanh toán phạt ngay";
+        this.chkDaThanhToanNgay.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
+        this.chkDaThanhToanNgay.Checked = true;
+        this.chkDaThanhToanNgay.Location = new Point(15, 222);
+        this.chkDaThanhToanNgay.AutoSize = true;
 
-            this.btnXacNhanTra.Text = "XÁC NHẬN TRẢ SÁCH";
-            this.btnXacNhanTra.BackColor = Color.FromArgb(22, 163, 74);
-            this.btnXacNhanTra.ForeColor = Color.White;
-            this.btnXacNhanTra.FlatStyle = FlatStyle.Flat;
-            this.btnXacNhanTra.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.btnXacNhanTra.Location = new Point(15, 255);
-            this.btnXacNhanTra.Size = new Size(305, 42);
-            this.btnXacNhanTra.Click += new EventHandler(this.btnXacNhanTra_Click);
+        this.btnXacNhanTra.Text = "XÁC NHẬN TRẢ SÁCH";
+        this.btnXacNhanTra.BackColor = Color.FromArgb(22, 163, 74);
+        this.btnXacNhanTra.ForeColor = Color.White;
+        this.btnXacNhanTra.FlatStyle = FlatStyle.Flat;
+        this.btnXacNhanTra.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+        this.btnXacNhanTra.Location = new Point(15, 255);
+        this.btnXacNhanTra.Size = new Size(305, 42);
+        this.btnXacNhanTra.Click += new EventHandler(this.btnXacNhanTra_Click);
 
-            // 
-            // grpChiTietMuon (Bên trái Panel1)
-            // 
-            this.grpChiTietMuon.Text = "Danh sách cuốn sách trong phiếu mượn (Tích chọn sách trả)";
-            this.grpChiTietMuon.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            this.grpChiTietMuon.Dock = DockStyle.Fill;
-            this.grpChiTietMuon.Controls.Add(this.dgvChiTietMuon);
+        // 
+        // grpChiTietMuon (Bên trái Panel1)
+        // 
+        this.grpChiTietMuon.Text = "Danh sách cuốn sách trong phiếu mượn (Tích chọn sách trả)";
+        this.grpChiTietMuon.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+        this.grpChiTietMuon.Dock = DockStyle.Fill;
+        this.grpChiTietMuon.Controls.Add(this.dgvChiTietMuon);
 
-            this.dgvChiTietMuon.Dock = DockStyle.Fill;
-            this.dgvChiTietMuon.BackgroundColor = Color.White;
-            this.dgvChiTietMuon.AllowUserToAddRows = false;
-            this.dgvChiTietMuon.RowHeadersVisible = false;
-            this.dgvChiTietMuon.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            this.dgvChiTietMuon.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvChiTietMuon.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
-            this.dgvChiTietMuon.CurrentCellDirtyStateChanged += (s, e) =>
-            {
-                if (dgvChiTietMuon.IsCurrentCellDirty)
-                    dgvChiTietMuon.CommitEdit(DataGridViewDataErrorContexts.Commit);
-            };
-            this.dgvChiTietMuon.CellValueChanged += (s, e) => TinhTongTienPhat();
+        this.dgvChiTietMuon.Dock = DockStyle.Fill;
+        this.dgvChiTietMuon.BackgroundColor = Color.White;
+        this.dgvChiTietMuon.AllowUserToAddRows = false;
+        this.dgvChiTietMuon.RowHeadersVisible = false;
+        this.dgvChiTietMuon.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+        this.dgvChiTietMuon.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        this.dgvChiTietMuon.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
+        
 
-            // 
-            // grpHoaDonPhat (Panel2)
-            // 
-            this.grpHoaDonPhat.Text = "Danh sách Hóa đơn phạt của độc giả";
-            this.grpHoaDonPhat.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            this.grpHoaDonPhat.Dock = DockStyle.Fill;
-            this.grpHoaDonPhat.Controls.Add(this.dgvHoaDonPhat);
-            this.grpHoaDonPhat.Controls.Add(this.btnThanhToanHoaDon);
+        // 
+        // grpHoaDonPhat (Panel2)
+        // 
+        this.grpHoaDonPhat.Text = "Danh sách Hóa đơn phạt của độc giả";
+        this.grpHoaDonPhat.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+        this.grpHoaDonPhat.Dock = DockStyle.Fill;
+        this.grpHoaDonPhat.Controls.Add(this.dgvHoaDonPhat);
+        this.grpHoaDonPhat.Controls.Add(this.btnThanhToanHoaDon);
 
-            this.dgvHoaDonPhat.Dock = DockStyle.Fill;
-            this.dgvHoaDonPhat.BackgroundColor = Color.White;
-            this.dgvHoaDonPhat.AllowUserToAddRows = false;
-            this.dgvHoaDonPhat.ReadOnly = true;
-            this.dgvHoaDonPhat.RowHeadersVisible = false;
-            this.dgvHoaDonPhat.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            this.dgvHoaDonPhat.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvHoaDonPhat.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
+        this.dgvHoaDonPhat.Dock = DockStyle.Fill;
+        this.dgvHoaDonPhat.BackgroundColor = Color.White;
+        this.dgvHoaDonPhat.AllowUserToAddRows = false;
+        this.dgvHoaDonPhat.ReadOnly = true;
+        this.dgvHoaDonPhat.RowHeadersVisible = false;
+        this.dgvHoaDonPhat.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+        this.dgvHoaDonPhat.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        this.dgvHoaDonPhat.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
 
-            this.btnThanhToanHoaDon.Text = "Xác nhận đã thu tiền hóa đơn đang chọn";
-            this.btnThanhToanHoaDon.Dock = DockStyle.Bottom;
-            this.btnThanhToanHoaDon.Height = 35;
-            this.btnThanhToanHoaDon.BackColor = Color.FromArgb(234, 88, 12);
-            this.btnThanhToanHoaDon.ForeColor = Color.White;
-            this.btnThanhToanHoaDon.FlatStyle = FlatStyle.Flat;
-            this.btnThanhToanHoaDon.Click += new EventHandler(this.btnThanhToanHoaDon_Click);
+        this.btnThanhToanHoaDon.Text = "Xác nhận đã thu tiền hóa đơn đang chọn";
+        this.btnThanhToanHoaDon.Dock = DockStyle.Bottom;
+        this.btnThanhToanHoaDon.Height = 35;
+        this.btnThanhToanHoaDon.BackColor = Color.FromArgb(234, 88, 12);
+        this.btnThanhToanHoaDon.ForeColor = Color.White;
+        this.btnThanhToanHoaDon.FlatStyle = FlatStyle.Flat;
+        this.btnThanhToanHoaDon.Click += new EventHandler(this.btnThanhToanHoaDon_Click);
 
-            // 
-            // FrmTraSach
-            // 
-            this.ClientSize = new Size(1050, 680);
-            this.Controls.Add(this.splitMain);
-            this.Controls.Add(this.pnlTopFilter);
-            this.Name = "FrmTraSach";
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.Text = "Trả sách & Xử lý phạt - Quản Lý Thư Viện";
-            this.Load += new EventHandler(this.FrmTraSach_Load);
+        // 
+        // FrmTraSach
+        // 
+        this.ClientSize = new Size(1050, 680);
+        this.Controls.Add(this.splitMain);
+        this.Controls.Add(this.pnlTopFilter);
+        this.Name = "FrmTraSach";
+        this.StartPosition = FormStartPosition.CenterScreen;
+        this.Text = "Trả sách & Xử lý phạt - Quản Lý Thư Viện";
+        this.Load += new EventHandler(this.FrmTraSach_Load);
 
             this.pnlTopFilter.ResumeLayout(false);
             this.pnlTopFilter.PerformLayout();

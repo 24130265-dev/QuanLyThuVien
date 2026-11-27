@@ -12,7 +12,7 @@ namespace QuanLyThuVien.Forms;
 public partial class FrmTraSach : Form
 {
     private readonly AppDbContext _context;
-
+    private decimal _tongTienPhat = 0;
     public FrmTraSach()
     {
         InitializeComponent();
@@ -126,6 +126,7 @@ public partial class FrmTraSach : Form
         {
             dgvChiTietMuon.Rows.Clear();
             dgvHoaDonPhat.DataSource = null;
+            TinhTongTienPhat();
         }
     }
 
@@ -204,14 +205,16 @@ public partial class FrmTraSach : Form
         }
 
         decimal tienPhatTre = tongNgayTre * donGiaTre;
-        decimal tongPhat = tienPhatTre + phatHuHong;
+        _tongTienPhat = tienPhatTre + phatHuHong;
 
-        lblTongTienPhat.Text = $"{tongPhat:N0} VNĐ";
+        lblTongTienPhat.Text = $"{_tongTienPhat:N0} VNĐ";
         txtLyDoPhat.Text = string.Join("; ", lyDoList);
     }
 
     private void btnXacNhanTra_Click(object sender, EventArgs e)
     {
+        _context.ChangeTracker.Clear();
+
         if (cboPhieuMuon.SelectedValue == null || !(cboPhieuMuon.SelectedValue is int phieuMuonId))
         {
             MessageBox.Show("Vui lòng chọn phiếu mượn cần trả!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -266,27 +269,35 @@ public partial class FrmTraSach : Form
         }
 
         // 2. Nếu có phát sinh tiền phạt -> Tạo HoaDonPhat
-        decimal tongTienPhat = 0;
-        decimal.TryParse(lblTongTienPhat.Text.Replace("VNĐ", "").Replace(",", "").Replace(".", "").Trim(), out tongTienPhat);
-
-        if (tongTienPhat > 0)
+        if (_tongTienPhat > 0)
         {
             var hoaDonPhat = new HoaDonPhat
             {
                 MaDocGia = phieu.MaDocGia,
                 MaPhieuMuon = phieu.MaPhieuMuon,
                 NgayLap = DateTime.Now,
-                TienPhatQuaHan = tongTienPhat,
-                LyDo = string.IsNullOrWhiteSpace(txtLyDoPhat.Text) ? "Phạt vi phạm mượn trả" : txtLyDoPhat.Text.Trim(),
+                TienPhatQuaHan = _tongTienPhat - numTienPhatHuHong.Value,
+                TienBoiThuong = numTienPhatHuHong.Value,
+                LyDo = string.IsNullOrWhiteSpace(txtLyDoPhat.Text) ? "Phạt vi phạm mượn trả" : txtLyDoPhat.Text,
                 DaThanhToan = chkDaThanhToanNgay.Checked
             };
             _context.HoaDonPhats.Add(hoaDonPhat);
+
+            // Chỉ cộng nợ khi phát sinh phạt và chưa thanh toán ngay
+            if (!chkDaThanhToanNgay.Checked)
+            {
+                var dg = _context.DocGias.FirstOrDefault(d => d.MaDocGia == phieu.MaDocGia);
+                if (dg != null)
+                {
+                    dg.TienNoPhat += _tongTienPhat;
+                }
+            }
         }
 
         _context.SaveChanges();
 
-        MessageBox.Show("Đã ghi nhận trả sách thành công!", "Hoàn tất", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+        Toast.ThanhCong(this, "Đã ghi nhận trả sách thành công!");
         numTienPhatHuHong.Value = 0;
         TaiDanhSachPhieuDangMuon(txtTimKiem.Text);
     }
@@ -301,12 +312,13 @@ public partial class FrmTraSach : Form
                 MaHoaDon = h.MaHoaDon,
                 MaPhieuMuon = h.MaPhieuMuon,
                 NgayLap = h.NgayLap.ToString("dd/MM/yyyy HH:mm"),
-                SoTien = h.TienPhatQuaHan.ToString("N0") + " VNĐ",
+                SoTien = (h.TienPhatQuaHan + h.TienBoiThuong).ToString("N0") + " VNĐ",
                 LyDo = h.LyDo ?? "",
                 TrangThai = h.DaThanhToan ? "Đã thanh toán" : "Chưa thanh toán"
             })
             .ToList();
 
+        dgvHoaDonPhat.Columns.Clear();
         dgvHoaDonPhat.DataSource = hoaDons;
 
         if (dgvHoaDonPhat.Columns.Count > 0)
@@ -322,6 +334,8 @@ public partial class FrmTraSach : Form
 
     private void btnThanhToanHoaDon_Click(object sender, EventArgs e)
     {
+        _context.ChangeTracker.Clear();
+
         if (dgvHoaDonPhat.CurrentRow == null) return;
 
         int maHoaDon = Convert.ToInt32(dgvHoaDonPhat.CurrentRow.Cells["MaHoaDon"].Value);
@@ -340,12 +354,14 @@ public partial class FrmTraSach : Form
         }
 
         hd.DaThanhToan = true;
+        var docGia = _context.DocGias.First(d => d.MaDocGia == hd.MaDocGia);
+        docGia.TienNoPhat = Math.Max(0, docGia.TienNoPhat - (hd.TienPhatQuaHan + hd.TienBoiThuong));
         _context.SaveChanges();
 
-        MessageBox.Show($"Đã thu tiền hóa đơn phạt #{hd.MaHoaDon}!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        Toast.ThanhCong(this, $"Đã thu tiền hóa đơn phạt #{hd.MaHoaDon}!");
         TaiHoaDonPhatCuaDocGia(hd.MaDocGia);
     }
-    
+
     private void KhoiTaoCotLuoiHoaDonPhatMacDinh()
     {
         if (dgvHoaDonPhat.Columns.Count > 0) return;
@@ -357,9 +373,19 @@ public partial class FrmTraSach : Form
         dgvHoaDonPhat.Columns.Add("LyDo", "Lý Do Phạt");
         dgvHoaDonPhat.Columns.Add("TrangThai", "Trạng Thái");
     }
-    
-        private void CauHinhGiaoDien()
+
+    private void CauHinhGiaoDien()
     {
+        // 0. Đăng ký các sự kiện tính tiền phạt (chuyển từ Designer.cs sang)
+        numDonGiaTre.ValueChanged += (s, e) => TinhTongTienPhat();
+        numTienPhatHuHong.ValueChanged += (s, e) => TinhTongTienPhat();
+        dgvChiTietMuon.CurrentCellDirtyStateChanged += (s, e) =>
+        {
+            if (dgvChiTietMuon.IsCurrentCellDirty)
+                dgvChiTietMuon.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        };
+        dgvChiTietMuon.CellValueChanged += (s, e) => TinhTongTienPhat();
+
         // 1. Áp dụng Theme
         Theme.Apply(this);
 

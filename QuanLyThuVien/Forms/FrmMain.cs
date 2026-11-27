@@ -34,6 +34,7 @@ public partial class FrmMain : Form
         lblPhanHe.ForeColor = Theme.Neutral;
         lblXinChao.Text = $"Xin chào: {PhienDangNhap.HoTen} (Thủ thư)";
         Theme.StyleButton(btnDangXuat, Theme.Neutral);
+        lblPhanHe.UseMnemonic = false;
 
         // 3. Sidebar trái
         pnlSidebar.BackColor = Theme.PrimaryDark;
