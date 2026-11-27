@@ -214,6 +214,8 @@ public partial class FrmTraSach : Form
 
     private void btnXacNhanTra_Click(object sender, EventArgs e)
     {
+        _context.ChangeTracker.Clear();
+
         if (cboPhieuMuon.SelectedValue == null || !(cboPhieuMuon.SelectedValue is int phieuMuonId))
         {
             MessageBox.Show("Vui lòng chọn phiếu mượn cần trả!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -311,7 +313,7 @@ public partial class FrmTraSach : Form
                 MaHoaDon = h.MaHoaDon,
                 MaPhieuMuon = h.MaPhieuMuon,
                 NgayLap = h.NgayLap.ToString("dd/MM/yyyy HH:mm"),
-                SoTien = h.TienPhatQuaHan.ToString("N0") + " VNĐ",
+                SoTien = (h.TienPhatQuaHan + h.TienBoiThuong).ToString("N0") + " VNĐ",
                 LyDo = h.LyDo ?? "",
                 TrangThai = h.DaThanhToan ? "Đã thanh toán" : "Chưa thanh toán"
             })
@@ -333,6 +335,8 @@ public partial class FrmTraSach : Form
 
     private void btnThanhToanHoaDon_Click(object sender, EventArgs e)
     {
+        _context.ChangeTracker.Clear();
+
         if (dgvHoaDonPhat.CurrentRow == null) return;
 
         int maHoaDon = Convert.ToInt32(dgvHoaDonPhat.CurrentRow.Cells["MaHoaDon"].Value);

@@ -275,7 +275,7 @@ partial class FrmMuonSach
         btnLapPhieu.Name = "btnLapPhieu";
         btnLapPhieu.Size = new Size(263, 53);
         btnLapPhieu.TabIndex = 2;
-        btnLapPhieu.Text = "XÁC NHẬN CHO MƯỢN & LẬP PHIẾU";
+        btnLapPhieu.Text = "XÁC NHẬN CHO MƯỢN && LẬP PHIẾU";
         btnLapPhieu.UseVisualStyleBackColor = true;
         // 
         // btnLamMoi

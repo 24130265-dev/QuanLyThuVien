@@ -30,12 +30,14 @@ partial class FrmBaoCao
     private TabPage tabMuonTra;
     private TabPage tabTopSach;
     private TabPage tabTienPhat;
+    private TabPage tabQuaHan;
 
     private TableLayoutPanel tblChiTietMuonTra;
     private Panel pnlBieuDoMuon;
     private DataGridView dgvMuonTra;
     private DataGridView dgvTopSach;
     private DataGridView dgvTienPhat;
+    private DataGridView dgvQuaHan;
 
     protected override void Dispose(bool disposing)
     {
@@ -62,12 +64,14 @@ partial class FrmBaoCao
         this.tabMuonTra = new TabPage();
         this.tabTopSach = new TabPage();
         this.tabTienPhat = new TabPage();
+        this.tabQuaHan = new TabPage();
 
         this.tblChiTietMuonTra = new TableLayoutPanel();
         this.pnlBieuDoMuon = new Panel();
         this.dgvMuonTra = new DataGridView();
         this.dgvTopSach = new DataGridView();
         this.dgvTienPhat = new DataGridView();
+        this.dgvQuaHan = new DataGridView();
 
         this.pnlHeader.SuspendLayout();
         this.tblKpi.SuspendLayout();
@@ -79,6 +83,7 @@ partial class FrmBaoCao
         ((ISupportInitialize)(this.dgvMuonTra)).BeginInit();
         ((ISupportInitialize)(this.dgvTopSach)).BeginInit();
         ((ISupportInitialize)(this.dgvTienPhat)).BeginInit();
+        ((ISupportInitialize)(this.dgvQuaHan)).BeginInit();
         this.SuspendLayout();
 
         //
@@ -92,11 +97,12 @@ partial class FrmBaoCao
             this.lblDenNgay, this.dtpDenNgay, this.btnXemBaoCao, this.btnXuatCsv
         });
 
-        this.lblTitle.Text = "BÁO CÁO & THỐNG KÊ HOẠT ĐỘNG THƯ VIỆN";
+        this.lblTitle.Text = "BÁO CÁO && THỐNG KÊ HOẠT ĐỘNG THƯ VIỆN";
         this.lblTitle.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
         this.lblTitle.ForeColor = Color.FromArgb(30, 58, 138);
         this.lblTitle.Location = new Point(15, 12);
         this.lblTitle.AutoSize = true;
+        this.lblTitle.UseMnemonic = false;
 
         this.lblTuNgay.Text = "Từ ngày:";
         this.lblTuNgay.Font = new Font("Segoe UI", 9.5F);
@@ -148,7 +154,12 @@ partial class FrmBaoCao
         //
         this.tabBaoCao.Dock = DockStyle.Fill;
         this.tabBaoCao.Font = new Font("Segoe UI", 9.5F);
-        this.tabBaoCao.Controls.AddRange(new Control[] { this.tabMuonTra, this.tabTopSach, this.tabTienPhat });
+        this.tabBaoCao.Controls.AddRange(new Control[] {
+        this.tabMuonTra,
+        this.tabTopSach,
+        this.tabTienPhat,
+        this.tabQuaHan
+    });
 
         this.tabMuonTra.Text = "1. Tình hình Mượn - Trả & Quá hạn";
         this.tabMuonTra.Controls.Add(this.tblChiTietMuonTra);
@@ -174,6 +185,11 @@ partial class FrmBaoCao
 
         this.tabTienPhat.Text = "3. Thống Kê Hóa Đơn Phạt";
         this.tabTienPhat.Controls.Add(this.dgvTienPhat);
+        //
+        // tabQuaHan
+        //
+        this.tabQuaHan.Text = "4. Độc giả quá hạn chưa trả";
+        this.tabQuaHan.Controls.Add(this.dgvQuaHan);
 
         //
         // FrmBaoCao
@@ -198,9 +214,10 @@ partial class FrmBaoCao
         ((ISupportInitialize)(this.dgvMuonTra)).EndInit();
         ((ISupportInitialize)(this.dgvTopSach)).EndInit();
         ((ISupportInitialize)(this.dgvTienPhat)).EndInit();
+        ((ISupportInitialize)(this.dgvQuaHan)).EndInit();
         this.ResumeLayout(false);
 
-        Theme.Apply(this);
+        
 
         this.pnlHeader.BackColor = Theme.CardBg;
         this.pnlBieuDoMuon.BackColor = Theme.CardBg;

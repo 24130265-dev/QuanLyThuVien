@@ -53,13 +53,13 @@ public partial class DlgDuyetYeuCau : Form
         dgvYeuCau.AllowUserToDeleteRows = false;
 
         dgvYeuCau.Columns.AddRange(
-            Cot("MaYeuCau", "Mã YC", 8),
-            Cot("MaDocGia", "Mã độc giả", 12),
-            Cot("HoTen", "Họ tên", 22),
-            Cot("MaDauSach", "Mã đầu sách", 12),
-            Cot("TenDauSach", "Tên đầu sách", 26),
-            Cot("NgayGui", "Ngày gửi", 16),
-            Cot("SoCuonSanSang", "Còn sẵn sàng", 12));
+            Cot("MaYeuCau", "Mã YC", 10),
+            Cot("MaDocGia", "Mã ĐG", 12),
+            Cot("HoTen", "Họ tên", 20),
+            Cot("MaDauSach", "Mã sách", 12),
+            Cot("TenDauSach", "Tên đầu sách", 24),
+            Cot("NgayGui", "Ngày gửi", 18),
+            Cot("SoCuonSanSang", "Sẵn sàng", 12));
     }
 
     private async void DlgDuyetYeuCau_Load(object? sender, EventArgs e)
