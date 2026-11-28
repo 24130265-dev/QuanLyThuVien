@@ -13,6 +13,22 @@ namespace QuanLyThuVien.Forms;
 public partial class DlgDangKy : Form
 {
     public string MaSinhVien { get; private set; } = string.Empty;
+    public event Action<bool>? HoanTat;
+    public IButtonControl NutDangKy => btnDangKy;
+    public IButtonControl NutHuy => btnHuy;
+
+    private void KetThuc(bool thanhCong)
+    {
+        if (TopLevel)
+        {
+            DialogResult = thanhCong ? DialogResult.OK : DialogResult.Cancel;
+            Close();
+        }
+        else
+        {
+            HoanTat?.Invoke(thanhCong);
+        }
+    }
 
     public DlgDangKy()
     {
@@ -25,6 +41,8 @@ public partial class DlgDangKy : Form
         Theme.StyleButton(btnHuy, Theme.Neutral);
         txtMatKhau.MaxLength = MatKhau.DoDaiToiDa;
         txtXacNhan.MaxLength = MatKhau.DoDaiToiDa;
+
+        btnHuy.Click += (_, _) => KetThuc(false);
     }
 
     private void chkHienMatKhau_CheckedChanged(object? sender, EventArgs e)
@@ -97,7 +115,7 @@ public partial class DlgDangKy : Form
             await db.SaveChangesAsync();
 
             MaSinhVien = ma;
-            DialogResult = DialogResult.OK;
+            KetThuc(true);
         }
         catch (DbUpdateException ex)
         {

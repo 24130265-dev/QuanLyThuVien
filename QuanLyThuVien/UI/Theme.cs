@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -597,5 +598,38 @@ public static class Theme
         ss.Renderer = new StatusRenderer();
         foreach (ToolStripItem item in ss.Items)
             item.ForeColor = Neutral;
+    }
+    // =====================================================================
+    // 12. HIỆU ỨNG TRƯỢT NGANG CHO PANEL / FORM NHÚNG
+    // =====================================================================
+    public static void TruotNgang(Control ctrl, int tuX, int denX, int ms = 220, Action? khiXong = null)
+    {
+        ctrl.Left = tuX;
+        var sw = Stopwatch.StartNew();
+        var timer = new System.Windows.Forms.Timer { Interval = 15 };
+
+        timer.Tick += (_, _) =>
+        {
+            if (ctrl.IsDisposed)
+            {
+                timer.Stop();
+                timer.Dispose();
+                return;
+            }
+
+            double p = Math.Min(1.0, sw.ElapsedMilliseconds / (double)Math.Max(1, ms));
+            double ease = 1 - Math.Pow(1 - p, 3); // trượt nhanh lúc đầu, êm dần về cuối
+            ctrl.Left = tuX + (int)Math.Round((denX - tuX) * ease);
+
+            if (p >= 1.0)
+            {
+                ctrl.Left = denX;
+                timer.Stop();
+                timer.Dispose();
+                khiXong?.Invoke();
+            }
+        };
+
+        timer.Start();
     }
 }

@@ -7,6 +7,9 @@ namespace QuanLyThuVien.Forms;
 
 public partial class FrmDangNhap : Form
 {
+    private Panel? _pnlDangKy;
+    private IButtonControl? _acceptCu;
+    private IButtonControl? _cancelCu;
 
     public FrmDangNhap()
     {
@@ -14,8 +17,9 @@ public partial class FrmDangNhap : Form
 
         // 1. Áp dụng bộ giao diện phẳng dùng chung
         Theme.Apply(this);
+        Theme.FadeIn(this);
 
-        
+
 
         txtMatKhau.UseSystemPasswordChar = true;
 
@@ -41,8 +45,11 @@ public partial class FrmDangNhap : Form
             Text = "Sinh viên mới? Đăng ký",
             AutoSize = true,
             Location = new Point(235, 167),
-            Font = Theme.FontNormal,
-            LinkColor = Theme.Secondary
+            Font = Theme.FontBold,
+            LinkColor = Theme.Primary,
+            ActiveLinkColor = Theme.PrimaryDark,
+            LinkBehavior = LinkBehavior.HoverUnderline,
+            Cursor = Cursors.Hand
         };
         lnkDangKy.LinkClicked += LnkDangKy_LinkClicked;
         grpDangNhap.Controls.Add(lnkDangKy);
@@ -52,7 +59,10 @@ public partial class FrmDangNhap : Form
 
         // Tự động điền lại tài khoản đã đăng nhập lần trước
         txtEmail.Text = PhienDangNhap.DocTaiKhoanLanCuoi();
+
+        
     }
+
 
     private void TxtEmail_TextChanged(object? sender, EventArgs e)
     {
@@ -153,15 +163,86 @@ public partial class FrmDangNhap : Form
     }
     private void LnkDangKy_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
     {
-        using var dlg = new DlgDangKy();
-        if (dlg.ShowDialog(this) != DialogResult.OK) return;
+        if (_pnlDangKy != null) return;
 
-        rdoDocGia.Checked = true;
-        txtEmail.Text = dlg.MaSinhVien;
-        txtMatKhau.Clear();
-        txtMatKhau.Focus();
-        Toast.ThanhCong(this, "Đăng ký thành công. Hãy đăng nhập bằng mật khẩu vừa đặt.");
+        int xDich = pnlTrai.Right;
+        int rongPhai = ClientSize.Width - xDich;
+        const int leNgang = 24;
+
+        var pnl = new Panel
+        {
+            BackColor = Theme.BgMain,
+            Bounds = new Rectangle(ClientSize.Width, 0, rongPhai, ClientSize.Height),
+            Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
+        };
+
+        var dlg = new DlgDangKy
+        {
+            TopLevel = false,
+            FormBorderStyle = FormBorderStyle.None,
+            BackColor = Theme.BgMain
+        };
+
+        // Tự co nhẹ nếu form đăng ký rộng hơn vùng hiển thị (chừa lề 24px mỗi bên, không hiện scrollbar)
+        int rongToiDa = rongPhai - leNgang * 2;
+        int phanDu = dlg.Width - rongToiDa;
+        if (phanDu > 0)
+        {
+            foreach (Control c in dlg.Controls)
+            {
+                if (c is TextBox)
+                    c.Width = Math.Max(140, c.Width - phanDu);
+                else if (c is Button)
+                    c.Left -= phanDu;
+            }
+            dlg.Width = rongToiDa;
+        }
+
+        // Canh giữa gọn gàng trong vùng bên phải
+        dlg.Location = new Point(
+            Math.Max(leNgang, (rongPhai - dlg.Width) / 2),
+            Math.Max(12, (ClientSize.Height - dlg.Height) / 2));
+
+        pnl.Controls.Add(dlg);
+        Controls.Add(pnl);
+        pnl.BringToFront();
+        pnlTrai.BringToFront();
+        dlg.Show();
+
+        _pnlDangKy = pnl;
+        _acceptCu = AcceptButton;
+        _cancelCu = CancelButton;
+        AcceptButton = dlg.NutDangKy;
+        CancelButton = dlg.NutHuy;
+
+        dlg.HoanTat += thanhCong =>
+        {
+            string maSv = dlg.MaSinhVien;
+            AcceptButton = _acceptCu;
+            CancelButton = _cancelCu;
+
+            Theme.TruotNgang(pnl, xDich, ClientSize.Width, 300, () =>
+            {
+                Controls.Remove(pnl);
+                dlg.Dispose();
+                pnl.Dispose();
+                _pnlDangKy = null;
+
+                if (thanhCong)
+                {
+                    rdoDocGia.Checked = true;
+                    txtEmail.Text = maSv;
+                    txtMatKhau.Clear();
+                    txtMatKhau.Focus();
+                    Toast.ThanhCong(this, "Đăng ký thành công. Hãy đăng nhập bằng mật khẩu vừa đặt.");
+                }
+            });
+        };
+
+        Theme.TruotNgang(pnl, ClientSize.Width, xDich, 360, () => dlg.SelectNextControl(dlg, true, true, true, true));
     }
+
+   
 
     private void btnThoat_Click(object? sender, EventArgs e)
     {

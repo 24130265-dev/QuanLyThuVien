@@ -181,7 +181,7 @@
             btnHuy.Name = "btnHuy";
             btnHuy.Size = new Size(125, 50);
             btnHuy.TabIndex = 14;
-            btnHuy.Text = "Hủy";
+            btnHuy.Text = "Quay Lại";
             btnHuy.UseVisualStyleBackColor = true;
             // 
             // DlgDangKy
