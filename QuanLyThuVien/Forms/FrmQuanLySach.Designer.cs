@@ -30,39 +30,39 @@ namespace QuanLyThuVien.Forms
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            splMain = new SplitContainer();
-            tvTheLoai = new TreeView();
-            pnlNutTheLoai = new Panel();
-            btnXoaTheLoai = new Button();
-            btnSuaTheLoai = new Button();
-            btnThemTheLoai = new Button();
-            splPhai = new SplitContainer();
-            dgvDauSach = new DataGridView();
-            grpDauSach = new GroupBox();
-            btnLamMoi = new Button();
-            btnXoa = new Button();
-            btnSua = new Button();
-            btnThem = new Button();
-            cboTheLoai = new ComboBox();
-            nudGiaBia = new NumericUpDown();
-            nudNamXuatBan = new NumericUpDown();
-            txtTacGia = new TextBox();
-            txtTenDauSach = new TextBox();
-            txtMaDauSach = new TextBox();
-            lblTheLoai = new Label();
-            lblGiaBia = new Label();
-            lblNamXuatBan = new Label();
-            lblTacGia = new Label();
-            lblTenDauSach = new Label();
-            lblMaDauSach = new Label();
-            dgvCuonSach = new DataGridView();
-            pnlNutCuonSach = new Panel();
-            btnXoaCuon = new Button();
-            btnDoiTrangThai = new Button();
-            btnNhapThemBanSao = new Button();
-            nudSoLuong = new NumericUpDown();
-            label1 = new Label();
-            errProvider = new ErrorProvider(components);
+            splMain = new System.Windows.Forms.SplitContainer();
+            tvTheLoai = new System.Windows.Forms.TreeView();
+            pnlNutTheLoai = new System.Windows.Forms.Panel();
+            btnXoaTheLoai = new System.Windows.Forms.Button();
+            btnSuaTheLoai = new System.Windows.Forms.Button();
+            btnThemTheLoai = new System.Windows.Forms.Button();
+            splPhai = new System.Windows.Forms.SplitContainer();
+            dgvDauSach = new System.Windows.Forms.DataGridView();
+            grpDauSach = new System.Windows.Forms.GroupBox();
+            btnLamMoi = new System.Windows.Forms.Button();
+            btnXoa = new System.Windows.Forms.Button();
+            btnSua = new System.Windows.Forms.Button();
+            btnThem = new System.Windows.Forms.Button();
+            cboTheLoai = new System.Windows.Forms.ComboBox();
+            nudGiaBia = new System.Windows.Forms.NumericUpDown();
+            nudNamXuatBan = new System.Windows.Forms.NumericUpDown();
+            txtTacGia = new System.Windows.Forms.TextBox();
+            txtTenDauSach = new System.Windows.Forms.TextBox();
+            txtMaDauSach = new System.Windows.Forms.TextBox();
+            lblTheLoai = new System.Windows.Forms.Label();
+            lblGiaBia = new System.Windows.Forms.Label();
+            lblNamXuatBan = new System.Windows.Forms.Label();
+            lblTacGia = new System.Windows.Forms.Label();
+            lblTenDauSach = new System.Windows.Forms.Label();
+            lblMaDauSach = new System.Windows.Forms.Label();
+            dgvCuonSach = new System.Windows.Forms.DataGridView();
+            pnlNutCuonSach = new System.Windows.Forms.Panel();
+            btnXoaCuon = new System.Windows.Forms.Button();
+            btnDoiTrangThai = new System.Windows.Forms.Button();
+            btnNhapThemBanSao = new System.Windows.Forms.Button();
+            nudSoLuong = new System.Windows.Forms.NumericUpDown();
+            label1 = new System.Windows.Forms.Label();
+            errProvider = new System.Windows.Forms.ErrorProvider(components);
             ((System.ComponentModel.ISupportInitialize)splMain).BeginInit();
             splMain.Panel1.SuspendLayout();
             splMain.Panel2.SuspendLayout();
@@ -84,8 +84,8 @@ namespace QuanLyThuVien.Forms
             // 
             // splMain
             // 
-            splMain.Dock = DockStyle.Fill;
-            splMain.Location = new Point(0, 0);
+            splMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            splMain.Location = new System.Drawing.Point(0, 0);
             splMain.Name = "splMain";
             // 
             // splMain.Panel1
@@ -96,16 +96,16 @@ namespace QuanLyThuVien.Forms
             // splMain.Panel2
             // 
             splMain.Panel2.Controls.Add(splPhai);
-            splMain.Size = new Size(1248, 603);
+            splMain.Size = new System.Drawing.Size(1248, 603);
             splMain.SplitterDistance = 345;
             splMain.TabIndex = 0;
             // 
             // tvTheLoai
             // 
-            tvTheLoai.Dock = DockStyle.Fill;
-            tvTheLoai.Location = new Point(0, 0);
+            tvTheLoai.Dock = System.Windows.Forms.DockStyle.Fill;
+            tvTheLoai.Location = new System.Drawing.Point(0, 0);
             tvTheLoai.Name = "tvTheLoai";
-            tvTheLoai.Size = new Size(345, 551);
+            tvTheLoai.Size = new System.Drawing.Size(345, 551);
             tvTheLoai.TabIndex = 1;
             tvTheLoai.AfterSelect += tvTheLoai_AfterSelect;
             // 
@@ -114,17 +114,17 @@ namespace QuanLyThuVien.Forms
             pnlNutTheLoai.Controls.Add(btnXoaTheLoai);
             pnlNutTheLoai.Controls.Add(btnSuaTheLoai);
             pnlNutTheLoai.Controls.Add(btnThemTheLoai);
-            pnlNutTheLoai.Dock = DockStyle.Bottom;
-            pnlNutTheLoai.Location = new Point(0, 551);
+            pnlNutTheLoai.Dock = System.Windows.Forms.DockStyle.Bottom;
+            pnlNutTheLoai.Location = new System.Drawing.Point(0, 551);
             pnlNutTheLoai.Name = "pnlNutTheLoai";
-            pnlNutTheLoai.Size = new Size(345, 52);
+            pnlNutTheLoai.Size = new System.Drawing.Size(345, 52);
             pnlNutTheLoai.TabIndex = 0;
             // 
             // btnXoaTheLoai
             // 
-            btnXoaTheLoai.Location = new Point(232, 8);
+            btnXoaTheLoai.Location = new System.Drawing.Point(232, 8);
             btnXoaTheLoai.Name = "btnXoaTheLoai";
-            btnXoaTheLoai.Size = new Size(100, 36);
+            btnXoaTheLoai.Size = new System.Drawing.Size(100, 36);
             btnXoaTheLoai.TabIndex = 2;
             btnXoaTheLoai.Text = "Xóa";
             btnXoaTheLoai.UseVisualStyleBackColor = true;
@@ -132,9 +132,9 @@ namespace QuanLyThuVien.Forms
             // 
             // btnSuaTheLoai
             // 
-            btnSuaTheLoai.Location = new Point(122, 8);
+            btnSuaTheLoai.Location = new System.Drawing.Point(122, 8);
             btnSuaTheLoai.Name = "btnSuaTheLoai";
-            btnSuaTheLoai.Size = new Size(100, 36);
+            btnSuaTheLoai.Size = new System.Drawing.Size(100, 36);
             btnSuaTheLoai.TabIndex = 1;
             btnSuaTheLoai.Text = "Sửa";
             btnSuaTheLoai.UseVisualStyleBackColor = true;
@@ -142,9 +142,9 @@ namespace QuanLyThuVien.Forms
             // 
             // btnThemTheLoai
             // 
-            btnThemTheLoai.Location = new Point(12, 8);
+            btnThemTheLoai.Location = new System.Drawing.Point(12, 8);
             btnThemTheLoai.Name = "btnThemTheLoai";
-            btnThemTheLoai.Size = new Size(100, 36);
+            btnThemTheLoai.Size = new System.Drawing.Size(100, 36);
             btnThemTheLoai.TabIndex = 0;
             btnThemTheLoai.Text = "Thêm";
             btnThemTheLoai.UseVisualStyleBackColor = true;
@@ -152,10 +152,10 @@ namespace QuanLyThuVien.Forms
             // 
             // splPhai
             // 
-            splPhai.Dock = DockStyle.Fill;
-            splPhai.Location = new Point(0, 0);
+            splPhai.Dock = System.Windows.Forms.DockStyle.Fill;
+            splPhai.Location = new System.Drawing.Point(0, 0);
             splPhai.Name = "splPhai";
-            splPhai.Orientation = Orientation.Horizontal;
+            splPhai.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
             // splPhai.Panel1
             // 
@@ -166,7 +166,7 @@ namespace QuanLyThuVien.Forms
             // 
             splPhai.Panel2.Controls.Add(dgvCuonSach);
             splPhai.Panel2.Controls.Add(pnlNutCuonSach);
-            splPhai.Size = new Size(899, 603);
+            splPhai.Size = new System.Drawing.Size(899, 603);
             splPhai.SplitterDistance = 360;
             splPhai.TabIndex = 0;
             // 
@@ -174,16 +174,16 @@ namespace QuanLyThuVien.Forms
             // 
             dgvDauSach.AllowUserToAddRows = false;
             dgvDauSach.AllowUserToDeleteRows = false;
-            dgvDauSach.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvDauSach.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvDauSach.Dock = DockStyle.Fill;
-            dgvDauSach.Location = new Point(0, 195);
+            dgvDauSach.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dgvDauSach.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvDauSach.Dock = System.Windows.Forms.DockStyle.Fill;
+            dgvDauSach.Location = new System.Drawing.Point(0, 195);
             dgvDauSach.MultiSelect = false;
             dgvDauSach.Name = "dgvDauSach";
             dgvDauSach.ReadOnly = true;
             dgvDauSach.RowHeadersWidth = 51;
-            dgvDauSach.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDauSach.Size = new Size(899, 165);
+            dgvDauSach.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            dgvDauSach.Size = new System.Drawing.Size(899, 165);
             dgvDauSach.TabIndex = 1;
             // 
             // grpDauSach
@@ -204,19 +204,19 @@ namespace QuanLyThuVien.Forms
             grpDauSach.Controls.Add(lblTacGia);
             grpDauSach.Controls.Add(lblTenDauSach);
             grpDauSach.Controls.Add(lblMaDauSach);
-            grpDauSach.Dock = DockStyle.Top;
-            grpDauSach.Location = new Point(0, 0);
+            grpDauSach.Dock = System.Windows.Forms.DockStyle.Top;
+            grpDauSach.Location = new System.Drawing.Point(0, 0);
             grpDauSach.Name = "grpDauSach";
-            grpDauSach.Size = new Size(899, 195);
+            grpDauSach.Size = new System.Drawing.Size(899, 195);
             grpDauSach.TabIndex = 0;
             grpDauSach.TabStop = false;
             grpDauSach.Text = "Thông tin đầu sách";
             // 
             // btnLamMoi
             // 
-            btnLamMoi.Location = new Point(380, 148);
+            btnLamMoi.Location = new System.Drawing.Point(380, 148);
             btnLamMoi.Name = "btnLamMoi";
-            btnLamMoi.Size = new Size(130, 36);
+            btnLamMoi.Size = new System.Drawing.Size(130, 36);
             btnLamMoi.TabIndex = 15;
             btnLamMoi.Text = "Làm mới";
             btnLamMoi.UseVisualStyleBackColor = true;
@@ -224,9 +224,9 @@ namespace QuanLyThuVien.Forms
             // 
             // btnXoa
             // 
-            btnXoa.Location = new Point(260, 148);
+            btnXoa.Location = new System.Drawing.Point(260, 148);
             btnXoa.Name = "btnXoa";
-            btnXoa.Size = new Size(110, 36);
+            btnXoa.Size = new System.Drawing.Size(110, 36);
             btnXoa.TabIndex = 14;
             btnXoa.Text = "Xóa";
             btnXoa.UseVisualStyleBackColor = true;
@@ -234,9 +234,9 @@ namespace QuanLyThuVien.Forms
             // 
             // btnSua
             // 
-            btnSua.Location = new Point(140, 148);
+            btnSua.Location = new System.Drawing.Point(140, 148);
             btnSua.Name = "btnSua";
-            btnSua.Size = new Size(110, 36);
+            btnSua.Size = new System.Drawing.Size(110, 36);
             btnSua.TabIndex = 13;
             btnSua.Text = "Sửa";
             btnSua.UseVisualStyleBackColor = true;
@@ -244,9 +244,9 @@ namespace QuanLyThuVien.Forms
             // 
             // btnThem
             // 
-            btnThem.Location = new Point(20, 148);
+            btnThem.Location = new System.Drawing.Point(20, 148);
             btnThem.Name = "btnThem";
-            btnThem.Size = new Size(110, 36);
+            btnThem.Size = new System.Drawing.Size(110, 36);
             btnThem.TabIndex = 12;
             btnThem.Text = "Thêm";
             btnThem.UseVisualStyleBackColor = true;
@@ -254,110 +254,110 @@ namespace QuanLyThuVien.Forms
             // 
             // cboTheLoai
             // 
-            cboTheLoai.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboTheLoai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cboTheLoai.FormattingEnabled = true;
-            cboTheLoai.Location = new Point(560, 106);
+            cboTheLoai.Location = new System.Drawing.Point(560, 106);
             cboTheLoai.Name = "cboTheLoai";
-            cboTheLoai.Size = new Size(210, 28);
+            cboTheLoai.Size = new System.Drawing.Size(210, 23);
             cboTheLoai.TabIndex = 11;
             // 
             // nudGiaBia
             // 
             nudGiaBia.Increment = new decimal(new int[] { 1000, 0, 0, 0 });
-            nudGiaBia.Location = new Point(560, 68);
+            nudGiaBia.Location = new System.Drawing.Point(560, 68);
             nudGiaBia.Maximum = new decimal(new int[] { 100000000, 0, 0, 0 });
             nudGiaBia.Name = "nudGiaBia";
-            nudGiaBia.Size = new Size(210, 27);
+            nudGiaBia.Size = new System.Drawing.Size(210, 23);
             nudGiaBia.TabIndex = 9;
             nudGiaBia.ThousandsSeparator = true;
             // 
             // nudNamXuatBan
             // 
-            nudNamXuatBan.Location = new Point(560, 30);
+            nudNamXuatBan.Location = new System.Drawing.Point(560, 30);
             nudNamXuatBan.Maximum = new decimal(new int[] { 2100, 0, 0, 0 });
             nudNamXuatBan.Minimum = new decimal(new int[] { 1900, 0, 0, 0 });
             nudNamXuatBan.Name = "nudNamXuatBan";
-            nudNamXuatBan.Size = new Size(210, 27);
+            nudNamXuatBan.Size = new System.Drawing.Size(210, 23);
             nudNamXuatBan.TabIndex = 7;
             nudNamXuatBan.Value = new decimal(new int[] { 2024, 0, 0, 0 });
             // 
             // txtTacGia
             // 
-            txtTacGia.Location = new Point(140, 106);
+            txtTacGia.Location = new System.Drawing.Point(140, 106);
             txtTacGia.Name = "txtTacGia";
-            txtTacGia.Size = new Size(240, 27);
+            txtTacGia.Size = new System.Drawing.Size(240, 23);
             txtTacGia.TabIndex = 5;
             txtTacGia.Validating += txtTacGia_Validating;
             // 
             // txtTenDauSach
             // 
-            txtTenDauSach.Location = new Point(140, 68);
+            txtTenDauSach.Location = new System.Drawing.Point(140, 68);
             txtTenDauSach.Name = "txtTenDauSach";
-            txtTenDauSach.Size = new Size(240, 27);
+            txtTenDauSach.Size = new System.Drawing.Size(240, 23);
             txtTenDauSach.TabIndex = 3;
             txtTenDauSach.Validating += txtTenDauSach_Validating;
             // 
             // txtMaDauSach
             // 
-            txtMaDauSach.CharacterCasing = CharacterCasing.Upper;
-            txtMaDauSach.Location = new Point(140, 30);
+            txtMaDauSach.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            txtMaDauSach.Location = new System.Drawing.Point(140, 30);
             txtMaDauSach.MaxLength = 10;
             txtMaDauSach.Name = "txtMaDauSach";
-            txtMaDauSach.Size = new Size(240, 27);
+            txtMaDauSach.Size = new System.Drawing.Size(240, 23);
             txtMaDauSach.TabIndex = 1;
             txtMaDauSach.Validating += txtMaDauSach_Validating;
             // 
             // lblTheLoai
             // 
             lblTheLoai.AutoSize = true;
-            lblTheLoai.Location = new Point(430, 110);
+            lblTheLoai.Location = new System.Drawing.Point(430, 110);
             lblTheLoai.Name = "lblTheLoai";
-            lblTheLoai.Size = new Size(62, 20);
+            lblTheLoai.Size = new System.Drawing.Size(48, 15);
             lblTheLoai.TabIndex = 10;
             lblTheLoai.Text = "Thể loại";
             // 
             // lblGiaBia
             // 
             lblGiaBia.AutoSize = true;
-            lblGiaBia.Location = new Point(430, 72);
+            lblGiaBia.Location = new System.Drawing.Point(430, 72);
             lblGiaBia.Name = "lblGiaBia";
-            lblGiaBia.Size = new Size(56, 20);
+            lblGiaBia.Size = new System.Drawing.Size(43, 15);
             lblGiaBia.TabIndex = 8;
             lblGiaBia.Text = "Giá bìa";
             // 
             // lblNamXuatBan
             // 
             lblNamXuatBan.AutoSize = true;
-            lblNamXuatBan.Location = new Point(430, 34);
+            lblNamXuatBan.Location = new System.Drawing.Point(430, 34);
             lblNamXuatBan.Name = "lblNamXuatBan";
-            lblNamXuatBan.Size = new Size(102, 20);
+            lblNamXuatBan.Size = new System.Drawing.Size(82, 15);
             lblNamXuatBan.TabIndex = 6;
             lblNamXuatBan.Text = "Năm xuất bản";
             // 
             // lblTacGia
             // 
             lblTacGia.AutoSize = true;
-            lblTacGia.Location = new Point(20, 110);
+            lblTacGia.Location = new System.Drawing.Point(20, 110);
             lblTacGia.Name = "lblTacGia";
-            lblTacGia.Size = new Size(55, 20);
+            lblTacGia.Size = new System.Drawing.Size(43, 15);
             lblTacGia.TabIndex = 4;
             lblTacGia.Text = "Tác giả";
             // 
             // lblTenDauSach
             // 
             lblTenDauSach.AutoSize = true;
-            lblTenDauSach.Location = new Point(20, 72);
+            lblTenDauSach.Location = new System.Drawing.Point(20, 72);
             lblTenDauSach.Name = "lblTenDauSach";
-            lblTenDauSach.Size = new Size(94, 20);
+            lblTenDauSach.Size = new System.Drawing.Size(75, 15);
             lblTenDauSach.TabIndex = 2;
             lblTenDauSach.Text = "Tên đầu sách";
             // 
             // lblMaDauSach
             // 
             lblMaDauSach.AutoSize = true;
-            lblMaDauSach.Location = new Point(20, 34);
+            lblMaDauSach.Location = new System.Drawing.Point(20, 34);
             lblMaDauSach.Name = "lblMaDauSach";
-            lblMaDauSach.Size = new Size(92, 20);
+            lblMaDauSach.Size = new System.Drawing.Size(74, 15);
             lblMaDauSach.TabIndex = 0;
             lblMaDauSach.Text = "Mã đầu sách";
             // 
@@ -365,17 +365,17 @@ namespace QuanLyThuVien.Forms
             // 
             dgvCuonSach.AllowUserToAddRows = false;
             dgvCuonSach.AllowUserToDeleteRows = false;
-            dgvCuonSach.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvCuonSach.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvCuonSach.Dock = DockStyle.Fill;
-            dgvCuonSach.Location = new Point(0, 52);
+            dgvCuonSach.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dgvCuonSach.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvCuonSach.Dock = System.Windows.Forms.DockStyle.Fill;
+            dgvCuonSach.Location = new System.Drawing.Point(0, 52);
             dgvCuonSach.MultiSelect = false;
             dgvCuonSach.Name = "dgvCuonSach";
             dgvCuonSach.ReadOnly = true;
             dgvCuonSach.RowHeadersVisible = false;
             dgvCuonSach.RowHeadersWidth = 51;
-            dgvCuonSach.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvCuonSach.Size = new Size(899, 187);
+            dgvCuonSach.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            dgvCuonSach.Size = new System.Drawing.Size(899, 187);
             dgvCuonSach.TabIndex = 1;
             // 
             // pnlNutCuonSach
@@ -385,17 +385,17 @@ namespace QuanLyThuVien.Forms
             pnlNutCuonSach.Controls.Add(btnNhapThemBanSao);
             pnlNutCuonSach.Controls.Add(nudSoLuong);
             pnlNutCuonSach.Controls.Add(label1);
-            pnlNutCuonSach.Dock = DockStyle.Top;
-            pnlNutCuonSach.Location = new Point(0, 0);
+            pnlNutCuonSach.Dock = System.Windows.Forms.DockStyle.Top;
+            pnlNutCuonSach.Location = new System.Drawing.Point(0, 0);
             pnlNutCuonSach.Name = "pnlNutCuonSach";
-            pnlNutCuonSach.Size = new Size(899, 52);
+            pnlNutCuonSach.Size = new System.Drawing.Size(899, 52);
             pnlNutCuonSach.TabIndex = 0;
             // 
             // btnXoaCuon
             // 
-            btnXoaCuon.Location = new Point(590, 8);
+            btnXoaCuon.Location = new System.Drawing.Point(590, 8);
             btnXoaCuon.Name = "btnXoaCuon";
-            btnXoaCuon.Size = new Size(130, 36);
+            btnXoaCuon.Size = new System.Drawing.Size(130, 36);
             btnXoaCuon.TabIndex = 4;
             btnXoaCuon.Text = "Xóa cuốn";
             btnXoaCuon.UseVisualStyleBackColor = true;
@@ -403,9 +403,9 @@ namespace QuanLyThuVien.Forms
             // 
             // btnDoiTrangThai
             // 
-            btnDoiTrangThai.Location = new Point(420, 8);
+            btnDoiTrangThai.Location = new System.Drawing.Point(420, 8);
             btnDoiTrangThai.Name = "btnDoiTrangThai";
-            btnDoiTrangThai.Size = new Size(160, 36);
+            btnDoiTrangThai.Size = new System.Drawing.Size(160, 36);
             btnDoiTrangThai.TabIndex = 3;
             btnDoiTrangThai.Text = "Đổi trạng thái";
             btnDoiTrangThai.UseVisualStyleBackColor = true;
@@ -413,9 +413,9 @@ namespace QuanLyThuVien.Forms
             // 
             // btnNhapThemBanSao
             // 
-            btnNhapThemBanSao.Location = new Point(210, 8);
+            btnNhapThemBanSao.Location = new System.Drawing.Point(210, 8);
             btnNhapThemBanSao.Name = "btnNhapThemBanSao";
-            btnNhapThemBanSao.Size = new Size(200, 36);
+            btnNhapThemBanSao.Size = new System.Drawing.Size(200, 36);
             btnNhapThemBanSao.TabIndex = 2;
             btnNhapThemBanSao.Text = "Nhập thêm bản sao";
             btnNhapThemBanSao.UseVisualStyleBackColor = true;
@@ -423,19 +423,19 @@ namespace QuanLyThuVien.Forms
             // 
             // nudSoLuong
             // 
-            nudSoLuong.Location = new Point(110, 11);
+            nudSoLuong.Location = new System.Drawing.Point(110, 11);
             nudSoLuong.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             nudSoLuong.Name = "nudSoLuong";
-            nudSoLuong.Size = new Size(80, 27);
+            nudSoLuong.Size = new System.Drawing.Size(80, 23);
             nudSoLuong.TabIndex = 1;
             nudSoLuong.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(16, 16);
+            label1.Location = new System.Drawing.Point(16, 16);
             label1.Name = "label1";
-            label1.Size = new Size(82, 20);
+            label1.Size = new System.Drawing.Size(64, 15);
             label1.TabIndex = 0;
             label1.Text = "Số bản sao";
             // 
@@ -445,11 +445,11 @@ namespace QuanLyThuVien.Forms
             // 
             // FrmQuanLySach
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1248, 603);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(1248, 603);
             Controls.Add(splMain);
-            Name = "FrmQuanLySach";
+            Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             Text = "Quản lý Sách";
             Load += FrmQuanLySach_Load;
             splMain.Panel1.ResumeLayout(false);

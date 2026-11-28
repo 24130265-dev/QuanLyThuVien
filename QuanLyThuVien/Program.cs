@@ -9,7 +9,10 @@ static class Program
     [STAThread]
     static void Main()
     {
-        ApplicationConfiguration.Initialize();
+        ApplicationConfiguration.Initialize(); 
+        Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
 
         // Báo lỗi
         Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
