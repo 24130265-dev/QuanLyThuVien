@@ -7,13 +7,13 @@ using QuanLyThuVien.Data;
 using QuanLyThuVien.Entities;
 using QuanLyThuVien.UI;
 
-
 namespace QuanLyThuVien.Forms;
 
 public partial class FrmTraSach : Form
 {
     private readonly AppDbContext _context;
     private decimal _tongTienPhat = 0;
+    private decimal _tienPhatHuHongHienTai = 0; 
     public FrmTraSach()
     {
         InitializeComponent();
@@ -180,8 +180,10 @@ public partial class FrmTraSach : Form
     private void TinhTongTienPhat()
     {
         decimal donGiaTre = numDonGiaTre.Value;
-        decimal phatHuHong = numTienPhatHuHong.Value;
+        decimal mucPhatHuHong = numTienPhatHuHong.Value;
+
         int tongNgayTre = 0;
+        _tienPhatHuHongHienTai = 0;
         var lyDoList = new List<string>();
 
         foreach (DataGridViewRow row in dgvChiTietMuon.Rows)
@@ -199,14 +201,15 @@ public partial class FrmTraSach : Form
                 lyDoList.Add($"Trễ {ngayTre} ngày ({tenSach})");
             }
 
-            if (tinhTrang != "Bình thường")
+            if (tinhTrang == "Hư hỏng" || tinhTrang == "Mất sách")
             {
+                _tienPhatHuHongHienTai += mucPhatHuHong;
                 lyDoList.Add($"{tinhTrang} ({tenSach})");
             }
         }
 
         decimal tienPhatTre = tongNgayTre * donGiaTre;
-        _tongTienPhat = tienPhatTre + phatHuHong;
+        _tongTienPhat = tienPhatTre + _tienPhatHuHongHienTai;
 
         lblTongTienPhat.Text = $"{_tongTienPhat:N0} VNĐ";
         txtLyDoPhat.Text = string.Join("; ", lyDoList);
@@ -277,8 +280,8 @@ public partial class FrmTraSach : Form
                 MaDocGia = phieu.MaDocGia,
                 MaPhieuMuon = phieu.MaPhieuMuon,
                 NgayLap = DateTime.Now,
-                TienPhatQuaHan = _tongTienPhat - numTienPhatHuHong.Value,
-                TienBoiThuong = numTienPhatHuHong.Value,
+                TienPhatQuaHan = Math.Max(0, _tongTienPhat - _tienPhatHuHongHienTai),
+                TienBoiThuong = _tienPhatHuHongHienTai,
                 LyDo = string.IsNullOrWhiteSpace(txtLyDoPhat.Text) ? "Phạt vi phạm mượn trả" : txtLyDoPhat.Text,
                 DaThanhToan = chkDaThanhToanNgay.Checked
             };
@@ -303,15 +306,18 @@ public partial class FrmTraSach : Form
         TaiDanhSachPhieuDangMuon(txtTimKiem.Text);
     }
 
-    private void TaiHoaDonPhatCuaDocGia(string maDocGia)
+    private void TaiHoaDonPhatCuaDocGia(string? _ = null)
     {
         var hoaDons = _context.HoaDonPhats
-            .Where(h => h.MaDocGia == maDocGia)
+            .AsNoTracking()
+            .Include(h => h.DocGia)
             .OrderByDescending(h => h.NgayLap)
+            .ThenByDescending(h => h.MaHoaDon)
             .Select(h => new
             {
                 MaHoaDon = h.MaHoaDon,
                 MaPhieuMuon = h.MaPhieuMuon,
+                DocGia = h.DocGia != null ? (h.DocGia.HoTen ?? "") : "",
                 NgayLap = h.NgayLap.ToString("dd/MM/yyyy HH:mm"),
                 SoTien = (h.TienPhatQuaHan + h.TienBoiThuong).ToString("N0") + " VNĐ",
                 LyDo = h.LyDo ?? "",
@@ -326,6 +332,7 @@ public partial class FrmTraSach : Form
         {
             dgvHoaDonPhat.Columns["MaHoaDon"]!.HeaderText = "Mã Hóa Đơn";
             dgvHoaDonPhat.Columns["MaPhieuMuon"]!.HeaderText = "Mã Phiếu Mượn";
+            dgvHoaDonPhat.Columns["DocGia"]!.HeaderText = "Độc Giả";
             dgvHoaDonPhat.Columns["NgayLap"]!.HeaderText = "Ngày Lập";
             dgvHoaDonPhat.Columns["SoTien"]!.HeaderText = "Số Tiền Phạt";
             dgvHoaDonPhat.Columns["LyDo"]!.HeaderText = "Lý Do Phạt";
@@ -424,8 +431,7 @@ public partial class FrmTraSach : Form
         splitMain.Panel1.Controls.Add(splitterGap);
         splitterGap.SendToBack();
         grpThongTinPhat.SendToBack();
-
-        // 4. Tinh chỉnh khung Tính phí phạt bên phải
+        
         grpThongTinPhat.Width = 385;
         grpThongTinPhat.PerformLayout();
 
@@ -447,13 +453,11 @@ public partial class FrmTraSach : Form
 
         btnXacNhanTra.Location = new Point(15, 270);
         btnXacNhanTra.Size = new Size(355, 40);
-
-        // 5. Thu hẹp khoảng hở thừa phía trên 2 bảng DataGridView (mũi tên đỏ 2 chiều)
-        // GroupBox mặc định đã chừa ~22px cho tiêu đề nên chỉ cần Padding.Top = 8 là vừa khít đẹp
+        
         grpChiTietMuon.Padding = new Padding(12, 8, 12, 12);
         grpHoaDonPhat.Padding = new Padding(12, 8, 12, 12);
 
-        // 6. Đặt nút Xác nhận thu tiền gọn gàng ở góc dưới bên phải khung Hóa đơn phạt
+        // Đặt nút Xác nhận thu tiền gọn gàng ở góc dưới bên phải khung Hóa đơn phạt
         var pnlActionBottom = new Panel
         {
             Dock = DockStyle.Bottom,

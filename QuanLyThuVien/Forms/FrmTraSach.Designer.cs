@@ -34,7 +34,7 @@ partial class FrmTraSach
     private GroupBox grpHoaDonPhat;
     private DataGridView dgvHoaDonPhat;
     private Button btnThanhToanHoaDon;
-
+    
     protected override void Dispose(bool disposing)
     {
         if (disposing && (components != null))
@@ -278,22 +278,38 @@ partial class FrmTraSach
         this.Text = "Trả sách & Xử lý phạt - Quản Lý Thư Viện";
         this.Load += new EventHandler(this.FrmTraSach_Load);
 
-        this.pnlTopFilter.ResumeLayout(false);
-        this.pnlTopFilter.PerformLayout();
-        this.splitMain.Panel1.ResumeLayout(false);
-        this.splitMain.Panel2.ResumeLayout(false);
-        ((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
-        this.splitMain.ResumeLayout(false);
-        this.grpChiTietMuon.ResumeLayout(false);
-        ((System.ComponentModel.ISupportInitialize)(this.dgvChiTietMuon)).EndInit();
-        this.grpThongTinPhat.ResumeLayout(false);
-        this.grpThongTinPhat.PerformLayout();
-        ((System.ComponentModel.ISupportInitialize)(this.numDonGiaTre)).EndInit();
-        ((System.ComponentModel.ISupportInitialize)(this.numTienPhatHuHong)).EndInit();
-        this.grpHoaDonPhat.ResumeLayout(false);
-        ((System.ComponentModel.ISupportInitialize)(this.dgvHoaDonPhat)).EndInit();
-        this.ResumeLayout(false);
+            this.pnlTopFilter.ResumeLayout(false);
+            this.pnlTopFilter.PerformLayout();
+            this.splitMain.Panel1.ResumeLayout(false);
+            this.splitMain.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
+            this.splitMain.ResumeLayout(false);
+            this.grpChiTietMuon.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvChiTietMuon)).EndInit();
+            this.grpThongTinPhat.ResumeLayout(false);
+            this.grpThongTinPhat.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numDonGiaTre)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numTienPhatHuHong)).EndInit();
+            this.grpHoaDonPhat.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvHoaDonPhat)).EndInit();
+            this.ResumeLayout(false);
+            
+            Theme.Apply(this);
 
-        
+            // Tùy chỉnh màu sắc nhấn mạnh cho các thành phần đặc biệt sau khi Theme.Apply chạy
+            this.pnlTopFilter.BackColor = Theme.CardBg;
+
+            this.lblTitle.Font = Theme.FontTitle;
+            this.lblTitle.ForeColor = Theme.PrimaryDark;
+
+            this.lblTongTienPhatTitle.Font = Theme.FontBold;
+            this.lblTongTienPhat.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            this.lblTongTienPhat.ForeColor = Theme.Danger;
+
+            Theme.StyleButton(this.btnTimKiem, Theme.Secondary);
+            Theme.StyleButton(this.btnXacNhanTra, Theme.Primary);
+            Theme.StyleButton(this.btnThanhToanHoaDon, Color.FromArgb(234, 88, 12)); // Cam nổi bật
+        }
     }
-}
+
+
