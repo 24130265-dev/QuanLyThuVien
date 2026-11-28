@@ -24,6 +24,7 @@ public partial class FrmBaoCao : Form
     private readonly Font _fontKpiSub = new("Segoe UI", 8F, FontStyle.Regular);
     private readonly Font _fontEmptyGrid = new("Segoe UI", 10F, FontStyle.Italic);
     private readonly Font _fontQuickBtn = new("Segoe UI", 8.5F, FontStyle.Bold);
+    private readonly ToolTip _tip = new();
 
     private static readonly Dictionary<string, (string Header, float Weight, int MinWidth)> CauHinhCot = new()
     {
@@ -32,9 +33,9 @@ public partial class FrmBaoCao : Form
         ["TenDocGia"]     = ("Độc giả", 17, 105),
         ["TenDauSach"]    = ("Đầu sách", 23, 125),
         ["MaCuonSach"]    = ("Mã cuốn", 11, 75),
-        ["NgayMuon"]      = ("Ngày mượn", 12, 85),
-        ["HanTra"]        = ("Hạn trả", 12, 85),
-        ["NgayTraThucTe"] = ("Ngày trả", 12, 85),
+        ["NgayMuon"]      = ("Ngày mượn", 12, 105),
+        ["HanTra"]        = ("Hạn trả", 12, 95),
+        ["NgayTraThucTe"] = ("Ngày trả", 12, 95),
         ["TrangThai"]     = ("Trạng thái", 14, 92),
 
         // Tab 2: Top đầu sách
@@ -87,6 +88,11 @@ public partial class FrmBaoCao : Form
         CauHinhLuoi(dgvTopSach);
         CauHinhLuoi(dgvTienPhat);
         CauHinhLuoi(dgvQuaHan);
+
+        _tip.SetToolTip(dtpTuNgay,
+    "Lọc theo NGÀY MƯỢN (tab Mượn - Trả, Top đầu sách) và NGÀY LẬP hóa đơn (tab Tiền phạt). " +
+    "Tab Độc giả quá hạn luôn tính đến hôm nay.");
+        _tip.SetToolTip(dtpDenNgay, _tip.GetToolTip(dtpTuNgay));
     }
 
     // =====================================================================
@@ -220,7 +226,6 @@ public partial class FrmBaoCao : Form
         try
         {
             using var context = new AppDbContext();
-            await context.Database.EnsureCreatedAsync();
 
             DateTime tuNgay = dtpTuNgay.Value.Date;
             DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1).AddTicks(-1);
@@ -417,19 +422,17 @@ public partial class FrmBaoCao : Form
         }
         catch (Exception ex)
         {
+            NhatKy.Ghi(ex);
             if (!IsDisposed)
             {
                 KhoiTaoKhungBieuDoMacDinh(dtpDenNgay.Value);
                 pnlBieuDoMuon.Invalidate();
-                string chiTiet = ex.InnerException != null
-                    ? $"{ex.Message} | Inner: {ex.InnerException.Message}"
-                    : ex.Message;
-                MessageBox.Show(
-                    this,
-                    $"{chiTiet}\n\n{ex.StackTrace}",
-                    "Chi tiết lỗi tải báo cáo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+#if DEBUG
+                MessageBox.Show(this, ex.ToString(), "Chi tiết lỗi tải báo cáo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+#else
+                Toast.Loi(this, "Không thể tải báo cáo. Chi tiết đã được ghi vào error.log.");
+#endif
             }
         }
         finally
@@ -773,54 +776,45 @@ public partial class FrmBaoCao : Form
 
         dgv.DataBindingComplete += (_, _) =>
         {
-            var cols = dgv.Columns.Cast<DataGridViewColumn>().ToArray();
-            foreach (DataGridViewColumn c in cols)
+            
+            var cheDoCu = dgv.AutoSizeColumnsMode;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            try
             {
-                if (c == null || c.DataGridView == null || !dgv.Columns.Contains(c))
-                    continue;
-
-                string prop = string.IsNullOrEmpty(c.DataPropertyName) ? c.Name : c.DataPropertyName;
-
-                if (CauHinhCot.TryGetValue(prop, out var cfg))
+                foreach (DataGridViewColumn c in dgv.Columns)
                 {
-                    c.HeaderText = cfg.Header;
-                    c.FillWeight = Math.Max(1F, cfg.Weight);
+                    string prop = string.IsNullOrEmpty(c.DataPropertyName) ? c.Name : c.DataPropertyName;
 
-                    try
+                    if (CauHinhCot.TryGetValue(prop, out var cfg))
                     {
-                        if (cfg.MinWidth > 0)
-                            c.MinimumWidth = cfg.MinWidth;
+                        c.HeaderText = cfg.Header;
+                        c.FillWeight = Math.Max(1F, cfg.Weight);
+                        c.MinimumWidth = cfg.MinWidth > 0 ? cfg.MinWidth : 80;
                     }
-                    catch (Exception)
-                    {
-                        // Bỏ qua nếu band chưa sẵn sàng khi đổi DataSource
-                    }
-                }
-                else
-                {
-                    try
+                    else
                     {
                         c.MinimumWidth = 80;
                     }
-                    catch (Exception)
+
+                    if (c.ValueType == typeof(DateTime) || c.ValueType == typeof(DateTime?))
                     {
+                        c.DefaultCellStyle.Format = "dd/MM/yyyy";
+                        c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    }
+                    else if (CotCanPhai.Contains(prop))
+                    {
+                        c.DefaultCellStyle.Format = "N0";
+                        c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                    }
+                    else if (CotCanGiua.Contains(prop))
+                    {
+                        c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     }
                 }
-
-                if (c.ValueType == typeof(DateTime) || c.ValueType == typeof(DateTime?))
-                {
-                    c.DefaultCellStyle.Format = "dd/MM/yyyy";
-                    c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
-                else if (CotCanPhai.Contains(prop))
-                {
-                    c.DefaultCellStyle.Format = "N0";
-                    c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                }
-                else if (CotCanGiua.Contains(prop))
-                {
-                    c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                }
+            }
+            finally
+            {
+                dgv.AutoSizeColumnsMode = cheDoCu;
             }
         };
 
@@ -873,6 +867,7 @@ public partial class FrmBaoCao : Form
         _fontKpiSub.Dispose();
         _fontEmptyGrid.Dispose();
         _fontQuickBtn.Dispose();
+        _tip.Dispose();
         base.OnFormClosed(e);
     }
 

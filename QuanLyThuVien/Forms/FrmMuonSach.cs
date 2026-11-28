@@ -9,12 +9,13 @@ namespace QuanLyThuVien.Forms;
 
 public partial class FrmMuonSach : Form
 {
-    private const int SoSachToiDa = 3;   // Đề bài: tối đa 3 cuốn
-    private const int SoNgayMuon = 14;   // Đề bài: ngày phải trả = ngày mượn + 14
+    private const int SoSachToiDa = MuonService.SoSachToiDa;
+    private const int SoNgayMuon = MuonService.SoNgayMuon;
 
     private readonly BindingList<GioMuonDto> _gio = new();
     private string? _maDocGia;           // Độc giả đã qua kiểm tra, null nếu chưa
     private int _soSachDangGiu;          // Số cuốn độc giả đang giữ trong CSDL (chưa trả)
+    private int? _maYeuCauDangXuLy;      // Yêu cầu online đang được xử lý (chỉ đổi "Đã duyệt" khi lập phiếu xong)
 
     public FrmMuonSach()
     {
@@ -27,6 +28,12 @@ public partial class FrmMuonSach : Form
         dtpNgayMuon.Format = DateTimePickerFormat.Short;
         dtpNgayPhaiTra.Format = DateTimePickerFormat.Short;
         dtpNgayPhaiTra.Enabled = false;  // Tự tính, không cho sửa tay
+
+        // Giãn ô nhập khỏi nhãn (phông của Theme làm nhãn rộng hơn lúc thiết kế)
+        grpChonSach.PerformLayout();
+        grpThongTinDocGia.PerformLayout();
+        txtMaCuonSach.Left = lblMaCuonSach.Right + 10;
+        dtpNgayPhaiTra.Left = lblNgayPhaiTra.Right + 10;
 
         Load += FrmMuonSach_Load;
         btnKiemTra.Click += btnKiemTra_Click;
@@ -83,8 +90,7 @@ public partial class FrmMuonSach : Form
         {
             if (_maDocGia == null)
             {
-                MessageBox.Show("Hãy kiểm tra độc giả trước khi chọn sách.", "Chưa kiểm tra độc giả",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Toast.ThongTin(this, "Hãy kiểm tra độc giả trước khi chọn sách.");
                 return;
             }
 
@@ -94,18 +100,15 @@ public partial class FrmMuonSach : Form
             // Chặn quét trùng 1 cuốn vào cùng giỏ
             if (_gio.Any(g => g.MaCuonSach == maCuon))
             {
-                MessageBox.Show($"Cuốn \"{maCuon}\" đã có trong giỏ.", "Trùng cuốn sách",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Toast.CanhBao(this, $"Cuốn \"{maCuon}\" đã có trong giỏ.");
                 return;
             }
 
-            // Công thức giới hạn: số sách đang giữ + số sách trong giỏ <= 3
-            if (_soSachDangGiu + _gio.Count >= SoSachToiDa)
+            // Số sách đang giữ + số sách trong giỏ phải còn dưới mức tối đa
+            if (!ConSlot())
             {
-                MessageBox.Show(
-                    $"Vượt quá giới hạn {SoSachToiDa} cuốn.\n" +
-                    $"Độc giả đang giữ {_soSachDangGiu} cuốn, trong giỏ đã có {_gio.Count} cuốn.",
-                    "Vượt giới hạn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Toast.CanhBao(this,
+                    $"Vượt quá giới hạn {SoSachToiDa} cuốn. Đang giữ {_soSachDangGiu}, trong giỏ {_gio.Count}.");
                 return;
             }
 
@@ -117,16 +120,14 @@ public partial class FrmMuonSach : Form
 
             if (cuon == null)
             {
-                MessageBox.Show($"Không tìm thấy cuốn sách có mã \"{maCuon}\".", "Không tìm thấy",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Toast.CanhBao(this, $"Không tìm thấy cuốn sách có mã \"{maCuon}\".");
                 return;
             }
 
             // Chỉ cuốn "Sẵn sàng" mới được vào giỏ
             if (cuon.TrangThai != TrangThaiSach.SanSang)
             {
-                MessageBox.Show($"Cuốn \"{maCuon}\" đang ở trạng thái \"{cuon.TrangThai}\" nên không thể mượn.",
-                    "Không thể mượn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Toast.CanhBao(this, $"Cuốn \"{maCuon}\" đang ở trạng thái \"{cuon.TrangThai}\" nên không thể mượn.");
                 return;
             }
 
@@ -165,35 +166,24 @@ public partial class FrmMuonSach : Form
         {
             if (_maDocGia == null || _gio.Count == 0)
             {
-                MessageBox.Show("Giỏ mượn đang trống.", "Chưa có sách",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Toast.ThongTin(this, "Giỏ mượn đang trống.");
                 return;
             }
 
             var ngayMuon = dtpNgayMuon.Value.Date;
             if (ngayMuon > DateTime.Today)
             {
-                MessageBox.Show("Ngày mượn không được lớn hơn ngày hiện tại.",
-                    "Ngày mượn không hợp lệ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Toast.CanhBao(this, "Ngày mượn không được lớn hơn ngày hiện tại.");
                 return;
             }
 
             using var db = new AppDbContext();
 
-            // Kiểm tra lại với CSDL: tránh xung đột nếu màn hình khác vừa cập nhật
-            var docGia = await db.DocGias.FirstOrDefaultAsync(d => d.MaDocGia == _maDocGia);
-            if (docGia == null || docGia.BiKhoaThe || docGia.TienNoPhat > 0)
+            // Kiểm tra lại với CSDL bằng cùng quy tắc: tránh xung đột nếu màn hình khác vừa cập nhật
+            var kq = await MuonService.KiemTraAsync(db, _maDocGia, _gio.Count);
+            if (!kq.Du)
             {
-                MessageBox.Show("Độc giả không còn đủ điều kiện mượn (khóa thẻ hoặc nợ phạt). Hãy kiểm tra lại.",
-                    "Không thể lập phiếu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            int dangGiu = await DemSachDangGiuAsync(db, _maDocGia);
-            if (dangGiu + _gio.Count > SoSachToiDa)
-            {
-                MessageBox.Show($"Vượt quá giới hạn {SoSachToiDa} cuốn. Hãy kiểm tra lại độc giả.",
-                    "Vượt giới hạn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Toast.CanhBao(this, "Không thể lập phiếu. " + kq.MoTa);
                 return;
             }
 
@@ -202,8 +192,7 @@ public partial class FrmMuonSach : Form
 
             if (cacCuon.Count != dsMa.Count || cacCuon.Any(c => c.TrangThai != TrangThaiSach.SanSang))
             {
-                MessageBox.Show("Có cuốn trong giỏ không còn ở trạng thái \"Sẵn sàng\". Hãy làm mới và chọn lại.",
-                    "Không thể lập phiếu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Toast.CanhBao(this, "Có cuốn trong giỏ không còn ở trạng thái \"Sẵn sàng\". Hãy làm mới và chọn lại.");
                 return;
             }
 
@@ -224,13 +213,30 @@ public partial class FrmMuonSach : Form
                 cuon.TrangThai = TrangThaiSach.DangMuon;
             }
 
+            // Phiếu xuất phát từ yêu cầu online: đổi "Đã duyệt" trong CÙNG lần lưu với phiếu mượn.
+            // Chỉ đổi khi cuốn trong giỏ đúng là đầu sách mà độc giả đã yêu cầu.
+            if (_maYeuCauDangXuLy is int maYc)
+            {
+                var yc = await db.YeuCauMuons.FirstOrDefaultAsync(y => y.MaYeuCau == maYc);
+                if (yc != null
+                    && yc.TrangThai == TrangThaiYeuCau.ChoDuyet
+                    && yc.MaDocGia == _maDocGia
+                    && cacCuon.Any(c => c.MaDauSach == yc.MaDauSach))
+                {
+                    yc.TrangThai = TrangThaiYeuCau.DaDuyet;
+                }
+            }
+
             db.PhieuMuons.Add(phieu);
             await db.SaveChangesAsync();
 
             Toast.ThanhCong(this, $"Lập phiếu mượn thành công! Mã phiếu: {phieu.MaPhieuMuon}");
 
-
             LamMoi();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            Toast.CanhBao(this, "Có cuốn vừa được cho mượn hoặc đổi trạng thái ở nơi khác. Hãy làm mới và chọn lại.");
         }
         catch (Exception ex)
         {
@@ -247,12 +253,36 @@ public partial class FrmMuonSach : Form
         LamMoi();
     }
 
+    private async void btnDuyetYeuCau_Click(object? sender, EventArgs e)
+    {
+        using var dlg = new DlgDuyetYeuCau();
+        if (dlg.ShowDialog(this) != DialogResult.OK) return;
+        try
+        {
+            txtMaDocGia.Text = dlg.MaDocGiaDuocChon;
+            await KiemTraDocGiaAsync();
+
+            // Chỉ ghi nhận yêu cầu khi độc giả thật sự đủ điều kiện
+            if (string.Equals(_maDocGia, dlg.MaDocGiaDuocChon, StringComparison.OrdinalIgnoreCase))
+            {
+                _maYeuCauDangXuLy = dlg.MaYeuCauDuocChon;
+                txtMaCuonSach.Text = dlg.MaCuonSachGoiY ?? "";
+                Toast.ThongTin(this, "Bấm \"Thêm vào giỏ\" rồi \"Xác nhận cho mượn\" để hoàn tất yêu cầu.");
+            }
+        }
+        catch (Exception ex)
+        {
+            BaoLoi(ex);
+        }
+    }
+
     // ===================== NGHIỆP VỤ =====================
 
     private async Task KiemTraDocGiaAsync()
     {
         _gio.Clear();
         _maDocGia = null;
+        _maYeuCauDangXuLy = null;
         _soSachDangGiu = 0;
         grpChonSach.Enabled = false;
         CapNhatDem();
@@ -260,71 +290,45 @@ public partial class FrmMuonSach : Form
         string ma = txtMaDocGia.Text.Trim().ToUpperInvariant();
         if (ma == "")
         {
-            MessageBox.Show("Hãy nhập mã độc giả.", "Thiếu thông tin",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Toast.ThongTin(this, "Hãy nhập mã độc giả.");
             return;
         }
 
         using var db = new AppDbContext();
-        var dg = await db.DocGias.AsNoTracking().FirstOrDefaultAsync(d => d.MaDocGia == ma);
-        if (dg == null)
+        var kq = await MuonService.KiemTraAsync(db, ma);
+        if (!kq.Du)
         {
-            Chan($"Không tìm thấy độc giả có mã \"{ma}\".");
-            return;
-        }
-
-        // Điều kiện chặn 1: thẻ bị khóa
-        if (dg.BiKhoaThe)
-        {
-            Chan($"Thẻ của {dg.HoTen} đang bị khóa, không thể mượn sách.");
-            return;
-        }
-
-        // Điều kiện chặn 2: còn nợ phạt
-        if (dg.TienNoPhat > 0)
-        {
-            Chan($"{dg.HoTen} đang nợ phạt {dg.TienNoPhat:N0} VNĐ.\n" +
-                 "Yêu cầu đóng phạt trước (màn hình Quản lý Độc giả).");
-            return;
-        }
-
-        // Điều kiện chặn 3: đã giữ đủ số cuốn tối đa
-        int dangGiu = await DemSachDangGiuAsync(db, ma);
-        if (dangGiu >= SoSachToiDa)
-        {
-            Chan($"{dg.HoTen} đang giữ {dangGiu} cuốn chưa trả, đã đạt mức tối đa {SoSachToiDa} cuốn.");
+            Chan(kq.MoTa);
             return;
         }
 
         _maDocGia = ma;
-        _soSachDangGiu = dangGiu;
+        _soSachDangGiu = kq.DangGiu;
         grpChonSach.Enabled = true;
         lblThongTinDocGia.ForeColor = Color.ForestGreen;
         lblThongTinDocGia.Text =
-            $"{dg.HoTen} | SĐT: {dg.SoDienThoai} | Đang giữ: {dangGiu}/{SoSachToiDa} cuốn | Đủ điều kiện mượn";
+            $"{kq.DocGia!.HoTen} | SĐT: {kq.DocGia.SoDienThoai} | Đang giữ: {kq.DangGiu}/{SoSachToiDa} cuốn | Đủ điều kiện mượn";
         CapNhatDem();
         txtMaCuonSach.Focus();
     }
 
-    private static Task<int> DemSachDangGiuAsync(AppDbContext db, string maDocGia)
-    {
-        return db.ChiTietPhieuMuons.CountAsync(
-            ct => ct.NgayTraThucTe == null && ct.PhieuMuon!.MaDocGia == maDocGia);
-    }
-
     // ===================== HÀM PHỤ =====================
+
+    // Còn được thêm cuốn vào giỏ không (đang giữ + trong giỏ < tối đa)
+    private bool ConSlot() => _soSachDangGiu + _gio.Count < SoSachToiDa;
 
     private void Chan(string lyDo)
     {
         lblThongTinDocGia.ForeColor = Color.Firebrick;
-        lblThongTinDocGia.Text = lyDo;
-        MessageBox.Show(lyDo, "Không thể cho mượn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        lblThongTinDocGia.Text = lyDo.Replace("\n", " ");
+        Toast.CanhBao(this, lyDo);
     }
 
     private void LamMoi()
     {
         _gio.Clear();
         _maDocGia = null;
+        _maYeuCauDangXuLy = null;
         _soSachDangGiu = 0;
 
         txtMaDocGia.Clear();
@@ -366,22 +370,9 @@ public partial class FrmMuonSach : Form
         if (dgvGioMuon.Columns["TacGia"] is { } c3) c3.HeaderText = "Tác giả";
     }
 
-    private static void BaoLoi(Exception ex)
+    private void BaoLoi(Exception ex)
     {
-        MessageBox.Show($"Có lỗi xảy ra:\n{ex.Message}", "Lỗi",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
-    }
-
-    private async void btnDuyetYeuCau_Click(object? sender, EventArgs e)
-    {
-        using var dlg = new DlgDuyetYeuCau();
-        if (dlg.ShowDialog(this) != DialogResult.OK) return;
-        try
-        {
-            txtMaDocGia.Text = dlg.MaDocGiaDuocChon;
-            await KiemTraDocGiaAsync();
-            txtMaCuonSach.Text = dlg.MaCuonSachGoiY ?? "";
-        }
-        catch (Exception ex) { BaoLoi(ex); }
+        NhatKy.Ghi(ex);
+        Toast.Loi(this, "Có lỗi xảy ra. Vui lòng thử lại.");
     }
 }

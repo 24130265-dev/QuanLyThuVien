@@ -15,6 +15,8 @@ public partial class FrmDangNhap : Form
         // 1. Áp dụng bộ giao diện phẳng dùng chung
         Theme.Apply(this);
 
+        
+
         txtMatKhau.UseSystemPasswordChar = true;
 
         // 2. Giữ lại màu nền xanh đậm và chữ trắng cho cột thương hiệu bên trái (pnlTrai)
@@ -29,6 +31,21 @@ public partial class FrmDangNhap : Form
 
         // Tô màu xám cho nút Thoát
         Theme.StyleButton(btnThoat, Theme.Neutral);
+#if !DEBUG
+        lblGhiChu.Visible = false;   // bản phát hành: không lộ mật khẩu mặc định
+#endif
+
+        // Liên kết mở form đăng ký (tạo bằng code, không cần sửa Designer)
+        var lnkDangKy = new LinkLabel
+        {
+            Text = "Sinh viên mới? Đăng ký",
+            AutoSize = true,
+            Location = new Point(235, 167),
+            Font = Theme.FontNormal,
+            LinkColor = Theme.Secondary
+        };
+        lnkDangKy.LinkClicked += LnkDangKy_LinkClicked;
+        grpDangNhap.Controls.Add(lnkDangKy);
 
         // Tự động gợi ý nhảy nút RadioButton khi gõ đuôi email trường
         txtEmail.TextChanged += TxtEmail_TextChanged;
@@ -67,9 +84,12 @@ public partial class FrmDangNhap : Form
         }
 
         using var db = new AppDbContext();
-        PhienDangNhap.KhoiTaoDuLieuTaiKhoan(db);
         string nhap = taiKhoan.ToLowerInvariant();
+
         
+        if (rdoDocGia.Checked)
+            PhienDangNhap.DongBoTaiKhoanDocGia(db);
+
         TaiKhoan? tkTimThay;
 
         // TRƯỜNG HỢP 1: Đăng nhập vai trò Thủ thư / Quản trị
@@ -78,7 +98,7 @@ public partial class FrmDangNhap : Form
             string emailThuThu = nhap.Contains('@') ? nhap : $"{nhap}@hcmuaf.edu.vn";
 
             tkTimThay = await db.TaiKhoans.FirstOrDefaultAsync(t =>
-                    t.VaiTro == "ThuThu" &&
+                    t.VaiTro == LoaiTaiKhoan.ThuThu &&
                     (t.TenDangNhap.ToLower() == nhap || t.TenDangNhap.ToLower() == emailThuThu));
         }
         // TRƯỜNG HỢP 2: Đăng nhập vai trò Độc giả / Sinh viên
@@ -88,7 +108,7 @@ public partial class FrmDangNhap : Form
             string maDocGia = nhap.ToUpperInvariant();
 
             tkTimThay = await db.TaiKhoans.FirstOrDefaultAsync(t =>
-                    t.VaiTro == "DocGia" &&
+                    t.VaiTro == LoaiTaiKhoan.DocGia &&
                     (laEmail
                         ? t.TenDangNhap.ToLower() == nhap
                         : t.MaDocGia == maDocGia));
@@ -98,16 +118,20 @@ public partial class FrmDangNhap : Form
         // Nếu không tìm thấy tài khoản HOẶC mật khẩu nhập vào không khớp
         if (tkTimThay == null || !MatKhau.Kiem(matKhau, tkTimThay.MatKhauHash))
         {
+
+            string thongBao = "Sai tài khoản, mật khẩu hoặc chọn sai vai trò!";
+#if DEBUG
             string goiY = rdoThuThu.Checked
                 ? "Tài khoản Thủ thư mẫu: admin@hcmuaf.edu.vn / Mật khẩu: 123"
                 : "Tài khoản Sinh viên mẫu: 24130265@st.hcmuaf.edu.vn (hoặc 24130265) / Mật khẩu: 123";
-
-            MessageBox.Show($"Sai tài khoản, mật khẩu hoặc chọn sai vai trò!\n\n({goiY})",
-                "Đăng nhập thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            thongBao += $"\n\n({goiY})";
+#endif
+            MessageBox.Show(thongBao, "Đăng nhập thất bại", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
-        // Tự động nâng cấp mật khẩu từ chuẩn SHA256 cũ lên PBKDF2 mới
-        if (MatKhau.CanNangCap(tkTimThay.MatKhauHash))
+
+            // Tự động nâng cấp mật khẩu từ chuẩn SHA256 cũ lên PBKDF2 mới
+            if (MatKhau.CanNangCap(tkTimThay.MatKhauHash))
         {
             tkTimThay.MatKhauHash = MatKhau.Bam(matKhau);
             await db.SaveChangesAsync();
@@ -127,6 +151,18 @@ public partial class FrmDangNhap : Form
         DialogResult = DialogResult.OK;
         Close();
     }
+    private void LnkDangKy_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
+    {
+        using var dlg = new DlgDangKy();
+        if (dlg.ShowDialog(this) != DialogResult.OK) return;
+
+        rdoDocGia.Checked = true;
+        txtEmail.Text = dlg.MaSinhVien;
+        txtMatKhau.Clear();
+        txtMatKhau.Focus();
+        Toast.ThanhCong(this, "Đăng ký thành công. Hãy đăng nhập bằng mật khẩu vừa đặt.");
+    }
+
     private void btnThoat_Click(object? sender, EventArgs e)
     {
         DialogResult = DialogResult.Cancel;

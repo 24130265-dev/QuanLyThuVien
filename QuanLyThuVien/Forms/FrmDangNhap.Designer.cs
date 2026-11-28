@@ -34,7 +34,6 @@
             lblTenTruong = new Label();
             lblLogo = new Label();
             grpDangNhap = new GroupBox();
-            lblGhiChu = new Label();
             btnThoat = new Button();
             btnDangNhap = new Button();
             grpVaiTro = new GroupBox();
@@ -109,7 +108,6 @@
             // 
             // grpDangNhap
             // 
-            grpDangNhap.Controls.Add(lblGhiChu);
             grpDangNhap.Controls.Add(btnThoat);
             grpDangNhap.Controls.Add(btnDangNhap);
             grpDangNhap.Controls.Add(grpVaiTro);
@@ -124,15 +122,6 @@
             grpDangNhap.TabIndex = 1;
             grpDangNhap.TabStop = false;
             grpDangNhap.Text = "ĐĂNG NHẬP HỆ THỐNG";
-            // 
-            // lblGhiChu
-            // 
-            lblGhiChu.AutoSize = true;
-            lblGhiChu.Location = new Point(35, 382);
-            lblGhiChu.Name = "lblGhiChu";
-            lblGhiChu.Size = new Size(266, 20);
-            lblGhiChu.TabIndex = 9;
-            lblGhiChu.Text = "Mặc định: admin@hcmuaf.edu.vn / 123";
             // 
             // btnThoat
             // 
@@ -269,7 +258,6 @@
         private Button btnDangNhap;
         private GroupBox grpVaiTro;
         private Button btnThoat;
-        private Label lblGhiChu;
         private RadioButton rdoThuThu;
         private RadioButton rdoDocGia;
     }

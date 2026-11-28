@@ -220,7 +220,7 @@ namespace QuanLyThuVien.Forms
             btnLamMoi.TabIndex = 15;
             btnLamMoi.Text = "Làm mới";
             btnLamMoi.UseVisualStyleBackColor = true;
-            btnLamMoi.Click += btnLamMoi_Click;
+            
             // 
             // btnXoa
             // 

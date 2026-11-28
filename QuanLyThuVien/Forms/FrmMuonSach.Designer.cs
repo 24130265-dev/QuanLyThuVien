@@ -270,10 +270,10 @@ partial class FrmMuonSach
         // btnLapPhieu
         // 
         btnLapPhieu.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        btnLapPhieu.Location = new Point(777, 803);
+        btnLapPhieu.Location = new Point(707, 803);
         btnLapPhieu.Margin = new Padding(3, 4, 3, 4);
         btnLapPhieu.Name = "btnLapPhieu";
-        btnLapPhieu.Size = new Size(263, 53);
+        btnLapPhieu.Size = new Size(330, 53);
         btnLapPhieu.TabIndex = 2;
         btnLapPhieu.Text = "XÁC NHẬN CHO MƯỢN && LẬP PHIẾU";
         btnLapPhieu.UseVisualStyleBackColor = true;

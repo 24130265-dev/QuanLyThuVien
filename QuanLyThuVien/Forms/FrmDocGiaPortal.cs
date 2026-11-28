@@ -3,7 +3,7 @@ using QuanLyThuVien.Data;
 using QuanLyThuVien.DTOs;
 using QuanLyThuVien.Entities;
 using QuanLyThuVien.UI;
-using System.Reflection.PortableExecutable;
+
 
 namespace QuanLyThuVien.Forms;
 
@@ -320,52 +320,66 @@ public partial class FrmDocGiaPortal : Form
 
     private async void btnGoiYeuCau_Click(object? sender, EventArgs e)
     {
-        if (dgvSachThuVien.CurrentRow?.DataBoundItem is not DauSachDto sach)
+        try
         {
-            Toast.CanhBao(this, "Hãy chọn một đầu sách trong danh sách.");
-            return;
-        }
+            if (dgvSachThuVien.CurrentRow?.DataBoundItem is not DauSachDto sach)
+            {
+                Toast.CanhBao(this, "Hãy chọn một đầu sách trong danh sách.");
+                return;
+            }
 
-        using var db = new AppDbContext();
-        var dg = await db.DocGias.AsNoTracking().FirstOrDefaultAsync(d => d.MaDocGia == _maDocGia);
-        if (dg == null) return;
+            using var db = new AppDbContext();
 
-        if (dg.BiKhoaThe)
-        {
-            Toast.Loi(this, "Thẻ của bạn đang bị khóa, không thể gửi yêu cầu mượn.");
-            return;
-        }
-        if (dg.TienNoPhat > 0)
-        {
-            Toast.CanhBao(this, $"Bạn còn nợ phạt {dg.TienNoPhat:N0} đ. Hãy thanh toán tại quầy trước khi mượn.");
-            return;
-        }
-        if (sach.SoCuonSanSang == 0)
-        {
-            Toast.CanhBao(this, "Đầu sách này hiện chưa có bản sẵn sàng.");
-            return;
-        }
+            // Cùng quy tắc với quầy mượn sách, nhưng thông báo viết theo góc nhìn của độc giả
+            var kq = await MuonService.KiemTraAsync(db, _maDocGia);
+            switch (kq.Chan)
+            {
+                case LyDoChan.KhongTimThay:
+                    return;
+                case LyDoChan.KhoaThe:
+                    Toast.Loi(this, "Thẻ của bạn đang bị khóa, không thể gửi yêu cầu mượn.");
+                    return;
+                case LyDoChan.NoPhat:
+                    Toast.CanhBao(this, $"Bạn còn nợ phạt {kq.SoNo:N0} đ. Hãy thanh toán tại quầy trước khi mượn.");
+                    return;
+                case LyDoChan.DayGioiHan:
+                    Toast.CanhBao(this,
+                        $"Bạn đang giữ {kq.DangGiu} cuốn chưa trả, đã đạt mức tối đa {MuonService.SoSachToiDa} cuốn. Hãy trả sách trước khi mượn thêm.");
+                    return;
+            }
 
-        bool daGui = await db.YeuCauMuons.AnyAsync(y =>
-            y.MaDocGia == _maDocGia &&
-            y.MaDauSach == sach.MaDauSach &&
-            y.TrangThai == TrangThaiYeuCau.ChoDuyet);
-        if (daGui)
-        {
-            Toast.CanhBao(this, "Bạn đã gửi yêu cầu cho đầu sách này và đang chờ duyệt.");
-            return;
+            if (sach.SoCuonSanSang == 0)
+            {
+                Toast.CanhBao(this, "Đầu sách này hiện chưa có bản sẵn sàng.");
+                return;
+            }
+
+            bool daGui = await db.YeuCauMuons.AnyAsync(y =>
+                y.MaDocGia == _maDocGia &&
+                y.MaDauSach == sach.MaDauSach &&
+                y.TrangThai == TrangThaiYeuCau.ChoDuyet);
+            if (daGui)
+            {
+                Toast.CanhBao(this, "Bạn đã gửi yêu cầu cho đầu sách này và đang chờ duyệt.");
+                return;
+            }
+
+            db.YeuCauMuons.Add(new YeuCauMuon
+            {
+                MaDocGia = _maDocGia,
+                MaDauSach = sach.MaDauSach,
+                NgayGui = DateTime.Now,
+                TrangThai = TrangThaiYeuCau.ChoDuyet
+            });
+            await db.SaveChangesAsync();
+
+            Toast.ThanhCong(this, $"Đã gửi yêu cầu mượn \"{sach.TenDauSach}\". Hãy nhận sách tại quầy khi được duyệt.");
         }
-
-        db.YeuCauMuons.Add(new YeuCauMuon
+        catch (Exception ex)
         {
-            MaDocGia = _maDocGia,
-            MaDauSach = sach.MaDauSach,
-            NgayGui = DateTime.Now,
-            TrangThai = TrangThaiYeuCau.ChoDuyet
-        });
-        await db.SaveChangesAsync();
-
-        Toast.ThanhCong(this, $"Đã gửi yêu cầu mượn \"{sach.TenDauSach}\". Hãy nhận sách tại quầy khi được duyệt.");
+            NhatKy.Ghi(ex);
+            Toast.Loi(this, "Không thể gửi yêu cầu. Vui lòng thử lại.");
+        }
     }
 
     // =====================================================================

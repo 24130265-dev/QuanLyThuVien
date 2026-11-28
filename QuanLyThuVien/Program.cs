@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using QuanLyThuVien.Data;
 using QuanLyThuVien.Forms;
 
@@ -9,21 +8,25 @@ static class Program
     [STAThread]
     static void Main()
     {
-        ApplicationConfiguration.Initialize(); 
-        Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
-        Application.EnableVisualStyles();
-        Application.SetCompatibleTextRenderingDefault(false);
+        ApplicationConfiguration.Initialize();
 
-        // Báo lỗi
+        // Báo lỗi: ghi chi tiết vào error.log, người dùng chỉ thấy thông báo chung
         Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
         Application.ThreadException += static (s, e) =>
-            MessageBox.Show($"Lỗi giao diện: {e.Exception.Message}", "Cảnh báo",
+        {
+            NhatKy.Ghi(e.Exception);
+            MessageBox.Show(MoTaLoi("Đã xảy ra lỗi giao diện.", e.Exception), "Cảnh báo",
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
+        };
         AppDomain.CurrentDomain.UnhandledException += static (s, e) =>
-            MessageBox.Show($"Lỗi hệ thống: {(e.ExceptionObject as Exception)?.Message}", "Lỗi nghiêm trọng",
+        {
+            var ex = e.ExceptionObject as Exception;
+            NhatKy.Ghi(ex);
+            MessageBox.Show(MoTaLoi("Đã xảy ra lỗi hệ thống.", ex), "Lỗi nghiêm trọng",
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
+        };
 
-        // Tự động tạo CSDL và nạp dữ liệu tài khoản Thủ thư / Sinh viên
+        // Tự động tạo CSDL, nạp tài khoản Thủ thư / Sinh viên (chỉ chạy một lần khi mở app)
         try
         {
             using var db = new AppDbContext();
@@ -32,7 +35,8 @@ static class Program
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Không thể khởi tạo CSDL:\n{ex.Message}", "Lỗi CSDL",
+            NhatKy.Ghi(ex);
+            MessageBox.Show(MoTaLoi("Không thể khởi tạo CSDL.", ex), "Lỗi CSDL",
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
@@ -59,5 +63,15 @@ static class Program
                 if (!portal.DaDangXuat) return;
             }
         }
+    }
+
+
+    private static string MoTaLoi(string thongBao, Exception? ex)
+    {
+#if DEBUG
+        return $"{thongBao}\n\n{ex?.Message}";
+#else
+        return $"{thongBao}\nChi tiết đã được ghi vào file error.log.";
+#endif
     }
 }

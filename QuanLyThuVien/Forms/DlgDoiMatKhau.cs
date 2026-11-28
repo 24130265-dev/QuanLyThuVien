@@ -12,41 +12,55 @@ public partial class DlgDoiMatKhau : Form
         InitializeComponent();
         _maTaiKhoan = maTaiKhoan;
 
-        
         Theme.Apply(this);
+
+        txtMatKhauMoi.MaxLength = MatKhau.DoDaiToiDa;
+        txtXacNhanMatKhau.MaxLength = MatKhau.DoDaiToiDa;
     }
 
     private async void btnLuu_Click(object? sender, EventArgs e)
     {
-        string moi = txtMatKhauMoi.Text;
-
-        if (moi.Length < 6)
+        btnLuu.Enabled = false;
+        try
         {
-            Toast.CanhBao(this, "Mật khẩu mới cần ít nhất 6 ký tự.");
-            txtMatKhauMoi.Focus();
-            return;
+            string moi = txtMatKhauMoi.Text;
+
+            string? loi = MatKhau.KiemTraDoManh(moi, PhienDangNhap.MaDocGia);
+            if (loi != null)
+            {
+                Toast.CanhBao(this, loi);
+                txtMatKhauMoi.Focus();
+                return;
+            }
+            if (moi != txtXacNhanMatKhau.Text)
+            {
+                Toast.CanhBao(this, "Hai mật khẩu không khớp.");
+                txtXacNhanMatKhau.Focus();
+                return;
+            }
+
+            using var db = new AppDbContext();
+            var tk = await db.TaiKhoans.FindAsync(_maTaiKhoan);
+            if (tk == null)
+            {
+                Toast.Loi(this, "Không tìm thấy tài khoản để đổi mật khẩu.");
+                return;
+            }
+
+            tk.MatKhauHash = MatKhau.Bam(moi);
+            tk.BatBuocDoiMatKhau = false;
+            await db.SaveChangesAsync();
+
+            DialogResult = DialogResult.OK;
         }
-        if (moi == "123")
+        catch (Exception ex)
         {
-            Toast.CanhBao(this, "Không được dùng lại mật khẩu mặc định.");
-            txtMatKhauMoi.Focus();
-            return;
+            NhatKy.Ghi(ex);
+            Toast.Loi(this, "Không thể đổi mật khẩu. Vui lòng thử lại.");
         }
-        if (moi != txtXacNhanMatKhau.Text)
+        finally
         {
-            Toast.CanhBao(this, "Hai mật khẩu không khớp.");
-            txtXacNhanMatKhau.Focus();
-            return;
+            btnLuu.Enabled = true;
         }
-
-        using var db = new AppDbContext();
-        var tk = await db.TaiKhoans.FindAsync(_maTaiKhoan);
-        if (tk == null) return;
-
-        tk.MatKhauHash = MatKhau.Bam(moi);
-        tk.BatBuocDoiMatKhau = false;
-        await db.SaveChangesAsync();
-
-        DialogResult = DialogResult.OK;
     }
 }

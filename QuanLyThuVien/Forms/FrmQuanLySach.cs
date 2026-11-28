@@ -136,6 +136,7 @@ public partial class FrmQuanLySach : Form
             await db.SaveChangesAsync();
 
             await NapCayTheLoaiAsync(ma);
+            Toast.ThanhCong(this, $"Đã thêm thể loại \"{ten}\".");
         }
         catch (Exception ex)
         {
@@ -166,6 +167,7 @@ public partial class FrmQuanLySach : Form
             await db.SaveChangesAsync();
 
             await NapCayTheLoaiAsync(ma);
+            Toast.ThanhCong(this, $"Đã đổi tên thể loại thành \"{tenMoi}\".");
         }
         catch (Exception ex)
         {
@@ -211,6 +213,7 @@ public partial class FrmQuanLySach : Form
             await db.SaveChangesAsync();
 
             await NapCayTheLoaiAsync(maCha);
+            Toast.ThanhCong(this, "Đã xóa thể loại.");
         }
         catch (Exception ex)
         {
@@ -279,10 +282,20 @@ public partial class FrmQuanLySach : Form
     //layma
     private List<string> LayMaTheLoaiCon(string ma)
     {
-        var kq = new List<string> { ma };
-        foreach (var con in _tatCaTheLoai.Where(t => t.MaTheLoaiCha == ma))
-            kq.AddRange(LayMaTheLoaiCon(con.MaTheLoai));
-        return kq;
+        var ketQua = new HashSet<string> { ma };
+        var hangDoi = new Queue<string>();
+        hangDoi.Enqueue(ma);
+
+        while (hangDoi.Count > 0)
+        {
+            string cha = hangDoi.Dequeue();
+            foreach (var con in _tatCaTheLoai.Where(t => t.MaTheLoaiCha == cha))
+            {
+                if (ketQua.Add(con.MaTheLoai))      
+                    hangDoi.Enqueue(con.MaTheLoai);
+            }
+        }
+        return ketQua.ToList();
     }
 
     //tree
@@ -346,26 +359,26 @@ public partial class FrmQuanLySach : Form
     {
         var tieuDeDauSach = new Dictionary<string, string>
         {
-            ["MaDauSach"] = "Mã đầu sách",
+            ["MaDauSach"] = "Mã sách",
             ["TenDauSach"] = "Tên đầu sách",
             ["TacGia"] = "Tác giả",
             ["NamXuatBan"] = "Năm XB",
             ["GiaBia"] = "Giá bìa",
             ["TenTheLoai"] = "Thể loại",
-            ["TongSoCuon"] = "Tổng số cuốn",
+            ["TongSoCuon"] = "Tổng cuốn",
             ["SoCuonSanSang"] = "Sẵn sàng"
         };
 
         var tiLeCotDauSach = new Dictionary<string, float>
         {
-            ["MaDauSach"] = 75,
-            ["TenDauSach"] = 220,
-            ["TacGia"] = 150,
-            ["NamXuatBan"] = 65,
+            ["MaDauSach"] = 85,
+            ["TenDauSach"] = 210,
+            ["TacGia"] = 140,
+            ["NamXuatBan"] = 75,
             ["GiaBia"] = 85,
-            ["TenTheLoai"] = 120,
-            ["TongSoCuon"] = 70,
-            ["SoCuonSanSang"] = 70
+            ["TenTheLoai"] = 150,
+            ["TongSoCuon"] = 80,
+            ["SoCuonSanSang"] = 85
         };
 
         string[] cotSo = { "NamXuatBan", "GiaBia", "TongSoCuon", "SoCuonSanSang" };
@@ -454,35 +467,52 @@ public partial class FrmQuanLySach : Form
             FormBorderStyle = FormBorderStyle.FixedDialog,
             MaximizeBox = false,
             MinimizeBox = false,
-            ClientSize = new Size(420, 130)
+            ShowInTaskbar = false,
+            ClientSize = new Size(420, 140)
         };
-        var lbl = new Label { Text = cauHoi, Left = 12, Top = 12, Width = 396, Height = 40 };
-        var txt = new TextBox { Left = 12, Top = 58, Width = 396, Text = macDinh };
-        var ok = new Button { Text = "OK", Left = 232, Top = 92, Width = 80, DialogResult = DialogResult.OK };
-        var huy = new Button { Text = "Hủy", Left = 328, Top = 92, Width = 80, DialogResult = DialogResult.Cancel };
+        var lbl = new Label { Text = cauHoi, Left = 12, Top = 12, Width = 396, Height = 44 };
+        var txt = new TextBox { Left = 12, Top = 62, Width = 396, Text = macDinh };
+        var ok = new Button { Text = "OK", Left = 232, Top = 98, Width = 80, DialogResult = DialogResult.OK };
+        var huy = new Button { Text = "Hủy", Left = 328, Top = 98, Width = 80, DialogResult = DialogResult.Cancel };
 
         f.Controls.AddRange(new Control[] { lbl, txt, ok, huy });
         f.AcceptButton = ok;
         f.CancelButton = huy;
 
+        Theme.Apply(f);                          // áp phông, màu, kiểu nút giống các form khác
+        Theme.StyleButton(huy, Theme.Neutral);
+
         return f.ShowDialog() == DialogResult.OK ? txt.Text.Trim() : null;
     }
 
-    private static void BaoLoi(Exception ex)
+    private static string? ChonTrangThai(string maCuon, string hienTai)
     {
-        MessageBox.Show($"Có lỗi xảy ra:\n{ex.Message}", "Lỗi",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
-    }
+        using var f = new Form
+        {
+            Text = "Đổi trạng thái",
+            StartPosition = FormStartPosition.CenterParent,
+            FormBorderStyle = FormBorderStyle.FixedDialog,
+            MaximizeBox = false,
+            MinimizeBox = false,
+            ShowInTaskbar = false,
+            ClientSize = new Size(360, 140)
+        };
+        var lbl = new Label { Text = $"Chọn trạng thái mới cho cuốn {maCuon}:", Left = 12, Top = 12, Width = 336, Height = 24 };
+        var cbo = new ComboBox { Left = 12, Top = 46, Width = 336, DropDownStyle = ComboBoxStyle.DropDownList };
+        cbo.Items.AddRange(new object[] { TrangThaiSach.SanSang, TrangThaiSach.Hong, TrangThaiSach.Mat });
+        cbo.SelectedIndex = Math.Max(0, cbo.Items.IndexOf(hienTai));
 
-    private void btnLamMoi_Click(object? sender, EventArgs e)
-    {
-        _dangLamMoi = true;
-        dgvDauSach.ClearSelection();
-        _dangLamMoi = false;
+        var ok = new Button { Text = "OK", Left = 172, Top = 98, Width = 80, DialogResult = DialogResult.OK };
+        var huy = new Button { Text = "Hủy", Left = 268, Top = 98, Width = 80, DialogResult = DialogResult.Cancel };
 
-        _dsCuonSach.Clear();
-        LamMoiKhungNhapDauSach();
-        txtMaDauSach.Focus();
+        f.Controls.AddRange(new Control[] { lbl, cbo, ok, huy });
+        f.AcceptButton = ok;
+        f.CancelButton = huy;
+
+        Theme.Apply(f);
+        Theme.StyleButton(huy, Theme.Neutral);
+
+        return f.ShowDialog() == DialogResult.OK ? cbo.SelectedItem as string : null;
     }
 
     //KIỂM TRA DỮ LIỆU (Validating)
@@ -666,8 +696,7 @@ public partial class FrmQuanLySach : Form
         {
             if (!txtMaDauSach.ReadOnly || _bsDauSach.Current is not DauSachDto d)
             {
-                MessageBox.Show("Hãy chọn một đầu sách trong bảng để xóa.", "Chưa chọn",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Toast.CanhBao(this, "Hãy chọn một đầu sách trong bảng để xóa.");
                 return;
             }
 
@@ -678,11 +707,14 @@ public partial class FrmQuanLySach : Form
                 .AnyAsync(c => c.MaDauSach == ma && c.TrangThai == TrangThaiSach.DangMuon);
             bool coGiaoDich = await db.ChiTietPhieuMuons
                 .AnyAsync(ct => ct.CuonSach!.MaDauSach == ma);
+            bool coYeuCau = await db.YeuCauMuons
+                .AnyAsync(y => y.MaDauSach == ma);          // khóa ngoại Restrict, xóa sẽ lỗi nếu bỏ sót
 
-            if (dangMuon || coGiaoDich)
+            if (dangMuon || coGiaoDich || coYeuCau)
             {
                 MessageBox.Show(
-                    "Không thể xóa: đầu sách này có cuốn đang được mượn hoặc đã từng nằm trong phiếu mượn.\n" +
+                    "Không thể xóa: đầu sách này có cuốn đang được mượn, đã từng nằm trong phiếu mượn " +
+                    "hoặc đã có yêu cầu mượn từ độc giả.\n" +
                     "Nếu sách không dùng được nữa, hãy đổi trạng thái cuốn sách sang \"Hỏng\" hoặc \"Mất\".",
                     "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -693,7 +725,7 @@ public partial class FrmQuanLySach : Form
                 "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (kq != DialogResult.Yes) return;
 
-            // Phải xóa các cuốn sách (bảng con) trước, rồi mới xóa đầu sách (bảng cha)
+            // Xóa các cuốn sách (bảng con) trước, rồi mới xóa đầu sách (bảng cha)
             var cacCuon = await db.CuonSachs.Where(c => c.MaDauSach == ma).ToListAsync();
             db.CuonSachs.RemoveRange(cacCuon);
 
@@ -704,6 +736,7 @@ public partial class FrmQuanLySach : Form
 
             _maCanChon = null;
             await NapCayTheLoaiAsync(tvTheLoai.SelectedNode?.Tag as string);
+            Toast.ThanhCong(this, $"Đã xóa đầu sách {ma}.");
         }
         catch (Exception ex)
         {
@@ -748,6 +781,7 @@ public partial class FrmQuanLySach : Form
 
             _maCanChon = d.MaDauSach;
             await NapDauSachAsync(tvTheLoai.SelectedNode?.Tag as string);
+            Toast.ThanhCong(this, $"Đã nhập thêm {soLuong} bản sao cho {d.MaDauSach}.");
         }
         catch (Exception ex)
         {
@@ -816,6 +850,7 @@ public partial class FrmQuanLySach : Form
             {
                 cuon.TrangThai = moi;
                 await db.SaveChangesAsync();
+                Toast.ThanhCong(this, $"Đã đổi trạng thái cuốn {cuon.MaCuonSach} thành \"{moi}\".");
             }
 
             _maCanChon = cuon.MaDauSach;
@@ -865,35 +900,23 @@ public partial class FrmQuanLySach : Form
 
             _maCanChon = maDauSach;
             await NapDauSachAsync(tvTheLoai.SelectedNode?.Tag as string);
+            Toast.ThanhCong(this, $"Đã xóa cuốn {ma}.");
         }
         catch (Exception ex)
         {
             BaoLoi(ex);
         }
     }
-    private static string? ChonTrangThai(string maCuon, string hienTai)
+    private static void BaoLoi(Exception ex)
     {
-        using var f = new Form
-        {
-            Text = "Đổi trạng thái",
-            StartPosition = FormStartPosition.CenterParent,
-            FormBorderStyle = FormBorderStyle.FixedDialog,
-            MaximizeBox = false,
-            MinimizeBox = false,
-            ClientSize = new Size(360, 130)
-        };
-        var lbl = new Label { Text = $"Chọn trạng thái mới cho cuốn {maCuon}:", Left = 12, Top = 12, Width = 336, Height = 24 };
-        var cbo = new ComboBox { Left = 12, Top = 44, Width = 336, DropDownStyle = ComboBoxStyle.DropDownList };
-        cbo.Items.AddRange(new object[] { TrangThaiSach.SanSang, TrangThaiSach.Hong, TrangThaiSach.Mat });
-        cbo.SelectedIndex = Math.Max(0, cbo.Items.IndexOf(hienTai));
-
-        var ok = new Button { Text = "OK", Left = 172, Top = 92, Width = 80, DialogResult = DialogResult.OK };
-        var huy = new Button { Text = "Hủy", Left = 268, Top = 92, Width = 80, DialogResult = DialogResult.Cancel };
-
-        f.Controls.AddRange(new Control[] { lbl, cbo, ok, huy });
-        f.AcceptButton = ok;
-        f.CancelButton = huy;
-
-        return f.ShowDialog() == DialogResult.OK ? cbo.SelectedItem as string : null;
+        NhatKy.Ghi(ex);
+#if DEBUG
+        MessageBox.Show($"Có lỗi xảy ra:\n{ex.Message}", "Lỗi",
+            MessageBoxButtons.OK, MessageBoxIcon.Error);
+#else
+        MessageBox.Show("Có lỗi xảy ra. Chi tiết đã được ghi vào file error.log.", "Lỗi",
+            MessageBoxButtons.OK, MessageBoxIcon.Error);
+#endif
     }
+
 }

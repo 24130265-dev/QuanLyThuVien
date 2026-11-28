@@ -12,7 +12,7 @@ public partial class FrmDocGia : Form
 {
     private readonly BindingList<DocGiaDto> _ds = new();
     private readonly BindingSource _bs = new();
-    private bool _dangLamMoi;   
+    private bool _dangLamMoi;
 
     public FrmDocGia()
     {
@@ -37,8 +37,20 @@ public partial class FrmDocGia : Form
         btnKhoa.Click += btnKhoa_Click;
         btnXoa.Click += btnXoa_Click;
         btnLamMoi.Click += btnLamMoi_Click;
-        btnThanhToan.Click += btnThanhToan_Click;
+
         btnTraHet.Click += btnTraHet_Click;
+
+        // Chỉ thu tiền theo hóa đơn: ẩn phần "trả một phần" cũ
+        btnThanhToan.Visible = false;
+        lblSoTienTra.Visible = false;
+        nudSoTienTra.Visible = false;
+
+        btnTraHet.Text = "Thu hết nợ";
+        btnTraHet.Size = new Size(150, btnLamMoi.Height);                 // cao bằng các nút khác
+        btnTraHet.Location = new Point(btnLamMoi.Right + 40, btnLamMoi.Top);
+
+        lblTieuDe.Font = Theme.FontTitle;
+        lblTieuDe.ForeColor = Theme.PrimaryDark;
     }
 
     // ===================== SỰ KIỆN =====================
@@ -178,20 +190,20 @@ public partial class FrmDocGia : Form
         {
             if (LayDongChon() is not DocGiaDto d)
             {
-                MessageBox.Show("Hãy chọn một độc giả trong bảng để xóa.", "Chưa chọn",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Toast.CanhBao(this, "Hãy chọn một độc giả trong bảng để xóa.");
                 return;
             }
 
             using var db = new AppDbContext();
 
-            // Độc giả đã có lịch sử thì không xóa cứng, hướng dẫn chuyển sang Khóa thẻ
+            // Có lịch sử (phiếu mượn, hóa đơn phạt, yêu cầu mượn) thì không xóa cứng
             bool coLichSu = await db.PhieuMuons.AnyAsync(p => p.MaDocGia == d.MaDocGia)
-                         || await db.HoaDonPhats.AnyAsync(h => h.MaDocGia == d.MaDocGia);
+                         || await db.HoaDonPhats.AnyAsync(h => h.MaDocGia == d.MaDocGia)
+                         || await db.YeuCauMuons.AnyAsync(y => y.MaDocGia == d.MaDocGia);
             if (coLichSu)
             {
                 MessageBox.Show(
-                    "Không thể xóa: độc giả này đã có phiếu mượn hoặc hóa đơn phạt.\n" +
+                    "Không thể xóa: độc giả này đã có phiếu mượn, hóa đơn phạt hoặc yêu cầu mượn.\n" +
                     "Hãy dùng nút \"Khóa thẻ\" để ngừng cho mượn.",
                     "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -203,6 +215,7 @@ public partial class FrmDocGia : Form
 
             var dg = await db.DocGias.FirstOrDefaultAsync(x => x.MaDocGia == d.MaDocGia);
             if (dg == null) return;
+
             var tk = await db.TaiKhoans.FirstOrDefaultAsync(t => t.MaDocGia == dg.MaDocGia);
             if (tk != null) db.TaiKhoans.Remove(tk);
             db.DocGias.Remove(dg);
@@ -210,7 +223,6 @@ public partial class FrmDocGia : Form
 
             await NapDanhSachAsync(null);
             Toast.ThanhCong(this, $"Đã xóa độc giả \"{d.HoTen}\" thành công!");
-
         }
         catch (Exception ex)
         {
@@ -224,82 +236,49 @@ public partial class FrmDocGia : Form
         txtMaDocGia.Focus();
     }
 
-    // Trả một phần số tiền nợ (giảm trừ)
-    private async void btnThanhToan_Click(object? sender, EventArgs e)
-    {
-        try
-        {
-            await GhiNhanThanhToanAsync(traHet: false);
-        }
-        catch (Exception ex)
-        {
-            BaoLoi(ex);
-        }
-    }
 
-    // Trả hết nợ (đưa về 0)
+
+    // Thu toàn bộ nợ phạt của độc giả: đánh dấu mọi hóa đơn chưa thanh toán + đưa nợ về 0
     private async void btnTraHet_Click(object? sender, EventArgs e)
     {
         try
         {
-            await GhiNhanThanhToanAsync(traHet: true);
+            if (LayDongChon() is not DocGiaDto d)
+            {
+                Toast.CanhBao(this, "Hãy chọn một độc giả trong bảng.");
+                return;
+            }
+
+            using var db = new AppDbContext();
+            var dg = await db.DocGias.FirstOrDefaultAsync(x => x.MaDocGia == d.MaDocGia);
+            if (dg == null) return;
+
+            bool conHoaDon = await db.HoaDonPhats
+                .AnyAsync(h => h.MaDocGia == dg.MaDocGia && !h.DaThanhToan);
+
+            // Đọc số nợ mới nhất từ CSDL (màn hình Trả sách có thể vừa cộng thêm phạt)
+            if (dg.TienNoPhat <= 0 && !conHoaDon)
+            {
+                Toast.ThongTin(this, "Độc giả này không còn nợ phạt.");
+                await NapDanhSachAsync(d.MaDocGia);
+                return;
+            }
+
+            var hoi = MessageBox.Show(
+                $"Thu {dg.TienNoPhat:N0} VNĐ tiền phạt của \"{dg.HoTen}\" và đánh dấu mọi hóa đơn là đã thanh toán?",
+                "Xác nhận thu tiền", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (hoi != DialogResult.Yes) return;
+
+            decimal daThu = await PhatService.ThuTatCaAsync(db, dg.MaDocGia);
+            await db.SaveChangesAsync();
+
+            await NapDanhSachAsync(d.MaDocGia);
+            Toast.ThanhCong(this, $"Đã thu {daThu:N0} VNĐ tiền phạt!");
         }
         catch (Exception ex)
         {
             BaoLoi(ex);
         }
-    }
-
-    // ===================== NGHIỆP VỤ =====================
-
-    private async Task GhiNhanThanhToanAsync(bool traHet)
-    {
-        if (LayDongChon() is not DocGiaDto d)
-        {
-            MessageBox.Show("Hãy chọn một độc giả trong bảng.", "Chưa chọn",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
-            return;
-        }
-
-        using var db = new AppDbContext();
-        var dg = await db.DocGias.FirstOrDefaultAsync(x => x.MaDocGia == d.MaDocGia);
-        if (dg == null) return;
-
-        // Dùng số nợ mới nhất trong CSDL (TV3 có thể vừa cộng thêm tiền phạt)
-        if (dg.TienNoPhat <= 0)
-        {
-            MessageBox.Show("Độc giả này không còn nợ phạt.", "Thông báo",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
-            await NapDanhSachAsync(d.MaDocGia);
-            return;
-        }
-
-        decimal soTien = traHet ? dg.TienNoPhat : nudSoTienTra.Value;
-        if (soTien <= 0)
-        {
-            MessageBox.Show("Hãy nhập số tiền thanh toán lớn hơn 0.", "Thiếu số tiền",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
-            return;
-        }
-        if (soTien > dg.TienNoPhat) soTien = dg.TienNoPhat;
-
-        dg.TienNoPhat -= soTien;
-
-        // ĐỒNG BỘ VỚI HÓA ĐƠN PHẠT CỦA TV3 (hãy xác nhận cách làm này với TV3):
-        // khi nợ về 0 thì các hóa đơn chưa thanh toán của độc giả được đánh dấu đã thanh toán.
-        if (dg.TienNoPhat == 0)
-        {
-            var hoaDons = await db.HoaDonPhats
-                .Where(h => h.MaDocGia == dg.MaDocGia && !h.DaThanhToan)
-                .ToListAsync();
-            foreach (var h in hoaDons) h.DaThanhToan = true;
-        }
-
-        await db.SaveChangesAsync();
-
-        nudSoTienTra.Value = 0;
-        await NapDanhSachAsync(d.MaDocGia);
-        Toast.ThanhCong(this, $"Đã thanh toán {soTien:N0} VNĐ tiền phạt!");
     }
 
 
@@ -431,6 +410,7 @@ public partial class FrmDocGia : Form
         if (dgvDocGia.Columns["BiKhoaThe"] is { } c4) c4.HeaderText = "Khóa thẻ";
         if (dgvDocGia.Columns["TienNoPhat"] is { } c5)
         {
+            c5.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             c5.HeaderText = "Nợ phạt";
             c5.DefaultCellStyle.Format = "N0";
         }
@@ -438,7 +418,13 @@ public partial class FrmDocGia : Form
 
     private static void BaoLoi(Exception ex)
     {
+        NhatKy.Ghi(ex);
+#if DEBUG
         MessageBox.Show($"Có lỗi xảy ra:\n{ex.Message}", "Lỗi",
             MessageBoxButtons.OK, MessageBoxIcon.Error);
+#else
+        MessageBox.Show("Có lỗi xảy ra. Chi tiết đã được ghi vào file error.log.", "Lỗi",
+            MessageBoxButtons.OK, MessageBoxIcon.Error);
+#endif
     }
 }

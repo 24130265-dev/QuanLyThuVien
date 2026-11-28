@@ -11,13 +11,22 @@ namespace QuanLyThuVien.Forms;
 
 public partial class FrmTraSach : Form
 {
-    private readonly AppDbContext _context;
-    private decimal _tongTienPhat = 0;
-    private decimal _tienPhatHuHongHienTai = 0; 
+
+    private static class TinhTrang
+    {
+        public const string BinhThuong = "Bình thường";
+        public const string HuHong = "Hư hỏng";
+        public const string MatSach = "Mất sách";
+    }
+
+    private decimal _tongTienPhat;
+    private decimal _tienPhatTre;
+    private decimal _tienPhatHuHong;
+    private bool _coSachTre;
+
     public FrmTraSach()
     {
         InitializeComponent();
-        _context = new AppDbContext();
         CauHinhGiaoDien();
     }
 
@@ -80,25 +89,25 @@ public partial class FrmTraSach : Form
         {
             Name = "TinhTrangTra",
             HeaderText = "Tình Trạng Sách Trả",
-            DataSource = new[] { "Bình thường", "Hư hỏng", "Mất sách" }
+            DataSource = new[] { TinhTrang.BinhThuong, TinhTrang.HuHong, TinhTrang.MatSach }
         };
         dgvChiTietMuon.Columns.Add(colTinhTrang);
     }
 
     private void TaiDanhSachPhieuDangMuon(string tuKhoa = "")
     {
-        var query = _context.PhieuMuons
-            .Include(p => p.DocGia)
-            .Include(p => p.ChiTietPhieuMuons)
-            .Where(p => p.ChiTietPhieuMuons.Any(ct => ct.NgayTraThucTe == null))
-            .AsQueryable();
+        using var db = new AppDbContext();
+
+        var query = db.PhieuMuons
+            .AsNoTracking()
+            .Where(p => p.ChiTietPhieuMuons.Any(ct => ct.NgayTraThucTe == null));
 
         if (!string.IsNullOrWhiteSpace(tuKhoa))
         {
             tuKhoa = tuKhoa.Trim().ToLower();
             query = query.Where(p =>
                 p.MaPhieuMuon.ToString().Contains(tuKhoa) ||
-                (p.DocGia != null && p.DocGia.HoTen != null && p.DocGia.HoTen.ToLower().Contains(tuKhoa)));
+                (p.DocGia != null && p.DocGia.HoTen.ToLower().Contains(tuKhoa)));
         }
 
         var danhSach = query
@@ -107,7 +116,7 @@ public partial class FrmTraSach : Form
             {
                 Id = p.MaPhieuMuon,
                 p.MaDocGia,
-                TenDocGia = p.DocGia != null ? (p.DocGia.HoTen ?? "") : "",
+                TenDocGia = p.DocGia != null ? p.DocGia.HoTen : "",
                 p.NgayMuon
             })
             .ToList()
@@ -126,8 +135,8 @@ public partial class FrmTraSach : Form
         if (danhSach.Count == 0)
         {
             dgvChiTietMuon.Rows.Clear();
-            dgvHoaDonPhat.DataSource = null;
             TinhTongTienPhat();
+            TaiHoaDonPhatCuaDocGia();
         }
     }
 
@@ -136,12 +145,14 @@ public partial class FrmTraSach : Form
         TaiDanhSachPhieuDangMuon(txtTimKiem.Text);
     }
 
-    private void cboPhieuMuon_SelectedIndexChanged(object sender, EventArgs e)
+    private void cboPhieuMuon_SelectedIndexChanged(object? sender, EventArgs e)
     {
-        if (cboPhieuMuon.SelectedValue == null || !(cboPhieuMuon.SelectedValue is int phieuMuonId))
+        if (cboPhieuMuon.SelectedValue is not int phieuMuonId)
             return;
 
-        var phieu = _context.PhieuMuons
+        using var db = new AppDbContext();
+        var phieu = db.PhieuMuons
+            .AsNoTracking()
             .Include(p => p.ChiTietPhieuMuons)
                 .ThenInclude(ct => ct.CuonSach)
                     .ThenInclude(cs => cs!.DauSach)
@@ -149,7 +160,7 @@ public partial class FrmTraSach : Form
 
         if (phieu == null)
         {
-            MessageBox.Show("Không tìm thấy phiếu mượn!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            Toast.CanhBao(this, "Không tìm thấy phiếu mượn!");
             return;
         }
 
@@ -165,11 +176,11 @@ public partial class FrmTraSach : Form
             dgvChiTietMuon.Rows.Add(
                 true,
                 ct.Id,
-                ct.MaCuonSach.ToString(),
+                ct.MaCuonSach,
                 ct.CuonSach?.DauSach?.TenDauSach ?? "Không rõ tên sách",
                 phieu.NgayPhaiTra.ToString("dd/MM/yyyy"),
                 soNgayTre,
-                "Bình thường"
+                TinhTrang.BinhThuong
             );
         }
 
@@ -183,7 +194,7 @@ public partial class FrmTraSach : Form
         decimal mucPhatHuHong = numTienPhatHuHong.Value;
 
         int tongNgayTre = 0;
-        _tienPhatHuHongHienTai = 0;
+        decimal phatHuHong = 0;
         var lyDoList = new List<string>();
 
         foreach (DataGridViewRow row in dgvChiTietMuon.Rows)
@@ -192,7 +203,7 @@ public partial class FrmTraSach : Form
             if (!duocChon) continue;
 
             int ngayTre = Convert.ToInt32(row.Cells["SoNgayTre"].Value ?? 0);
-            string tinhTrang = row.Cells["TinhTrangTra"].Value?.ToString() ?? "Bình thường";
+            string tinhTrang = row.Cells["TinhTrangTra"].Value?.ToString() ?? TinhTrang.BinhThuong;
             string tenSach = row.Cells["TenDauSach"].Value?.ToString() ?? "";
 
             if (ngayTre > 0)
@@ -201,123 +212,127 @@ public partial class FrmTraSach : Form
                 lyDoList.Add($"Trễ {ngayTre} ngày ({tenSach})");
             }
 
-            if (tinhTrang == "Hư hỏng" || tinhTrang == "Mất sách")
+            if (tinhTrang == TinhTrang.HuHong || tinhTrang == TinhTrang.MatSach)
             {
-                _tienPhatHuHongHienTai += mucPhatHuHong;
+                phatHuHong += mucPhatHuHong;
                 lyDoList.Add($"{tinhTrang} ({tenSach})");
             }
         }
 
-        decimal tienPhatTre = tongNgayTre * donGiaTre;
-        _tongTienPhat = tienPhatTre + _tienPhatHuHongHienTai;
+        _coSachTre = tongNgayTre > 0;
+        _tienPhatTre = tongNgayTre * donGiaTre;
+        _tienPhatHuHong = phatHuHong;
+        _tongTienPhat = _tienPhatTre + _tienPhatHuHong;
 
         lblTongTienPhat.Text = $"{_tongTienPhat:N0} VNĐ";
         txtLyDoPhat.Text = string.Join("; ", lyDoList);
     }
 
-    private void btnXacNhanTra_Click(object sender, EventArgs e)
+    private async void btnXacNhanTra_Click(object? sender, EventArgs e)
     {
-        _context.ChangeTracker.Clear();
-
-        if (cboPhieuMuon.SelectedValue == null || !(cboPhieuMuon.SelectedValue is int phieuMuonId))
+        try
         {
-            MessageBox.Show("Vui lòng chọn phiếu mượn cần trả!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-
-        var chiTietIdsDuocChon = new Dictionary<int, string>();
-        foreach (DataGridViewRow row in dgvChiTietMuon.Rows)
-        {
-            if (Convert.ToBoolean(row.Cells["ChonTra"].Value ?? false))
+            if (cboPhieuMuon.SelectedValue is not int phieuMuonId)
             {
+                Toast.CanhBao(this, "Vui lòng chọn phiếu mượn cần trả!");
+                return;
+            }
+
+            var chiTietDuocChon = new Dictionary<int, string>();
+            foreach (DataGridViewRow row in dgvChiTietMuon.Rows)
+            {
+                if (!Convert.ToBoolean(row.Cells["ChonTra"].Value ?? false)) continue;
                 int ctId = Convert.ToInt32(row.Cells["ChiTietId"].Value);
-                string tinhTrang = row.Cells["TinhTrangTra"].Value?.ToString() ?? "Bình thường";
-                chiTietIdsDuocChon[ctId] = tinhTrang;
+                chiTietDuocChon[ctId] = row.Cells["TinhTrangTra"].Value?.ToString() ?? TinhTrang.BinhThuong;
             }
-        }
 
-        if (chiTietIdsDuocChon.Count == 0)
-        {
-            MessageBox.Show("Vui lòng tích chọn ít nhất một cuốn sách để trả!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-
-        var phieu = _context.PhieuMuons
-            .Include(p => p.ChiTietPhieuMuons)
-                .ThenInclude(ct => ct.CuonSach)
-            .FirstOrDefault(p => p.MaPhieuMuon == phieuMuonId);
-
-        if (phieu == null)
-        {
-            MessageBox.Show("Không tìm thấy thông tin phiếu mượn!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-
-        // 1. Cập nhật từng chi tiết phiếu mượn & trạng thái cuốn sách
-        foreach (var ct in phieu.ChiTietPhieuMuons)
-        {
-            if (!chiTietIdsDuocChon.ContainsKey(ct.Id)) continue;
-
-            ct.NgayTraThucTe = DateTime.Now;
-            string tinhTrang = chiTietIdsDuocChon[ct.Id];
-
-            if (ct.CuonSach != null)
+            if (chiTietDuocChon.Count == 0)
             {
-                if (tinhTrang == "Bình thường")
-                    ct.CuonSach.TrangThai = TrangThaiSach.SanSang;
-                else if (tinhTrang == "Hư hỏng")
-                    ct.CuonSach.TrangThai = TrangThaiSach.Hong;
-                else
-                    ct.CuonSach.TrangThai = TrangThaiSach.Mat;
+                Toast.CanhBao(this, "Vui lòng tích chọn ít nhất một cuốn sách để trả!");
+                return;
             }
-        }
 
-        // 2. Nếu có phát sinh tiền phạt -> Tạo HoaDonPhat
-        if (_tongTienPhat > 0)
-        {
-            var hoaDonPhat = new HoaDonPhat
-            {
-                MaDocGia = phieu.MaDocGia,
-                MaPhieuMuon = phieu.MaPhieuMuon,
-                NgayLap = DateTime.Now,
-                TienPhatQuaHan = Math.Max(0, _tongTienPhat - _tienPhatHuHongHienTai),
-                TienBoiThuong = _tienPhatHuHongHienTai,
-                LyDo = string.IsNullOrWhiteSpace(txtLyDoPhat.Text) ? "Phạt vi phạm mượn trả" : txtLyDoPhat.Text,
-                DaThanhToan = chkDaThanhToanNgay.Checked
-            };
-            _context.HoaDonPhats.Add(hoaDonPhat);
+            // Tính lại từ lưới ngay lúc xác nhận, không dùng số cũ
+            TinhTongTienPhat();
 
-            // Chỉ cộng nợ khi phát sinh phạt và chưa thanh toán ngay
-            if (!chkDaThanhToanNgay.Checked)
+            if (_coSachTre && numDonGiaTre.Value == 0)
             {
-                var dg = _context.DocGias.FirstOrDefault(d => d.MaDocGia == phieu.MaDocGia);
-                if (dg != null)
+                var hoi = MessageBox.Show(
+                    "Có sách trả trễ hạn nhưng \"Đơn giá phạt trễ\" đang là 0, nên sẽ không bị phạt.\n" +
+                    "Vẫn tiếp tục xác nhận trả sách?",
+                    "Chưa tính phạt trễ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (hoi != DialogResult.Yes) { numDonGiaTre.Focus(); return; }
+            }
+
+            using var db = new AppDbContext();
+            var phieu = await db.PhieuMuons
+                .Include(p => p.ChiTietPhieuMuons)
+                    .ThenInclude(ct => ct.CuonSach)
+                .FirstOrDefaultAsync(p => p.MaPhieuMuon == phieuMuonId);
+
+            if (phieu == null)
+            {
+                Toast.CanhBao(this, "Không tìm thấy thông tin phiếu mượn!");
+                return;
+            }
+
+            int soCuonTra = 0;
+            foreach (var ct in phieu.ChiTietPhieuMuons)
+            {
+                // Bỏ qua cuốn không được chọn, hoặc đã được trả ở nơi khác
+                if (!chiTietDuocChon.TryGetValue(ct.Id, out string? tinhTrang) || ct.NgayTraThucTe != null)
+                    continue;
+
+                ct.NgayTraThucTe = DateTime.Now;
+                ct.TinhTrangKhiTra = tinhTrang;
+                soCuonTra++;
+
+                if (ct.CuonSach != null)
                 {
-                    dg.TienNoPhat += _tongTienPhat;
+                    ct.CuonSach.TrangThai = tinhTrang switch
+                    {
+                        TinhTrang.HuHong => TrangThaiSach.Hong,
+                        TinhTrang.MatSach => TrangThaiSach.Mat,
+                        _ => TrangThaiSach.SanSang
+                    };
                 }
             }
+
+            if (soCuonTra == 0)
+            {
+                Toast.CanhBao(this, "Các cuốn đã chọn đã được trả trước đó.");
+                TaiDanhSachPhieuDangMuon(txtTimKiem.Text);
+                return;
+            }
+
+            // Hóa đơn + nợ phạt đi qua PhatService, lưu chung một lần với việc trả sách
+            await PhatService.TaoHoaDonAsync(db, phieu.MaDocGia, phieu.MaPhieuMuon,
+                _tienPhatTre, _tienPhatHuHong, txtLyDoPhat.Text, chkDaThanhToanNgay.Checked);
+
+            await db.SaveChangesAsync();
+
+            Toast.ThanhCong(this, "Đã ghi nhận trả sách thành công!");
+            TaiDanhSachPhieuDangMuon(txtTimKiem.Text);
         }
-
-        _context.SaveChanges();
-
-
-        Toast.ThanhCong(this, "Đã ghi nhận trả sách thành công!");
-        numTienPhatHuHong.Value = 0;
-        TaiDanhSachPhieuDangMuon(txtTimKiem.Text);
+        catch (Exception ex)
+        {
+            NhatKy.Ghi(ex);
+            Toast.Loi(this, "Không thể ghi nhận trả sách. Vui lòng thử lại.");
+        }
     }
 
     private void TaiHoaDonPhatCuaDocGia(string? _ = null)
     {
-        var hoaDons = _context.HoaDonPhats
+        using var db = new AppDbContext();
+        var hoaDons = db.HoaDonPhats
             .AsNoTracking()
-            .Include(h => h.DocGia)
             .OrderByDescending(h => h.NgayLap)
             .ThenByDescending(h => h.MaHoaDon)
             .Select(h => new
             {
                 MaHoaDon = h.MaHoaDon,
                 MaPhieuMuon = h.MaPhieuMuon,
-                DocGia = h.DocGia != null ? (h.DocGia.HoTen ?? "") : "",
+                DocGia = h.DocGia != null ? h.DocGia.HoTen : "",
                 NgayLap = h.NgayLap.ToString("dd/MM/yyyy HH:mm"),
                 SoTien = (h.TienPhatQuaHan + h.TienBoiThuong).ToString("N0") + " VNĐ",
                 LyDo = h.LyDo ?? "",
@@ -340,34 +355,36 @@ public partial class FrmTraSach : Form
         }
     }
 
-    private void btnThanhToanHoaDon_Click(object sender, EventArgs e)
+    private async void btnThanhToanHoaDon_Click(object? sender, EventArgs e)
     {
-        _context.ChangeTracker.Clear();
-
-        if (dgvHoaDonPhat.CurrentRow == null) return;
-
-        int maHoaDon = Convert.ToInt32(dgvHoaDonPhat.CurrentRow.Cells["MaHoaDon"].Value);
-        var hd = _context.HoaDonPhats.FirstOrDefault(x => x.MaHoaDon == maHoaDon);
-
-        if (hd == null)
+        try
         {
-            MessageBox.Show("Không tìm thấy hóa đơn phạt!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
+            if (dgvHoaDonPhat.CurrentRow == null)
+            {
+                Toast.CanhBao(this, "Hãy chọn một hóa đơn cần thu tiền.");
+                return;
+            }
 
-        if (hd.DaThanhToan)
+            int maHoaDon = Convert.ToInt32(dgvHoaDonPhat.CurrentRow.Cells["MaHoaDon"].Value);
+
+            using var db = new AppDbContext();
+            bool daThu = await PhatService.ThuHoaDonAsync(db, maHoaDon);
+            if (!daThu)
+            {
+                Toast.CanhBao(this, "Hóa đơn không tồn tại hoặc đã được thanh toán trước đó.");
+                TaiHoaDonPhatCuaDocGia();
+                return;
+            }
+
+            await db.SaveChangesAsync();
+            Toast.ThanhCong(this, $"Đã thu tiền hóa đơn phạt #{maHoaDon}!");
+            TaiHoaDonPhatCuaDocGia();
+        }
+        catch (Exception ex)
         {
-            MessageBox.Show("Hóa đơn này đã được thanh toán trước đó.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            return;
+            System.Diagnostics.Debug.WriteLine(ex);
+            Toast.Loi(this, "Không thể thu tiền hóa đơn. Vui lòng thử lại.");
         }
-
-        hd.DaThanhToan = true;
-        var docGia = _context.DocGias.First(d => d.MaDocGia == hd.MaDocGia);
-        docGia.TienNoPhat = Math.Max(0, docGia.TienNoPhat - (hd.TienPhatQuaHan + hd.TienBoiThuong));
-        _context.SaveChanges();
-
-        Toast.ThanhCong(this, $"Đã thu tiền hóa đơn phạt #{hd.MaHoaDon}!");
-        TaiHoaDonPhatCuaDocGia(hd.MaDocGia);
     }
 
     private void KhoiTaoCotLuoiHoaDonPhatMacDinh()
@@ -397,9 +414,12 @@ public partial class FrmTraSach : Form
         // 1. Áp dụng Theme
         Theme.Apply(this);
 
+
         Theme.StyleButton(btnTimKiem, Theme.Secondary);
         Theme.StyleButton(btnXacNhanTra, Theme.Primary);
         Theme.StyleButton(btnThanhToanHoaDon, Color.FromArgb(234, 88, 12));
+
+        grpHoaDonPhat.Text = "Danh sách hóa đơn phạt (tất cả độc giả)";
 
         pnlTopFilter.BackColor = Theme.CardBg;
         lblTitle.Font = Theme.FontTitle;
@@ -476,9 +496,5 @@ public partial class FrmTraSach : Form
         dgvHoaDonPhat.BringToFront();
     }
 
-    protected override void OnFormClosed(FormClosedEventArgs e)
-    {
-        _context?.Dispose();
-        base.OnFormClosed(e);
-    }
+    
 }

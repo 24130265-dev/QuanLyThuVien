@@ -232,9 +232,9 @@ partial class FrmBaoCao
         lblTitle.Name = "lblTitle";
         lblTitle.Size = new System.Drawing.Size(1032, 32);
         lblTitle.TabIndex = 1;
-        lblTitle.Text = "BÁO CÁO & THỐNG KÊ HOẠT ĐỘNG THƯ VIỆN";
+        lblTitle.Text = "BÁO CÁO && THỐNG KÊ HOẠT ĐỘNG THƯ VIỆN";
         lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-        lblTitle.UseMnemonic = false;
+        
         // 
         // tblKpi
         // 
@@ -274,7 +274,7 @@ partial class FrmBaoCao
         tabMuonTra.Padding = new System.Windows.Forms.Padding(8, 10, 8, 8);
         tabMuonTra.Size = new System.Drawing.Size(1052, 436);
         tabMuonTra.TabIndex = 0;
-        tabMuonTra.Text = "1. Tình hình Mượn - Trả & Quá hạn";
+        tabMuonTra.Text = "1. Tình hình Mượn - Trả && Quá hạn";
         // 
         // tblChiTietMuonTra
         // 
@@ -380,7 +380,7 @@ partial class FrmBaoCao
         Controls.Add(tblKpi);
         Controls.Add(pnlHeader);
         StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-        Text = "Báo cáo & Thống kê - Quản Lý Thư Viện";
+        Text = "Báo cáo && Thống kê - Quản Lý Thư Viện";
         Load += FrmBaoCao_Load;
         pnlHeader.ResumeLayout(false);
         pnlHeader.PerformLayout();

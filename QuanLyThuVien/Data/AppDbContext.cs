@@ -28,7 +28,12 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-      
+        modelBuilder.Entity<TaiKhoan>(e =>
+        {
+            e.HasIndex(x => x.TenDangNhap).IsUnique();
+            e.HasIndex(x => x.MaDocGia).IsUnique();   
+        });
+
         modelBuilder.Entity<TheLoai>(e =>
         {
             e.HasKey(x => x.MaTheLoai);
@@ -55,7 +60,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<CuonSach>(e =>
         {
             e.HasKey(x => x.MaCuonSach);
-            e.Property(x => x.TrangThai).IsRequired().HasMaxLength(50);
+            e.Property(x => x.TrangThai).IsRequired().HasMaxLength(50).IsConcurrencyToken();
             e.HasOne(x => x.DauSach)
              .WithMany(x => x.CuonSachs)
              .HasForeignKey(x => x.MaDauSach)

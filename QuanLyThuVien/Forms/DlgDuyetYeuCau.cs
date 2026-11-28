@@ -4,16 +4,14 @@ using QuanLyThuVien.UI;
 
 namespace QuanLyThuVien.Forms;
 
-/// <summary>
-/// Hộp thoại Thủ thư duyệt / từ chối yêu cầu mượn online của độc giả.
-/// FrmMuonSach đọc kết quả qua các thuộc tính MaDocGiaDuocChon, MaDauSachDuocChon, MaCuonSachGoiY.
-/// </summary>
+
 public partial class DlgDuyetYeuCau : Form
 {
     // ===== Kết quả trả về cho FrmMuonSach (chỉ có giá trị khi DialogResult = OK) =====
     public string MaDocGiaDuocChon { get; private set; } = string.Empty;
     public string MaDauSachDuocChon { get; private set; } = string.Empty;
     public string? MaCuonSachGoiY { get; private set; }     // cuốn đang sẵn sàng của đầu sách đó
+    public int MaYeuCauDuocChon { get; private set; }       // FrmMuonSach đổi sang "Đã duyệt" khi lập phiếu xong
 
     private sealed record DongYeuCau(int MaYeuCau, string MaDocGia, string HoTen,
         string MaDauSach, string TenDauSach, string NgayGui, int SoCuonSanSang);
@@ -99,63 +97,59 @@ public partial class DlgDuyetYeuCau : Form
     }
 
     // ===== Duyệt =====
+    // Chỉ KIỂM TRA và trả kết quả cho FrmMuonSach. Yêu cầu chỉ thành "Đã duyệt" khi phiếu mượn được lập xong.
     private async void btnDuyet_Click(object? sender, EventArgs e)
     {
-        if (dgvYeuCau.CurrentRow?.DataBoundItem is not DongYeuCau dong)
+        try
         {
-            Toast.CanhBao(this, "Hãy chọn một yêu cầu cần duyệt.");
-            return;
+            if (dgvYeuCau.CurrentRow?.DataBoundItem is not DongYeuCau dong)
+            {
+                Toast.CanhBao(this, "Hãy chọn một yêu cầu cần duyệt.");
+                return;
+            }
+
+            using var db = new AppDbContext();
+
+            // Đọc lại từ CSDL: có thể yêu cầu đã được xử lý ở nơi khác
+            var yc = await db.YeuCauMuons.AsNoTracking()
+                .FirstOrDefaultAsync(y => y.MaYeuCau == dong.MaYeuCau);
+            if (yc == null || yc.TrangThai != TrangThaiYeuCau.ChoDuyet)
+            {
+                Toast.CanhBao(this, "Yêu cầu này đã được xử lý trước đó.");
+                await NapDanhSachAsync();
+                return;
+            }
+
+            // Cùng quy tắc với màn hình Mượn sách: khóa thẻ, nợ phạt, đủ 3 cuốn
+            var kq = await MuonService.KiemTraAsync(db, yc.MaDocGia);
+            if (!kq.Du)
+            {
+                Toast.Loi(this, kq.MoTa + "\nNếu không thể xử lý, hãy chọn Từ chối.");
+                return;
+            }
+
+            var cuon = await db.CuonSachs.AsNoTracking()
+                .Where(c => c.MaDauSach == yc.MaDauSach && c.TrangThai == TrangThaiSach.SanSang)
+                .OrderBy(c => c.MaCuonSach)
+                .FirstOrDefaultAsync();
+            if (cuon == null)
+            {
+                Toast.Loi(this, "Đầu sách này hiện không còn bản sẵn sàng.");
+                await NapDanhSachAsync();
+                return;
+            }
+
+            MaYeuCauDuocChon = yc.MaYeuCau;
+            MaDocGiaDuocChon = yc.MaDocGia;
+            MaDauSachDuocChon = yc.MaDauSach;
+            MaCuonSachGoiY = cuon.MaCuonSach;
+            DialogResult = DialogResult.OK;       
         }
-
-        using var db = new AppDbContext();
-
-        // Đọc lại từ CSDL: có thể yêu cầu đã được xử lý ở nơi khác
-        var yc = await db.YeuCauMuons.Include(y => y.DocGia)
-            .FirstOrDefaultAsync(y => y.MaYeuCau == dong.MaYeuCau);
-        if (yc == null || yc.TrangThai != TrangThaiYeuCau.ChoDuyet)
+        catch (Exception ex)
         {
-            Toast.CanhBao(this, "Yêu cầu này đã được xử lý trước đó.");
-            await NapDanhSachAsync();
-            return;
+            NhatKy.Ghi(ex);
+            Toast.Loi(this, "Không thể xử lý yêu cầu. Vui lòng thử lại.");
         }
-
-        var docGia = yc.DocGia;
-        if (docGia == null)
-        {
-            Toast.Loi(this, "Không tìm thấy độc giả của yêu cầu này.");
-            return;
-        }
-        if (docGia.BiKhoaThe)
-        {
-            Toast.Loi(this, $"Thẻ của {docGia.HoTen} đang bị khóa, không thể duyệt. Hãy chọn Từ chối.");
-            return;
-        }
-
-        bool conNoHoaDon = await db.HoaDonPhats.AnyAsync(h => h.MaDocGia == docGia.MaDocGia && !h.DaThanhToan);
-        if (docGia.TienNoPhat > 0 || conNoHoaDon)
-        {
-            Toast.Loi(this, $"{docGia.HoTen} còn nợ phạt chưa thanh toán, không thể duyệt.");
-            return;
-        }
-
-        var cuon = await db.CuonSachs
-            .Where(c => c.MaDauSach == yc.MaDauSach && c.TrangThai == TrangThaiSach.SanSang)
-            .OrderBy(c => c.MaCuonSach)
-            .FirstOrDefaultAsync();
-        if (cuon == null)
-        {
-            Toast.Loi(this, "Đầu sách này hiện không còn bản sẵn sàng.");
-            await NapDanhSachAsync();
-            return;
-        }
-
-        yc.TrangThai = TrangThaiYeuCau.DaDuyet;
-        await db.SaveChangesAsync();
-
-        MaDocGiaDuocChon = yc.MaDocGia;
-        MaDauSachDuocChon = yc.MaDauSach;
-        MaCuonSachGoiY = cuon.MaCuonSach;
-        DialogResult = DialogResult.OK;       // đóng hộp thoại, trả kết quả cho FrmMuonSach
     }
 
     // ===== Từ chối =====

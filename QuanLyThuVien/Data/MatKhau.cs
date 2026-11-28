@@ -52,6 +52,31 @@ public static class MatKhau
     public static bool CanNangCap(string chuoiDaLuu)
         => !chuoiDaLuu.StartsWith(TienTo + "$", StringComparison.Ordinal);
 
+    public const int DoDaiToiThieu = 6;
+    public const int DoDaiToiDa = 64;
+
+    private static readonly HashSet<string> MatKhauYeu = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "123", "123456", "1234567", "12345678", "123456789", "111111", "000000",
+        "password", "matkhau", "qwerty", "abc123", "admin123", "nlu123"
+    };
+
+    public static string? KiemTraDoManh(string matKhau, string? khongDuocTrung = null)
+    {
+        if (matKhau.Length < DoDaiToiThieu)
+            return $"Mật khẩu cần ít nhất {DoDaiToiThieu} ký tự.";
+        if (matKhau.Length > DoDaiToiDa)
+            return $"Mật khẩu tối đa {DoDaiToiDa} ký tự.";
+        if (MatKhauYeu.Contains(matKhau))
+            return "Mật khẩu này quá dễ đoán, hãy chọn mật khẩu khác.";
+        if (!matKhau.Any(char.IsLetter) || !matKhau.Any(char.IsDigit))
+            return "Mật khẩu cần có cả chữ và số.";
+        if (!string.IsNullOrEmpty(khongDuocTrung)
+            && string.Equals(matKhau, khongDuocTrung, StringComparison.OrdinalIgnoreCase))
+            return "Mật khẩu không được trùng với mã số sinh viên.";
+        return null;
+    }
+
     private static string BamCu(string matKhau)
     {
         byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes("NLU_SALT_" + matKhau));
